@@ -5,6 +5,17 @@ import sendResponse from '../../../shared/sendResponse';
 import { AdminService } from './Admin.service';
 
 export const AdminController = {
+  registerAdmin: catchAsync(async (req, res) => {
+    const newAdmin = await AdminService.registerAdmin(req.body);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'New Admin register successfully!',
+      data: newAdmin,
+    });
+  }),
+
   loginAdmin: catchAsync(async (req, res) => {
     const { email, password } = req.body;
 

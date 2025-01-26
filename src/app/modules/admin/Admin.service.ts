@@ -7,8 +7,13 @@ import config from '../../../config';
 import { emailHelper } from '../../../helpers/emailHelper';
 import { sendOtpTemplate } from './Admin.template';
 import { generateOtp } from './Admin.utils';
+import { TAdmin } from './Admin.interface';
 
 export const AdminService = {
+  async registerAdmin(newAdmin: Partial<TAdmin>) {
+    return await Admin.create(newAdmin);
+  },
+
   async loginAdmin(email: string, password: string) {
     const admin = await Admin.findOne({ email }).select('+password');
 
@@ -58,7 +63,7 @@ export const AdminService = {
     await admin?.save();
 
     emailHelper.sendEmail({
-      to: 'shaishab316@gmail.com',
+      to: email,
       subject: 'Your Console Locker OTP is Here! 🔒',
       html: sendOtpTemplate(admin.name.split(' ')[0], otp),
     });

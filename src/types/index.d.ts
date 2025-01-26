@@ -1,9 +1,10 @@
-import { JwtPayload } from 'jsonwebtoken';
+import { TAdmin } from '../app/modules/admin/Admin.interface';
 
 declare global {
   namespace Express {
     interface Request {
-      user: JwtPayload;
+      // user: JwtPayload;
+      admin: Partial<TAdmin>;
     }
   }
 }
