@@ -1,27 +1,23 @@
 import colors from 'colors';
-import { User } from '../app/modules/user/user.model';
 import config from '../config';
-import { USER_ROLES } from '../enums/user';
 import { logger } from '../shared/logger';
+import Admin from '../app/modules/admin/Admin.model';
 
-const superUser = {
+const adminData = {
   name: 'bdCalling',
-  role: USER_ROLES.ADMIN,
   email: config.admin.email,
   phone: '124',
   password: config.admin.password,
-  image: '',
-  verified: true,
+  avatar: 'https://picsum.photos/200',
 };
 
 const seedAdmin = async () => {
-  const isExistSuperAdmin = await User.findOne({
-    role: USER_ROLES.ADMIN,
-  });
+  const adminExist = !!(await Admin.findOne());
 
-  if (!isExistSuperAdmin) {
-    await User.create(superUser);
-    logger.info(colors.green('✔admin created successfully!'));
+  if (!adminExist) {
+    logger.info(colors.yellow('📝 first admin is creating...'));
+    await Admin.create(adminData);
+    logger.info(colors.green('✔ admin created successfully!'));
   }
 };
 

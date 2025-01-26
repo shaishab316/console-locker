@@ -4,6 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import router from './routes';
 import { Morgan } from './shared/morgen';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
@@ -18,6 +19,9 @@ app.use(
     credentials: true,
   }),
 );
+
+// cookie parser
+app.use(cookieParser());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
