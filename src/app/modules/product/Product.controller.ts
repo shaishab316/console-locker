@@ -17,4 +17,36 @@ export const ProductController = {
       data: newProduct,
     });
   }),
+
+  updateProduct: catchAsync(async (req, res) => {
+    const updatedProduct = await ProductService.updateProduct(
+      req.params.id,
+      req.body,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Product has been updated successfully!',
+      data: updatedProduct,
+    });
+  }),
+
+  updateVariant: catchAsync(async (req, res) => {
+    const { productId, variantId } = req.params;
+    const variantData = req.body;
+
+    const updatedVariant = await ProductService.updateVariant(
+      productId,
+      variantId,
+      variantData,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Variant updated successfully!',
+      data: updatedVariant,
+    });
+  }),
 };

@@ -12,6 +12,21 @@ privateRouter.post(
   ProductController.createProduct,
 );
 
+privateRouter.patch(
+  '/:id/edit',
+  validateRequest(ProductValidation.productUpdateValidationSchema),
+  ProductController.updateProduct,
+);
+
+privateRouter.patch(
+  '/:productId/:variantId/edit',
+  validateRequest(
+    /** because Variant extend Product */
+    ProductValidation.productUpdateValidationSchema,
+  ),
+  ProductController.updateVariant,
+);
+
 export const ProductRoutes = {
   adminProductRoutes: privateRouter,
   customerProductRoutes: publicRouter,

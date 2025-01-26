@@ -29,4 +29,20 @@ export const ProductValidation = {
         .optional(),
     }),
   }),
+
+  productUpdateValidationSchema: z.object({
+    body: z.object({
+      images: z.array(z.string()).optional(),
+      name: z.string().optional(),
+      description: z.string().optional(),
+      price: z.number().positive().optional(),
+      offer_price: z.number().optional(),
+      brand: z.string().optional(),
+      model: z.string().optional(),
+      condition: z.enum(['fair', 'good', 'excellent']).optional(),
+      controller: z.number().nonnegative().optional(),
+      memory: z.string().optional(),
+      quantity: z.number().int().nonnegative().optional(),
+    }),
+  }),
 };
