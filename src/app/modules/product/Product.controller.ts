@@ -32,6 +32,17 @@ export const ProductController = {
     });
   }),
 
+  deleteProduct: catchAsync(async (req, res) => {
+    const deletedProduct = await ProductService.deleteProduct(req.params.id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Product deleted successfully',
+      data: deletedProduct,
+    });
+  }),
+
   updateVariant: catchAsync(async (req, res) => {
     const { productId, variantId } = req.params;
     const variantData = req.body;

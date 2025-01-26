@@ -18,6 +18,8 @@ privateRouter.patch(
   ProductController.updateProduct,
 );
 
+privateRouter.delete('/:id/delete', ProductController.deleteProduct);
+
 privateRouter.patch(
   '/:productId/:variantId/edit',
   validateRequest(

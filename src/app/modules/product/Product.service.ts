@@ -15,6 +15,16 @@ export const ProductService = {
     }).select('-variants');
   },
 
+  async deleteProduct(productId: string) {
+    const deletedProduct = await Product.findByIdAndDelete(productId);
+
+    if (!deletedProduct) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
+    }
+
+    return deletedProduct;
+  },
+
   async updateVariant(
     productId: string,
     variantId: string,
