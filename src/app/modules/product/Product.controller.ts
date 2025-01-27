@@ -34,19 +34,43 @@ export const ProductController = {
     },
   ),
 
-  updateProduct: catchAsync(async (req, res) => {
-    const updatedProduct = await ProductService.updateProduct(
-      req.params.id,
-      req.body,
-    );
+  updateProduct: catchAsyncWithCallback(
+    async (req, res) => {
+      const newImages: string[] = [];
 
-    sendResponse(res, {
-      success: true,
-      statusCode: StatusCodes.OK,
-      message: 'Product has been updated successfully!',
-      data: updatedProduct,
-    });
-  }),
+      if (req.files && 'images' in req.files && Array.isArray(req.files.images))
+        req.files.images.forEach(({ filename }) =>
+          newImages.push(`/images/${filename}`),
+        );
+
+      if (newImages.length) req.body.images = newImages;
+
+      const updatedProduct = await ProductService.updateProduct(
+        req.params.productId,
+        req.body,
+      );
+
+      sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Product has been updated successfully!',
+        data: updatedProduct,
+      });
+    },
+    (err, req, _res, next) => {
+      // Rollback newly uploaded images if an error occurs
+      if (
+        req.files &&
+        'images' in req.files &&
+        Array.isArray(req.files.images)
+      ) {
+        req.files.images.forEach(({ filename }) =>
+          unlinkFile(`/images/${filename}`),
+        );
+      }
+      next(err);
+    },
+  ),
 
   deleteProduct: catchAsync(async (req, res) => {
     const deletedProduct = await ProductService.deleteProduct(req.params.id);

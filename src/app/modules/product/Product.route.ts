@@ -16,7 +16,8 @@ privateRouter.post(
 );
 
 privateRouter.patch(
-  '/:id/edit',
+  '/:productId/edit',
+  imageUploader(),
   validateRequest(ProductValidation.productUpdateValidationSchema),
   ProductController.updateProduct,
 );

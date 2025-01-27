@@ -74,35 +74,43 @@ export const ProductValidation = {
       name: z.string().optional(),
       description: z.string().optional(),
       price: z
-        .string()
+        .union([z.string(), z.number()])
         .optional()
-        .transform(val => parseFloat(val as string))
-        .refine(val => !isNaN(val), {
+        .transform(val =>
+          val === undefined ? undefined : parseFloat(val as string),
+        )
+        .refine(val => val === undefined || !isNaN(val), {
           message: 'Price must be a valid number',
         }),
       offer_price: z
-        .string()
+        .union([z.string(), z.number()])
         .optional()
-        .transform(val => parseFloat(val as string))
-        .refine(val => !isNaN(val), {
+        .transform(val =>
+          val === undefined ? undefined : parseFloat(val as string),
+        )
+        .refine(val => val === undefined || !isNaN(val), {
           message: 'Offer price must be a valid number',
         }),
       brand: z.string().optional(),
       model: z.string().optional(),
       condition: z.enum(['fair', 'good', 'excellent']).optional(),
       controller: z
-        .string()
+        .union([z.string(), z.number()])
         .optional()
-        .transform(val => parseInt(val as string, 10))
-        .refine(val => !isNaN(val), {
+        .transform(val =>
+          val === undefined ? undefined : parseInt(val as string, 10),
+        )
+        .refine(val => val === undefined || !isNaN(val), {
           message: 'Controller must be a valid number',
         }),
       memory: z.string().optional(),
       quantity: z
-        .string()
+        .union([z.string(), z.number()])
         .optional()
-        .transform(val => parseInt(val as string, 10))
-        .refine(val => !isNaN(val), {
+        .transform(val =>
+          val === undefined ? undefined : parseInt(val as string, 10),
+        )
+        .refine(val => val === undefined || !isNaN(val), {
           message: 'Quantity must be a valid number',
         }),
     }),

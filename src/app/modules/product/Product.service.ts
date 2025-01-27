@@ -3,6 +3,7 @@ import ApiError from '../../../errors/ApiError';
 import { TProduct } from './Product.interface';
 import Product from './Product.model';
 import { Types } from 'mongoose';
+import unlinkFile from '../../../shared/unlinkFile';
 
 export const ProductService = {
   async createProduct(newProduct: TProduct) {
@@ -10,10 +11,26 @@ export const ProductService = {
   },
 
   async updateProduct(productId: string, updateData: Partial<TProduct>) {
-    return await Product.findByIdAndUpdate(productId, updateData, {
-      new: true,
-      runValidators: true,
-    }).select('-variants');
+    const existingProduct = await Product.findById(productId);
+
+    if (!existingProduct) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
+    }
+
+    const imagesToDelete = existingProduct.images || [];
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      updateData,
+      { new: true },
+    );
+
+    // Delete old images if new images were uploaded
+    if (updateData.images && updateData.images.length > 0) {
+      imagesToDelete.forEach((image: string) => unlinkFile(image));
+    }
+
+    return updatedProduct;
   },
 
   async deleteProduct(productId: string) {
@@ -31,15 +48,15 @@ export const ProductService = {
     if (!product) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
     }
-  
+
     const newVariant = {
       ...variantData,
-      _id: new Types.ObjectId(), 
+      _id: new Types.ObjectId(),
     };
-  
+
     product.variants = product.variants || [];
     product.variants.push(newVariant);
-  
+
     await product.save();
     return newVariant;
   },
