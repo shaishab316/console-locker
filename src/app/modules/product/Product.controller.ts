@@ -16,6 +16,7 @@ const imagesUploadRollback: ErrorRequestHandler = (err, req, _res, next) => {
 };
 
 export const ProductController = {
+  /** for admin */
   createProduct: catchAsyncWithCallback(async (req, res) => {
     const images: string[] = [];
 
@@ -137,6 +138,29 @@ export const ProductController = {
       statusCode: StatusCodes.OK,
       message: 'Variant deleted successfully',
       data: deletedVariant,
+    });
+  }),
+
+  /**
+   * *************************************************************************************************************
+   *                                                                                                           *
+   *                                           L I N E   B R A C K                                           *
+   *                                                                                                           *
+   * **************************************************************************************************************
+   */
+
+  /** for user */
+
+  retrieveProduct: catchAsync(async (req, res) => {
+    const data = await ProductService.retrieveProduct(
+      req.query as Record<string, string>,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Products retrieved successfully',
+      data,
     });
   }),
 };

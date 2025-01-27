@@ -15,6 +15,7 @@ export type TProduct = {
   memory: string;
   quantity: number;
   variants: Partial<TProduct>[];
+  product_type: string;
 };
 
 export type TCondition = 'fair' | 'good' | 'excellent';

@@ -4,6 +4,7 @@ export const ProductValidation = {
   productCreateValidationSchema: z.object({
     body: z.object({
       name: z.string().min(1),
+      product_type: z.string().min(1),
       description: z.string().min(1),
       price: z
         .string()
@@ -72,6 +73,7 @@ export const ProductValidation = {
   productUpdateValidationSchema: z.object({
     body: z.object({
       name: z.string().optional(),
+      product_type: z.string().optional(),
       description: z.string().optional(),
       price: z
         .union([z.string(), z.number()])

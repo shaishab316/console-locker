@@ -6,6 +6,7 @@ import { Types } from 'mongoose';
 import unlinkFile from '../../../shared/unlinkFile';
 
 export const ProductService = {
+  /** for admin */
   async createProduct(newProduct: TProduct) {
     return await Product.create(newProduct);
   },
@@ -105,5 +106,166 @@ export const ProductService = {
     await product.save();
 
     return deletedVariant;
+  },
+
+  /**
+   * *************************************************************************************************************
+   *                                                                                                           *
+   *                                           L I N E   B R A C K                                           *
+   *                                                                                                           *
+   * **************************************************************************************************************
+   */
+
+  /** for users */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  async retrieveProduct(query: Record<string, string>) {
+    const {
+      product_type,
+      brand,
+      sort = 'max_price',
+      page = 1,
+      limit = 5,
+    } = query;
+
+    const matchConditions: Record<string, string> = {};
+    if (product_type) matchConditions.product_type = product_type;
+    if (brand) matchConditions.brand = brand;
+
+    const skip = (Number(page) - 1) * Number(limit);
+    const sortOrder: Record<string, 1 | -1> =
+      sort === 'max_price' ? { price: -1 } : { price: 1 };
+
+    const result = await Product.aggregate([
+      {
+        $match: matchConditions,
+      },
+      {
+        $facet: {
+          products: [
+            { $sort: sortOrder },
+            { $skip: skip },
+            { $limit: Number(limit) },
+          ],
+          meta: [
+            {
+              $group: {
+                _id: null,
+                max_price: { $max: '$price' },
+                min_price: { $min: '$price' },
+                product_types: {
+                  $push: '$product_type',
+                },
+                brands: {
+                  $push: '$brand',
+                },
+                conditions: {
+                  $push: '$condition',
+                },
+                totalCount: { $sum: 1 },
+              },
+            },
+            {
+              $project: {
+                max_price: 1,
+                min_price: 1,
+                totalCount: 1,
+                totalPages: {
+                  $ceil: { $divide: ['$totalCount', Number(limit)] },
+                },
+                currentPage: Number(page),
+                product_types: {
+                  $filter: {
+                    input: {
+                      $map: {
+                        input: { $setUnion: ['$product_types', [null]] },
+                        as: 'type',
+                        in: {
+                          name: '$$type',
+                          count: {
+                            $size: {
+                              $filter: {
+                                input: '$product_types',
+                                as: 'typeItem',
+                                cond: { $eq: ['$$typeItem', '$$type'] },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                    as: 'typeData',
+                    cond: { $gt: ['$$typeData.count', 0] }, // Exclude items with count 0
+                  },
+                },
+                brands: {
+                  $filter: {
+                    input: {
+                      $map: {
+                        input: { $setUnion: ['$brands', [null]] },
+                        as: 'brand',
+                        in: {
+                          name: '$$brand',
+                          count: {
+                            $size: {
+                              $filter: {
+                                input: '$brands',
+                                as: 'brandItem',
+                                cond: { $eq: ['$$brandItem', '$$brand'] },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                    as: 'brandData',
+                    cond: { $gt: ['$$brandData.count', 0] }, // Exclude items with count 0
+                  },
+                },
+                conditions: {
+                  $filter: {
+                    input: {
+                      $map: {
+                        input: { $setUnion: ['$conditions', [null]] },
+                        as: 'condition',
+                        in: {
+                          name: '$$condition',
+                          count: {
+                            $size: {
+                              $filter: {
+                                input: '$conditions',
+                                as: 'conditionItem',
+                                cond: {
+                                  $eq: ['$$conditionItem', '$$condition'],
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                    as: 'conditionData',
+                    cond: { $gt: ['$$conditionData.count', 0] }, // Exclude items with count 0
+                  },
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          products: 1,
+          meta: { $arrayElemAt: ['$meta', 0] },
+        },
+      },
+    ]);
+
+    const products = result[0]?.products || [];
+    const meta = result[0]?.meta || {};
+
+    return {
+      products,
+      meta,
+    };
   },
 };

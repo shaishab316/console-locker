@@ -7,8 +7,7 @@ import imageUploader from '../../middlewares/imageUploader';
 const privateRouter = Router();
 const publicRouter = Router();
 
-/** for  Product */
-
+/** for  admin */
 // create a new product
 privateRouter.post(
   '/create',
@@ -27,16 +26,6 @@ privateRouter.patch(
 
 // delete a product
 privateRouter.delete('/:id/delete', ProductController.deleteProduct);
-
-/**
- * *************************************************************************************************************
- *                                                                                                           *
- *                                           L I N E   B R A C K                                           *
- *                                                                                                           *
- * **************************************************************************************************************
- */
-
-/** for  Product Variant */
 
 // create a new variant
 privateRouter.post(
@@ -62,6 +51,18 @@ privateRouter.delete(
   '/:productId/variant/:variantId/delete',
   ProductController.deleteVariant,
 );
+
+/**
+ * *************************************************************************************************************
+ *                                                                                                           *
+ *                                           L I N E   B R A C K                                           *
+ *                                                                                                           *
+ * **************************************************************************************************************
+ */
+
+/** for customer */
+// retrieved all products
+publicRouter.get('/', ProductController.retrieveProduct);
 
 export const ProductRoutes = {
   adminProductRoutes: privateRouter,

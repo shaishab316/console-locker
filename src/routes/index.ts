@@ -1,18 +1,17 @@
 import express, { Router } from 'express';
-// import { AuthRoutes } from '../app/modules/auth/auth.route';
-
-// import { UserRoutes } from '../app/modules/user/user.route';
 import { AdminRoutes } from '../app/modules/admin/Admin.route';
+import { ProductRoutes } from '../app/modules/product/Product.route';
 
 const router = express.Router();
 
 const apiRoutes: { path: string; route: Router }[] = [
-  // { path: '/user', route: UserRoutes },
-  // { path: '/auth', route: AuthRoutes },
-
   {
     path: '/admin',
     route: AdminRoutes,
+  },
+  {
+    path: '/products',
+    route: ProductRoutes.customerProductRoutes,
   },
 ];
 

@@ -66,6 +66,10 @@ const ProductSchema = new Schema<TProduct>({
     ],
     default: [],
   },
+  product_type: {
+    type: String,
+    required: true,
+  },
 });
 
 const Product = model('Product', ProductSchema);
