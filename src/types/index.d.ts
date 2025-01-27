@@ -4,7 +4,7 @@ declare global {
   namespace Express {
     interface Request {
       // user: JwtPayload;
-      admin: Partial<TAdmin>;
+      admin?: Partial<TAdmin>;
     }
   }
 }

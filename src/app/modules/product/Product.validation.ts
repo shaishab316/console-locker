@@ -3,25 +3,24 @@ import { z } from 'zod';
 export const ProductValidation = {
   productCreateValidationSchema: z.object({
     body: z.object({
-      images: z.array(z.string()).nonempty(),
-      name: z.string().nonempty(),
-      description: z.string().nonempty(),
+      name: z.string().min(1),
+      description: z.string().min(1),
       price: z.number().positive(),
       offer_price: z.number().optional(),
-      brand: z.string().nonempty(),
-      model: z.string().nonempty(),
+      brand: z.string().min(1),
+      model: z.string().min(1),
       condition: z.enum(['fair', 'good', 'excellent']),
       controller: z.number().nonnegative(),
-      memory: z.string().nonempty(),
+      memory: z.string().min(1),
       quantity: z.number().int().nonnegative(),
       variants: z
         .array(
           z.object({
             images: z.array(z.string()).nonempty(),
-            name: z.string().nonempty(),
+            name: z.string().min(1),
             price: z.number().positive(),
             offer_price: z.number().optional(),
-            brand: z.string().nonempty(),
+            brand: z.string().min(1),
             condition: z.enum(['fair', 'good', 'excellent']),
             quantity: z.number().int().nonnegative(),
           }),

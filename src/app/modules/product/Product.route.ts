@@ -2,13 +2,15 @@ import { Router } from 'express';
 import validateRequest from '../../middlewares/validateRequest';
 import { ProductValidation } from './Product.validation';
 import { ProductController } from './Product.controller';
+import imageUploader from '../../middlewares/imageUploader';
 
 const privateRouter = Router();
 const publicRouter = Router();
 
 privateRouter.post(
   '/create',
-  validateRequest(ProductValidation.productCreateValidationSchema),
+  // validateRequest(ProductValidation.productCreateValidationSchema),
+  imageUploader(),
   ProductController.createProduct,
 );
 

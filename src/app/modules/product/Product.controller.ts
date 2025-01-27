@@ -1,22 +1,38 @@
 import { StatusCodes } from 'http-status-codes';
-import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { ProductService } from './Product.service';
+import catchAsync, { catchAsyncWithCallback } from '../../../shared/catchAsync';
+import unlinkFile from '../../../shared/unlinkFile';
 
 export const ProductController = {
-  createProduct: catchAsync(async (req, res) => {
-    const newProduct = await ProductService.createProduct({
-      ...req.body,
-      admin: req.admin._id,
-    });
+  createProduct: catchAsyncWithCallback(
+    async (req, res) => {
+      const images: string[] = [];
 
-    sendResponse(res, {
-      success: true,
-      statusCode: StatusCodes.OK,
-      message: 'Product has created successfully!',
-      data: newProduct,
-    });
-  }),
+      if (req.files && 'images' in req.files && Array.isArray(req.files.images))
+        req.files.images.forEach(({ filename }) =>
+          images.push(`/images/${filename}`),
+        );
+
+      req.body.images = images;
+
+      const newProduct = await ProductService.createProduct({
+        ...req.body,
+        admin: req.admin!._id,
+      });
+
+      sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Product has created successfully!',
+        data: newProduct,
+      });
+    },
+    (err, req, _res, next) => {
+      req.body.images.forEach((image: string) => unlinkFile(image));
+      next(err);
+    },
+  ),
 
   updateProduct: catchAsync(async (req, res) => {
     const updatedProduct = await ProductService.updateProduct(
