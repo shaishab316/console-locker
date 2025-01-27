@@ -8,6 +8,8 @@ const privateRouter = Router();
 const publicRouter = Router();
 
 /** for  Product */
+
+// create a new product
 privateRouter.post(
   '/create',
   imageUploader(),
@@ -15,6 +17,7 @@ privateRouter.post(
   ProductController.createProduct,
 );
 
+// update a product
 privateRouter.patch(
   '/:productId/edit',
   imageUploader(),
@@ -22,9 +25,20 @@ privateRouter.patch(
   ProductController.updateProduct,
 );
 
+// delete a product
 privateRouter.delete('/:id/delete', ProductController.deleteProduct);
 
+/**
+ * *************************************************************************************************************
+ *                                                                                                           *
+ *                                           L I N E   B R A C K                                           *
+ *                                                                                                           *
+ * **************************************************************************************************************
+ */
+
 /** for  Product Variant */
+
+// create a new variant
 privateRouter.post(
   '/:productId/variant/create',
   imageUploader(),
@@ -32,6 +46,7 @@ privateRouter.post(
   ProductController.createVariant,
 );
 
+// update a variant
 privateRouter.patch(
   '/:productId/variant/:variantId/edit',
   imageUploader(),
@@ -40,6 +55,12 @@ privateRouter.patch(
     ProductValidation.productUpdateValidationSchema,
   ),
   ProductController.updateVariant,
+);
+
+// delete a variant
+privateRouter.delete(
+  '/:productId/variant/:variantId/delete',
+  ProductController.deleteVariant,
 );
 
 export const ProductRoutes = {

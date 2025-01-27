@@ -86,4 +86,24 @@ export const ProductService = {
 
     return variant;
   },
+
+  async deleteVariant(productId: string, variantId: string) {
+    const product = await Product.findById(productId);
+    if (!product)
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
+
+    const variantIndex = product.variants?.findIndex(
+      v => v._id!.toString() === variantId,
+    );
+
+    if (variantIndex === undefined || variantIndex === -1)
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Variant not found');
+
+    // Remove the variant from the product
+    const deletedVariant = product.variants!.splice(variantIndex, 1);
+
+    await product.save();
+
+    return deletedVariant;
+  },
 };

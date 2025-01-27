@@ -5,8 +5,8 @@ import catchAsync, { catchAsyncWithCallback } from '../../../shared/catchAsync';
 import unlinkFile from '../../../shared/unlinkFile';
 import { ErrorRequestHandler } from 'express';
 
+/** Middleware to ensure image rollbacks if an error occurs during the request handling */
 const imagesUploadRollback: ErrorRequestHandler = (err, req, _res, next) => {
-  // Rollback newly uploaded images if an error occurs
   if (req.files && 'images' in req.files && Array.isArray(req.files.images))
     req.files.images.forEach(({ filename }) =>
       unlinkFile(`/images/${filename}`),
@@ -102,14 +102,12 @@ export const ProductController = {
 
     const newImages: string[] = [];
 
-    // Check for image files and store them in `newImages`
     if (req.files && 'images' in req.files && Array.isArray(req.files.images)) {
       req.files.images.forEach(({ filename }) =>
         newImages.push(`/images/${filename}`),
       );
     }
 
-    // Add the new images to the variantData
     if (newImages.length) variantData.images = newImages;
 
     const updatedVariant = await ProductService.updateVariant(
@@ -125,4 +123,20 @@ export const ProductController = {
       data: updatedVariant,
     });
   }, imagesUploadRollback),
+
+  deleteVariant: catchAsync(async (req, res) => {
+    const { productId, variantId } = req.params;
+
+    const deletedVariant = await ProductService.deleteVariant(
+      productId,
+      variantId,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Variant deleted successfully',
+      data: deletedVariant,
+    });
+  }),
 };
