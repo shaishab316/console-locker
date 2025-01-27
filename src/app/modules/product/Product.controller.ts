@@ -59,6 +59,35 @@ export const ProductController = {
     });
   }),
 
+  createVariant: catchAsyncWithCallback(
+    async (req, res) => {
+      const images: string[] = [];
+
+      if (req.files && 'images' in req.files && Array.isArray(req.files.images))
+        req.files.images.forEach(({ filename }) =>
+          images.push(`/images/${filename}`),
+        );
+
+      req.body.images = images;
+
+      const newProduct = await ProductService.createVariant(
+        req.params.productId,
+        req.body,
+      );
+
+      sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Product variant has created successfully!',
+        data: newProduct,
+      });
+    },
+    (err, req, _res, next) => {
+      req.body.images.forEach((image: string) => unlinkFile(image));
+      next(err);
+    },
+  ),
+
   updateVariant: catchAsync(async (req, res) => {
     const { productId, variantId } = req.params;
     const variantData = req.body;

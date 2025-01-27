@@ -7,10 +7,11 @@ import imageUploader from '../../middlewares/imageUploader';
 const privateRouter = Router();
 const publicRouter = Router();
 
+/** for  Product */
 privateRouter.post(
   '/create',
-  // validateRequest(ProductValidation.productCreateValidationSchema),
   imageUploader(),
+  validateRequest(ProductValidation.productCreateValidationSchema),
   ProductController.createProduct,
 );
 
@@ -22,8 +23,16 @@ privateRouter.patch(
 
 privateRouter.delete('/:id/delete', ProductController.deleteProduct);
 
+/** for  Product Variant */
+privateRouter.post(
+  '/:productId/variant/create',
+  imageUploader(),
+  validateRequest(ProductValidation.productVariantCreateValidationSchema),
+  ProductController.createVariant,
+);
+
 privateRouter.patch(
-  '/:productId/:variantId/edit',
+  '/:productId/variant/:variantId/edit',
   validateRequest(
     /** because Variant extend Product */
     ProductValidation.productUpdateValidationSchema,
