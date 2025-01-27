@@ -34,6 +34,7 @@ privateRouter.post(
 
 privateRouter.patch(
   '/:productId/variant/:variantId/edit',
+  imageUploader(),
   validateRequest(
     /** because Variant extend Product */
     ProductValidation.productUpdateValidationSchema,

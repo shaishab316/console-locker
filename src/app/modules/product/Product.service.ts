@@ -83,6 +83,7 @@ export const ProductService = {
     Object.assign(variant, variantData);
 
     await product.save();
+
     return variant;
   },
 };
