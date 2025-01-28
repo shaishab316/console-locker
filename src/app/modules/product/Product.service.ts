@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import ApiError from '../../../errors/ApiError';
 import { TProduct } from './Product.interface';
 import Product from './Product.model';
-import { Types } from 'mongoose';
+import { PipelineStage, Types } from 'mongoose';
 import unlinkFile from '../../../shared/unlinkFile';
 
 export const ProductService = {
@@ -120,152 +120,127 @@ export const ProductService = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   async retrieveProduct(query: Record<string, string>) {
     const {
-      product_type,
+      product_type: productType,
       brand,
       sort = 'max_price',
       page = 1,
       limit = 5,
     } = query;
 
-    const matchConditions: Record<string, string> = {};
-    if (product_type) matchConditions.product_type = product_type;
-    if (brand) matchConditions.brand = brand;
+    const filters: Record<string, string> = {};
+    if (productType) filters.product_type = productType;
+    if (brand) filters.brand = brand;
 
     const skip = (Number(page) - 1) * Number(limit);
-    const sortOrder: Record<string, 1 | -1> =
+
+    // Ensure sort is dynamically applied based on the field name
+    const sortField: Record<string, 1 | -1> =
       sort === 'max_price' ? { price: -1 } : { price: 1 };
 
-    const result = await Product.aggregate([
+    const productPipeline: PipelineStage[] = [
+      { $match: filters },
       {
-        $match: matchConditions,
+        $group: {
+          _id: '$name',
+          product: { $first: '$$ROOT' },
+        },
       },
+      { $sort: sortField },
+      { $skip: skip },
+      { $limit: Number(limit) },
       {
-        $facet: {
-          products: [
-            { $sort: sortOrder },
-            { $skip: skip },
-            { $limit: Number(limit) },
-          ],
-          meta: [
-            {
-              $group: {
-                _id: null,
-                max_price: { $max: '$price' },
-                min_price: { $min: '$price' },
-                product_types: {
-                  $push: '$product_type',
-                },
-                brands: {
-                  $push: '$brand',
-                },
-                conditions: {
-                  $push: '$condition',
-                },
-                totalCount: { $sum: 1 },
-              },
-            },
-            {
-              $project: {
-                max_price: 1,
-                min_price: 1,
-                totalCount: 1,
-                totalPages: {
-                  $ceil: { $divide: ['$totalCount', Number(limit)] },
-                },
-                currentPage: Number(page),
-                product_types: {
-                  $filter: {
-                    input: {
-                      $map: {
-                        input: { $setUnion: ['$product_types', [null]] },
-                        as: 'type',
-                        in: {
-                          name: '$$type',
-                          count: {
-                            $size: {
-                              $filter: {
-                                input: '$product_types',
-                                as: 'typeItem',
-                                cond: { $eq: ['$$typeItem', '$$type'] },
-                              },
-                            },
-                          },
-                        },
-                      },
-                    },
-                    as: 'typeData',
-                    cond: { $gt: ['$$typeData.count', 0] }, // Exclude items with count 0
-                  },
-                },
-                brands: {
-                  $filter: {
-                    input: {
-                      $map: {
-                        input: { $setUnion: ['$brands', [null]] },
-                        as: 'brand',
-                        in: {
-                          name: '$$brand',
-                          count: {
-                            $size: {
-                              $filter: {
-                                input: '$brands',
-                                as: 'brandItem',
-                                cond: { $eq: ['$$brandItem', '$$brand'] },
-                              },
-                            },
-                          },
-                        },
-                      },
-                    },
-                    as: 'brandData',
-                    cond: { $gt: ['$$brandData.count', 0] }, // Exclude items with count 0
-                  },
-                },
-                conditions: {
-                  $filter: {
-                    input: {
-                      $map: {
-                        input: { $setUnion: ['$conditions', [null]] },
-                        as: 'condition',
-                        in: {
-                          name: '$$condition',
-                          count: {
-                            $size: {
-                              $filter: {
-                                input: '$conditions',
-                                as: 'conditionItem',
-                                cond: {
-                                  $eq: ['$$conditionItem', '$$condition'],
-                                },
-                              },
-                            },
-                          },
-                        },
-                      },
-                    },
-                    as: 'conditionData',
-                    cond: { $gt: ['$$conditionData.count', 0] }, // Exclude items with count 0
-                  },
-                },
-              },
-            },
-          ],
+        $project: {
+          _id: 0,
+          name: '$_id',
+          product: 1,
+        },
+      },
+    ];
+
+    const productTypePipeline: PipelineStage[] = [
+      {
+        $group: {
+          _id: '$product_type',
         },
       },
       {
         $project: {
-          products: 1,
-          meta: { $arrayElemAt: ['$meta', 0] },
+          _id: 0,
+          productType: '$_id',
         },
       },
+    ];
+
+    const brandPipeline: PipelineStage[] = [
+      { $match: productType ? { product_type: productType } : {} },
+      {
+        $group: {
+          _id: '$brand',
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          brand: '$_id',
+        },
+      },
+    ];
+
+    const conditionPipeline: PipelineStage[] = [
+      { $match: filters },
+      {
+        $group: {
+          _id: '$condition',
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          condition: '$_id',
+        },
+      },
+    ];
+
+    const [productsResult, productTypesResult, brandsResult, conditionsResult] =
+      await Promise.all([
+        Product.aggregate(productPipeline),
+        Product.aggregate(productTypePipeline),
+        Product.aggregate(brandPipeline),
+        Product.aggregate(conditionPipeline),
+      ]);
+
+    const products = productsResult.map(item => item.product);
+    const productTypes = productTypesResult.map(item => item.productType);
+    const brands = brandsResult.map(item => item.brand);
+    const conditions = conditionsResult.map(item => item.condition);
+
+    const totalCountResult = await Product.aggregate([
+      { $match: filters },
+      {
+        $group: {
+          _id: '$name',
+        },
+      },
+      { $count: 'total' },
     ]);
 
-    const products = result[0]?.products || [];
-    const meta = result[0]?.meta || {};
+    const totalCount = totalCountResult[0]?.total || 0;
 
     return {
       products,
-      meta,
+      meta: {
+        totalCount,
+        totalPages: Math.ceil(totalCount / Number(limit)),
+        currentPage: Number(page),
+        productTypes,
+        brands,
+        conditions,
+        current: {
+          productType: query.product_type || null, // Current product type, or null if not specified
+          brand: query.brand || null, // Current brand, or null if not specified
+          condition: query.condition || null, // Current condition, or null if not specified
+        },
+      },
     };
   },
 };
