@@ -4,6 +4,7 @@ import { TProduct } from './Product.interface';
 import Product from './Product.model';
 import { PipelineStage, Types } from 'mongoose';
 import unlinkFile from '../../../shared/unlinkFile';
+import { mergeProducts } from './Product.utils';
 
 export const ProductService = {
   /** for admin */
@@ -118,7 +119,7 @@ export const ProductService = {
 
   /** for users */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  async retrieveProduct(query: Record<string, string>) {
+  async retrieveProducts(query: Record<string, string>) {
     const {
       product_type: productType,
       brand,
@@ -286,5 +287,32 @@ export const ProductService = {
         },
       },
     };
+  },
+
+  async retrieveSingleProduct(
+    params: Record<string, string>,
+  ) {
+    const products = await Product.find({
+      product_type: params.productType,
+      brand: params.brand,
+      name: params.productName,
+    }).select('-variants');
+
+    // Merge products by name
+    const mergedProducts = mergeProducts(products)[0];
+
+    // Uniquify specific fields and rename to plural forms
+    mergedProducts.models = [...new Set(mergedProducts.model)];
+    mergedProducts.controllers = [...new Set(mergedProducts.controller)];
+    mergedProducts.conditions = [...new Set(mergedProducts.condition)];
+    mergedProducts.memories = [...new Set(mergedProducts.memory)];
+
+    // Optionally, remove the original singular fields if not needed
+    delete mergedProducts.model;
+    delete mergedProducts.controller;
+    delete mergedProducts.condition;
+    delete mergedProducts.memory;
+
+    return mergedProducts;
   },
 };

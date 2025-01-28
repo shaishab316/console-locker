@@ -62,7 +62,13 @@ privateRouter.delete(
 
 /** for customer */
 // retrieved all products
-publicRouter.get('/', ProductController.retrieveProduct);
+publicRouter.get('/', ProductController.retrieveProducts);
+
+// retrieved a product
+publicRouter.get(
+  '/:productType/:brand/:productName',
+  ProductController.retrieveSingleProduct,
+);
 
 export const ProductRoutes = {
   adminProductRoutes: privateRouter,

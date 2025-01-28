@@ -4,6 +4,7 @@ import { ProductService } from './Product.service';
 import catchAsync, { catchAsyncWithCallback } from '../../../shared/catchAsync';
 import unlinkFile from '../../../shared/unlinkFile';
 import { ErrorRequestHandler } from 'express';
+import ApiError from '../../../errors/ApiError';
 
 /** Middleware to ensure image rollbacks if an error occurs during the request handling */
 const imagesUploadRollback: ErrorRequestHandler = (err, req, _res, next) => {
@@ -151,8 +152,8 @@ export const ProductController = {
 
   /** for user */
 
-  retrieveProduct: catchAsync(async (req, res) => {
-    const data = await ProductService.retrieveProduct(
+  retrieveProducts: catchAsync(async (req, res) => {
+    const data = await ProductService.retrieveProducts(
       req.query as Record<string, string>,
     );
 
@@ -163,4 +164,22 @@ export const ProductController = {
       data,
     });
   }),
+
+  retrieveSingleProduct: catchAsyncWithCallback(
+    async (req, res) => {
+      const data = await ProductService.retrieveSingleProduct(
+        req.params as Record<string, string>,
+      );
+
+      sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: req.params.productName + ' has retrieved successfully',
+        data,
+      });
+    },
+    (_err, _req, _res, next) => {
+      next(new ApiError(StatusCodes.NOT_FOUND, 'Product not found.'));
+    },
+  ),
 };
