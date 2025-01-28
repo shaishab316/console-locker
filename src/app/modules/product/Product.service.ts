@@ -126,6 +126,8 @@ export const ProductService = {
       page = '1',
       limit = '5',
       search,
+      min_price: minPrice,
+      max_price: maxPrice,
     } = query;
 
     // Helper to parse numbers safely with a default fallback
@@ -140,6 +142,14 @@ export const ProductService = {
 
     if (productType) filters.product_type = productType;
     if (brand) filters.brand = brand;
+
+    // Add price range filtering
+    if (minPrice || maxPrice) {
+      filters.price = {};
+      if (minPrice) filters.price.$gte = parseNumber(minPrice, 0); // Greater than or equal to minPrice
+      if (maxPrice)
+        filters.price.$lte = parseNumber(maxPrice, Number.MAX_SAFE_INTEGER); // Less than or equal to maxPrice
+    }
 
     // Add search functionality for product_type and brand
     if (search) {
@@ -201,20 +211,42 @@ export const ProductService = {
       ],
     };
 
+    // Fetch min and max price dynamically
+    const priceRangePipeline: PipelineStage[] = [
+      { $match: filters },
+      {
+        $group: {
+          _id: null,
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+        },
+      },
+    ];
+
     // Fetch data in parallel for better performance
-    const [productsResult, productTypesResult, brandsResult, conditionsResult] =
-      await Promise.all([
-        Product.aggregate(createPipeline.products()),
-        Product.aggregate(createPipeline.productTypes()),
-        Product.aggregate(createPipeline.brands()),
-        Product.aggregate(createPipeline.conditions()),
-      ]);
+    const [
+      productsResult,
+      productTypesResult,
+      brandsResult,
+      conditionsResult,
+      priceRangeResult,
+    ] = await Promise.all([
+      Product.aggregate(createPipeline.products()),
+      Product.aggregate(createPipeline.productTypes()),
+      Product.aggregate(createPipeline.brands()),
+      Product.aggregate(createPipeline.conditions()),
+      Product.aggregate(priceRangePipeline),
+    ]);
 
     // Extract results
     const products = productsResult.map(item => item.product);
     const productTypes = productTypesResult.map(item => item.productType);
     const brands = brandsResult.map(item => item.brand);
     const conditions = conditionsResult.map(item => item.condition);
+
+    const dynamicMinPrice = priceRangeResult[0]?.minPrice || 0;
+    const dynamicMaxPrice =
+      priceRangeResult[0]?.maxPrice || Number.MAX_SAFE_INTEGER;
 
     // Calculate total count
     const totalCountResult = await Product.aggregate([
@@ -244,6 +276,8 @@ export const ProductService = {
           brand: brand || null,
           condition: query.condition || null,
           search: search || null,
+          min_price: minPrice || dynamicMinPrice,
+          max_price: maxPrice || dynamicMaxPrice,
         },
       },
     };
