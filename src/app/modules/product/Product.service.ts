@@ -239,7 +239,12 @@ export const ProductService = {
     ]);
 
     // Extract results
-    const products = productsResult.map(item => item.product);
+    const products = productsResult
+      .map(item => item.product)
+      .map(product => {
+        product.variants = product.variants.map(() => ({}));
+        return product;
+      });
     const productTypes = productTypesResult.map(item => item.productType);
     const brands = brandsResult.map(item => item.brand);
     const conditions = conditionsResult.map(item => item.condition);
