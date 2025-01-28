@@ -125,6 +125,7 @@ export const ProductService = {
       sort = 'max_price',
       page = '1',
       limit = '5',
+      search,
     } = query;
 
     // Helper to parse numbers safely with a default fallback
@@ -134,10 +135,17 @@ export const ProductService = {
     const parsedPage = parseNumber(page, 1);
     const parsedLimit = parseNumber(limit, 5);
 
-    // Construct filters for the MongoDB query
-    const filters: Record<string, string> = {};
+    // Construct filters for MongoDB query
+    const filters: Record<string, any> = {};
+
     if (productType) filters.product_type = productType;
     if (brand) filters.brand = brand;
+
+    // Add search functionality for product_type and brand
+    if (search) {
+      const searchRegex = new RegExp(search, 'i'); // Case-insensitive search
+      filters.$or = [{ name: searchRegex }, { description: searchRegex }];
+    }
 
     // Determine sorting order
     const sortField: Record<string, 1 | -1> =
@@ -235,6 +243,7 @@ export const ProductService = {
           product_type: productType || null,
           brand: brand || null,
           condition: query.condition || null,
+          search: search || null,
         },
       },
     };
