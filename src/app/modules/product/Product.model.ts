@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 import { TProduct } from './Product.interface';
 
-const ProductSchema = new Schema<TProduct>({
+const productSchema = new Schema<TProduct>({
   admin: {
     type: Schema.Types.ObjectId,
     ref: 'Admin',
@@ -72,6 +72,6 @@ const ProductSchema = new Schema<TProduct>({
   },
 });
 
-const Product = model('Product', ProductSchema);
+const Product = model('Product', productSchema);
 
 export default Product;

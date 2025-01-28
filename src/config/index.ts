@@ -20,6 +20,10 @@ export default {
   payment: {
     stripe_secret_key: process.env.STRIPE_SECRET_KEY,
     stripe_webhook_secret: process.env.STRIPE_WEBHOOK_SECRET,
+    paypal: {
+      client: process.env.PAYMENT_PAYPAL_CLIENT,
+      secret: process.env.PAYMENT_PAYPAL_SECRET,
+    }
   },
   email: {
     from: process.env.EMAIL_FROM,

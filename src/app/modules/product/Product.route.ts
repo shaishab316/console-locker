@@ -70,6 +70,12 @@ publicRouter.get(
   ProductController.retrieveSingleProduct,
 );
 
+// calculate a product price
+publicRouter.get(
+  '/:productType/:brand/:productName/price',
+  ProductController.calculateProductPrice,
+);
+
 export const ProductRoutes = {
   adminProductRoutes: privateRouter,
   customerProductRoutes: publicRouter,

@@ -5,6 +5,7 @@ import catchAsync, { catchAsyncWithCallback } from '../../../shared/catchAsync';
 import unlinkFile from '../../../shared/unlinkFile';
 import { ErrorRequestHandler } from 'express';
 import ApiError from '../../../errors/ApiError';
+import Product from './Product.model';
 
 /** Middleware to ensure image rollbacks if an error occurs during the request handling */
 const imagesUploadRollback: ErrorRequestHandler = (err, req, _res, next) => {
@@ -180,6 +181,36 @@ export const ProductController = {
     },
     (_err, _req, _res, next) => {
       next(new ApiError(StatusCodes.NOT_FOUND, 'Product not found.'));
+    },
+  ),
+
+  calculateProductPrice: catchAsyncWithCallback(
+    async (req, res) => {
+      const data = await ProductService.calculateProductPrice(
+        req.params as Record<string, string>,
+        req.query as Record<string, string>,
+      );
+
+      sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Product price calculate successfully',
+        data,
+      });
+    },
+    async (_err, { params }, res) => {
+      const product = await Product.findOne({
+        product_type: params.productType,
+        brand: params.brand,
+        name: params.productName,
+      }).select('model controller condition memory -_id');
+
+      sendResponse(res, {
+        success: false,
+        statusCode: StatusCodes.NOT_FOUND,
+        message: 'This product is out of stock.',
+        data: { help: product },
+      });
     },
   ),
 };

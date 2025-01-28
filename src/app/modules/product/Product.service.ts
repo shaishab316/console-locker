@@ -289,9 +289,7 @@ export const ProductService = {
     };
   },
 
-  async retrieveSingleProduct(
-    params: Record<string, string>,
-  ) {
+  async retrieveSingleProduct(params: Record<string, string>) {
     const products = await Product.find({
       product_type: params.productType,
       brand: params.brand,
@@ -314,5 +312,25 @@ export const ProductService = {
     delete mergedProducts.memory;
 
     return mergedProducts;
+  },
+
+  async calculateProductPrice(
+    params: Record<string, string>,
+    query: Record<string, string>,
+  ) {
+    const { _id, offer_price, price } = (await Product.findOne({
+      product_type: params.productType,
+      brand: params.brand,
+      name: params.productName,
+      memory: query.memory,
+      condition: query.condition,
+      controller: query.controller,
+      model: query.model,
+    }).select('price offer_price')) as TProduct;
+
+    return {
+      productId: _id,
+      price: offer_price ?? price,
+    };
   },
 };

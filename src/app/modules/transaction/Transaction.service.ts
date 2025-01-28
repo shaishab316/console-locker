@@ -1,0 +1,16 @@
+import { TTransaction } from './Transaction.interface';
+import { Transaction } from './Transaction.model';
+
+export const TransactionService = {
+  async createTransaction(transactionData: TTransaction) {
+    const newTransaction = await Transaction.create(transactionData);
+
+    return newTransaction;
+  },
+
+  async retrieveTransaction() {
+    const transactions = await Transaction.find();
+
+    return transactions;
+  },
+};
