@@ -23,7 +23,7 @@ export default {
     paypal: {
       client: process.env.PAYMENT_PAYPAL_CLIENT,
       secret: process.env.PAYMENT_PAYPAL_SECRET,
-    }
+    },
   },
   email: {
     from: process.env.EMAIL_FROM,
@@ -35,5 +35,8 @@ export default {
   admin: {
     email: process.env.ADMIN_EMAIL,
     password: process.env.ADMIN_PASSWORD,
+  },
+  url: {
+    local: process.env.LOCAL_BASE_URL,
   },
 };

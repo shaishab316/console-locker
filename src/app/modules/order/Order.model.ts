@@ -2,11 +2,13 @@ import { model, Schema } from 'mongoose';
 import { TOrder } from './Order.interface';
 
 const orderSchema = new Schema<TOrder>({
-  product: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: 'Product',
-  },
+  productDetails: [
+    {
+      product: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
+      price: { type: Number, required: true, min: 0 },
+      quantity: { type: Number, required: true, min: 1 },
+    },
+  ],
   customer: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -14,12 +16,10 @@ const orderSchema = new Schema<TOrder>({
   },
   transaction: {
     type: Schema.Types.ObjectId,
-    required: true,
     ref: 'Transaction',
   },
   payment_method: {
     type: String,
-    required: true,
     trim: true,
   },
   amount: {
@@ -30,13 +30,8 @@ const orderSchema = new Schema<TOrder>({
   state: {
     type: String,
     required: true,
-    enum: ['padding', 'shipped', 'success', 'cancel'], 
+    enum: ['padding', 'shipped', 'success', 'cancel'],
     default: 'padding',
-  },
-  quantity: {
-    type: Number,
-    required: true,
-    min: 1, 
   },
 });
 

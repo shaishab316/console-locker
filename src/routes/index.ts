@@ -4,6 +4,7 @@ import { ProductRoutes } from '../app/modules/product/Product.route';
 import { TradeRoutes } from '../app/modules/trade/Trade.route';
 import { CustomerRoutes } from '../app/modules/customer/Customer.route';
 import { OrderRoutes } from '../app/modules/order/Order.route';
+import { PaymentRoutes } from '../app/modules/payment/Payment.route';
 
 const router = express.Router();
 
@@ -26,6 +27,13 @@ const apiRoutes: { path: string; route: Router }[] = [
   },
   {
     path: '/order',
+    route: OrderRoutes,
+  },
+  {
+    path: '/payment',
+    route: PaymentRoutes,
+  },{
+    path: "/checkout",
     route: OrderRoutes
   }
 ];
