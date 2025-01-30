@@ -28,6 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //file retrieve
 app.use(express.static('uploads'));
+app.use('/api/v1', express.static('uploads'));
 
 //router
 app.use('/api/v1', router);

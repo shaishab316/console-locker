@@ -25,6 +25,26 @@ export const AdminController = {
     });
   }, imagesUploadRollback),
 
+  updateAdmin: catchAsyncWithCallback(async (req, res) => {
+    const images: string[] = [];
+
+    if (req.files && 'images' in req.files && Array.isArray(req.files.images))
+      req.files.images.forEach(({ filename }) =>
+        images.push(`/images/${filename}`),
+      );
+
+    req.body.avatar = images[0];
+
+    const updatedAdmin = await AdminService.updateAdmin(req);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Update admin successfully!',
+      data: updatedAdmin,
+    });
+  }, imagesUploadRollback),
+
   loginAdmin: catchAsync(async (req, res) => {
     const { email, password } = req.body;
 

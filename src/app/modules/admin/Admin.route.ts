@@ -16,6 +16,12 @@ router.post(
   validateRequest(AdminValidation.registerAdminSchema),
   AdminController.registerAdmin,
 );
+router.patch(
+  '/edit',
+  verifyAdmin,
+  imageUploader(),
+  AdminController.updateAdmin,
+);
 router.post('/login', limiter, AdminController.loginAdmin);
 router.post('/send-otp', limiter, AdminController.sendOtp);
 router.post('/verify-otp', limiter, AdminController.verifyOtp);

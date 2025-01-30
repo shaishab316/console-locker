@@ -8,10 +8,40 @@ import { emailHelper } from '../../../helpers/emailHelper';
 import { sendOtpTemplate } from './Admin.template';
 import { generateOtp } from './Admin.utils';
 import { TAdmin } from './Admin.interface';
+import { Request } from 'express';
+import unlinkFile from '../../../shared/unlinkFile';
 
 export const AdminService = {
-  async registerAdmin(newAdmin: Partial<TAdmin>) {
+  async registerAdmin(newAdmin: TAdmin) {
     return await Admin.create(newAdmin);
+  },
+
+  async updateAdmin(req: Request) {
+    const { admin } = req;
+    const { name, phone, avatar } = req.body;
+
+    // Only allow updates to name, phone, and avatar
+    const updateData: Partial<TAdmin> = {};
+    if (name) updateData.name = name;
+    if (phone) updateData.phone = phone;
+    if (avatar) updateData.avatar = avatar;
+
+    const imagesToDelete = admin!.avatar!;
+
+    const updatedAdmin = await Admin.findByIdAndUpdate(admin!._id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedAdmin) {
+      throw new Error('Admin not found');
+    }
+
+    if (avatar) {
+      unlinkFile(imagesToDelete);
+    }
+
+    return updatedAdmin;
   },
 
   async loginAdmin(email: string, password: string) {
