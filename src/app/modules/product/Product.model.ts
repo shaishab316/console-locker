@@ -10,6 +10,10 @@ const productSchema = new Schema<TProduct>({
   images: {
     type: [String],
     required: true,
+    validate: {
+      validator: (images: string[]) => images.length > 0,
+      message: 'Images array cannot be empty.',
+    },
   },
   name: {
     type: String,

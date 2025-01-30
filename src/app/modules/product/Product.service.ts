@@ -54,6 +54,9 @@ export const ProductService = {
     variantData.isVariant = true;
     variantData.product_ref = product._id;
 
+    if (!variantData.product_type)
+      variantData.product_type = product.product_type;
+
     const newVariant = await Product.create(variantData);
 
     return newVariant;
@@ -90,9 +93,16 @@ export const ProductService = {
 
     // Construct filters for MongoDB query
     const filters: Record<string, any> = {};
+    const filtersForPrice: Record<string, any> = {};
 
-    if (productType) filters.product_type = productType;
-    if (brand) filters.brand = brand;
+    if (productType) {
+      filters.product_type = productType;
+      filtersForPrice.product_type = productType;
+    }
+    if (brand) {
+      filters.brand = brand;
+      filtersForPrice.brand = brand;
+    }
 
     // Add price range filtering
     if (minPrice || maxPrice) {
@@ -164,7 +174,7 @@ export const ProductService = {
 
     // Fetch min and max price dynamically
     const priceRangePipeline: PipelineStage[] = [
-      { $match: filters },
+      { $match: filtersForPrice },
       {
         $group: {
           _id: null,
@@ -190,19 +200,13 @@ export const ProductService = {
     ]);
 
     // Extract results
-    const products = productsResult
-      .map(item => item.product)
-      .map(product => {
-        product.variants = product.variants.map(() => ({}));
-        return product;
-      });
+    const products = productsResult.map(item => item.product);
     const productTypes = productTypesResult.map(item => item.productType);
     const brands = brandsResult.map(item => item.brand);
     const conditions = conditionsResult.map(item => item.condition);
 
     const dynamicMinPrice = priceRangeResult[0]?.minPrice || 0;
-    const dynamicMaxPrice =
-      priceRangeResult[0]?.maxPrice || Number.MAX_SAFE_INTEGER;
+    const dynamicMaxPrice = priceRangeResult[0]?.maxPrice || 0;
 
     // Calculate total count
     const totalCountResult = await Product.aggregate([
@@ -226,14 +230,16 @@ export const ProductService = {
           product_types: productTypes,
           brands,
           conditions,
+          min_price: dynamicMinPrice,
+          max_price: dynamicMaxPrice,
         },
         current: {
           product_type: productType || null,
           brand: brand || null,
           condition: query.condition || null,
           search: search || null,
-          min_price: minPrice || dynamicMinPrice,
-          max_price: maxPrice || dynamicMaxPrice,
+          min_price: +minPrice || dynamicMinPrice,
+          max_price: +maxPrice || dynamicMaxPrice,
         },
       },
     };
