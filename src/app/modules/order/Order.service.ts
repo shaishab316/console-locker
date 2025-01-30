@@ -4,7 +4,6 @@ import ApiError from '../../../errors/ApiError';
 import { StatusCodes } from 'http-status-codes';
 import Product from '../product/Product.model';
 import { Types } from 'mongoose';
-import { PaymentService } from '../payment/Payment.service';
 
 export const OrderService = {
   async checkout(req: Request) {
@@ -45,7 +44,6 @@ export const OrderService = {
         );
       }
 
-      // Use offer_price if available, otherwise use the regular price
       const finalPrice = product.offer_price || product.price;
 
       validProducts.push({
@@ -65,7 +63,19 @@ export const OrderService = {
       );
     }
 
-    // // Process the order
+    const existingOrder = await Order.findOne({
+      customer: new Types.ObjectId(customer),
+      state: 'pending',
+    });
+
+    if (existingOrder) {
+      return {
+        amount: existingOrder.amount,
+        orderId: existingOrder._id,
+      };
+    }
+
+    // Create a new order if no existing one is found
     const newOrder = await Order.create({
       productDetails: validProducts,
       customer,
@@ -73,13 +83,6 @@ export const OrderService = {
       amount: totalPrice,
     });
 
-    if (payment_method === 'paypal') {
-      const redirectUrl = await PaymentService.paypal.createIntent(
-        totalPrice,
-        newOrder._id.toString(),
-      );
-
-      return redirectUrl;
-    }
+    return { amount: totalPrice, orderId: newOrder._id };
   },
 };

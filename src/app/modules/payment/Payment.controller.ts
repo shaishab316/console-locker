@@ -2,10 +2,11 @@ import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import config from '../../../config';
+import { PaymentService } from './Payment.service';
 
 export const PaymentController = {
   paypal: {
-    config: catchAsync(async (req, res) => {
+    config: catchAsync(async (_req, res) => {
       sendResponse(res, {
         success: true,
         statusCode: StatusCodes.OK,
@@ -15,19 +16,14 @@ export const PaymentController = {
         },
       });
     }),
-    // createIntent: catchAsync(async (req, res) => {
-    //   const payment = await PaymentService.paypal.createIntent();
+    success: catchAsync(async (req, res) => {
+      await PaymentService.paypal.success(req.query);
 
-    //   payment!.links!.forEach(link => {
-    //     if (link.rel === 'approve') res.redirect(link.href);
-    //   });
-
-    //   sendResponse(res, {
-    //     success: true,
-    //     statusCode: StatusCodes.OK,
-    //     message: 'Order has created successfully!',
-    //     data: payment,
-    //   });
-    // }),
+      sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'Order payment successfully!',
+      });
+    }),
   },
 };

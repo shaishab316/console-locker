@@ -14,4 +14,4 @@ export type TOrder = {
   state: TOrderState;
 };
 
-export type TOrderState = 'padding' | 'shipped' | 'success' | 'cancel';
+export type TOrderState = 'pending' | 'shipped' | 'success' | 'cancel';

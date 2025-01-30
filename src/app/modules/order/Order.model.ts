@@ -30,8 +30,8 @@ const orderSchema = new Schema<TOrder>({
   state: {
     type: String,
     required: true,
-    enum: ['padding', 'shipped', 'success', 'cancel'],
-    default: 'padding',
+    enum: ['pending', 'shipped', 'success', 'cancel'],
+    default: 'pending',
   },
 });
 
