@@ -75,6 +75,20 @@ export const AdminController = {
     });
   }),
 
+  changePassword: catchAsync(async (req, res) => {
+    await AdminService.changePassword(
+      req.admin,
+      req.body.oldPassword,
+      req.body.newPassword,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Password changed successfully!',
+    });
+  }),
+
   resetPassword: catchAsync(async (req, res) => {
     const { password } = req.body;
     const { resetToken } = req.cookies;

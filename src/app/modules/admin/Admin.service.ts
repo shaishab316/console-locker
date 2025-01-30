@@ -104,6 +104,14 @@ export const AdminService = {
     return { resetToken };
   },
 
+  async changePassword(admin: any, oldPassword: string, newPassword: string) {
+    if (!(await bcrypt.compare(oldPassword, admin.password)))
+      throw new ApiError(StatusCodes.UNAUTHORIZED, 'Invalid password');
+
+    admin.password = newPassword;
+    await admin.save();
+  },
+
   async resetPassword(token: string, password: string) {
     const { email } = jwtHelper.verifyToken(
       token,

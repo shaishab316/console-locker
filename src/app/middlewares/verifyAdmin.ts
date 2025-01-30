@@ -20,7 +20,7 @@ const verifyAdmin = catchAsync(async (req, _, next) => {
     config.jwt.jwt_secret as string,
   );
 
-  const admin = await Admin.findOne({ email });
+  const admin = await Admin.findOne({ email }).select('+password');
 
   if (!admin) throw new ApiError(StatusCodes.NOT_FOUND, 'Admin not found.');
 

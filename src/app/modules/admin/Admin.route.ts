@@ -19,7 +19,17 @@ router.post(
 router.post('/login', limiter, AdminController.loginAdmin);
 router.post('/send-otp', limiter, AdminController.sendOtp);
 router.post('/verify-otp', limiter, AdminController.verifyOtp);
+router.post('/change-password', verifyAdmin, AdminController.changePassword);
 router.post('/reset-password', AdminController.resetPassword);
+
+/**
+ * *************************************************************************************************************
+ *                                                                                                           *
+ *                                           L I N E   B R A C K                                           *
+ *                                                                                                           *
+ * **************************************************************************************************************
+ */
+
 router.use('/product', verifyAdmin, ProductRoutes.adminProductRoutes);
 
 export const AdminRoutes = router;
