@@ -6,6 +6,7 @@ import { AdminValidation } from './Admin.validation';
 import verifyAdmin from '../../middlewares/verifyAdmin';
 import { ProductRoutes } from '../product/Product.route';
 import imageUploader from '../../middlewares/imageUploader';
+import { TransactionRoutes } from '../transaction/Transaction.route';
 
 const router = Router();
 
@@ -37,5 +38,14 @@ router.post('/reset-password', AdminController.resetPassword);
  */
 
 router.use('/product', verifyAdmin, ProductRoutes.adminProductRoutes);
+
+/**
+ * *************************************************************************************************************
+ *                                                                                                           *
+ *                                           L I N E   B R A C K                                           *
+ *                                                                                                           *
+ * **************************************************************************************************************
+ */
+router.use('/transaction', verifyAdmin, TransactionRoutes);
 
 export const AdminRoutes = router;

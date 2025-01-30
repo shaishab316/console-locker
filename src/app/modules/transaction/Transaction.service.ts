@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import { TTransaction } from './Transaction.interface';
 import { Transaction } from './Transaction.model';
 
@@ -8,7 +9,7 @@ export const TransactionService = {
     return newTransaction;
   },
 
-  async retrieveTransaction() {
+  async retrieveTransaction(req: Request) {
     const transactions = await Transaction.find();
 
     return transactions;
