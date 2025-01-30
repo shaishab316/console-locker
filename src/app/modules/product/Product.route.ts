@@ -35,23 +35,6 @@ privateRouter.post(
   ProductController.createVariant,
 );
 
-// update a variant
-privateRouter.patch(
-  '/:productId/variant/:variantId/edit',
-  imageUploader(),
-  validateRequest(
-    /** because Variant extend Product */
-    ProductValidation.productUpdateValidationSchema,
-  ),
-  ProductController.updateVariant,
-);
-
-// delete a variant
-privateRouter.delete(
-  '/:productId/variant/:variantId/delete',
-  ProductController.deleteVariant,
-);
-
 /**
  * *************************************************************************************************************
  *                                                                                                           *

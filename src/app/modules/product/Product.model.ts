@@ -50,7 +50,6 @@ const productSchema = new Schema<TProduct>({
   },
   product_type: {
     type: String,
-    required: true,
   },
   product_ref: {
     type: Schema.Types.ObjectId,

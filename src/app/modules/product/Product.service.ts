@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import ApiError from '../../../errors/ApiError';
 import { TProduct } from './Product.interface';
 import Product from './Product.model';
-import { PipelineStage, Types } from 'mongoose';
+import { PipelineStage } from 'mongoose';
 import unlinkFile from '../../../shared/unlinkFile';
 import { mergeProducts } from './Product.utils';
 
@@ -47,66 +47,16 @@ export const ProductService = {
 
   async createVariant(productId: string, variantData: Partial<TProduct>) {
     const product = await Product.findById(productId);
-    if (!product) {
+    if (!product || product.isVariant) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
     }
 
-    const newVariant = {
-      ...variantData,
-      _id: new Types.ObjectId(),
-    };
+    variantData.isVariant = true;
+    variantData.product_ref = product._id;
 
-    product.variants = product.variants || [];
-    product.variants.push(newVariant);
+    const newVariant = await Product.create(variantData);
 
-    await product.save();
     return newVariant;
-  },
-
-  async updateVariant(
-    productId: string,
-    variantId: string,
-    variantData: Partial<TProduct>,
-  ) {
-    const product = await Product.findById(productId);
-    if (!product) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
-    }
-
-    const variant = product.variants?.find(
-      v => v._id!.toString() === variantId,
-    );
-
-    if (!variant) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'Variant not found');
-    }
-
-    // Update the variant's fields
-    Object.assign(variant, variantData);
-
-    await product.save();
-
-    return variant;
-  },
-
-  async deleteVariant(productId: string, variantId: string) {
-    const product = await Product.findById(productId);
-    if (!product)
-      throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
-
-    const variantIndex = product.variants?.findIndex(
-      v => v._id!.toString() === variantId,
-    );
-
-    if (variantIndex === undefined || variantIndex === -1)
-      throw new ApiError(StatusCodes.NOT_FOUND, 'Variant not found');
-
-    // Remove the variant from the product
-    const deletedVariant = product.variants!.splice(variantIndex, 1);
-
-    await product.save();
-
-    return deletedVariant;
   },
 
   /**

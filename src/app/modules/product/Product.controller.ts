@@ -85,8 +85,9 @@ export const ProductController = {
       );
 
     req.body.images = images;
+    req.body.admin = req.admin?._id;
 
-    const newProduct = await ProductService.createVariant(
+    const newVariant = await ProductService.createVariant(
       req.params.productId,
       req.body,
     );
@@ -95,53 +96,9 @@ export const ProductController = {
       success: true,
       statusCode: StatusCodes.OK,
       message: 'Product variant has created successfully!',
-      data: newProduct,
+      data: newVariant,
     });
   }, imagesUploadRollback),
-
-  updateVariant: catchAsyncWithCallback(async (req, res) => {
-    const { productId, variantId } = req.params;
-    const variantData = req.body;
-
-    const newImages: string[] = [];
-
-    if (req.files && 'images' in req.files && Array.isArray(req.files.images)) {
-      req.files.images.forEach(({ filename }) =>
-        newImages.push(`/images/${filename}`),
-      );
-    }
-
-    if (newImages.length) variantData.images = newImages;
-
-    const updatedVariant = await ProductService.updateVariant(
-      productId,
-      variantId,
-      variantData,
-    );
-
-    sendResponse(res, {
-      success: true,
-      statusCode: StatusCodes.OK,
-      message: 'Variant updated successfully!',
-      data: updatedVariant,
-    });
-  }, imagesUploadRollback),
-
-  deleteVariant: catchAsync(async (req, res) => {
-    const { productId, variantId } = req.params;
-
-    const deletedVariant = await ProductService.deleteVariant(
-      productId,
-      variantId,
-    );
-
-    sendResponse(res, {
-      success: true,
-      statusCode: StatusCodes.OK,
-      message: 'Variant deleted successfully',
-      data: deletedVariant,
-    });
-  }),
 
   /**
    * *************************************************************************************************************
