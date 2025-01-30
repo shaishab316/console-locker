@@ -17,7 +17,6 @@ const productSchema = new Schema<TProduct>({
   },
   description: {
     type: String,
-    required: true,
   },
   price: {
     type: Number,
@@ -26,11 +25,9 @@ const productSchema = new Schema<TProduct>({
   offer_price: Number,
   brand: {
     type: String,
-    required: true,
   },
   model: {
     type: String,
-    required: true,
   },
   condition: {
     type: String,
@@ -39,36 +36,25 @@ const productSchema = new Schema<TProduct>({
   },
   controller: {
     type: Number,
-    required: true,
   },
   memory: {
     type: String,
-    required: true,
   },
   quantity: {
     type: Number,
     required: true,
   },
-  variants: {
-    type: [
-      {
-        images: [String],
-        name: String,
-        price: Number,
-        offer_price: Number,
-        brand: String,
-        condition: {
-          type: String,
-          enum: ['fair', 'good', 'excellent'],
-        },
-        quantity: Number,
-      },
-    ],
-    default: [],
+  isVariant: {
+    type: Boolean,
+    default: false,
   },
   product_type: {
     type: String,
     required: true,
+  },
+  product_ref: {
+    type: Schema.Types.ObjectId,
+    ref: 'Product',
   },
 });
 

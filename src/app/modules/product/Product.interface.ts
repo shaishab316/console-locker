@@ -5,17 +5,18 @@ export type TProduct = {
   admin: Types.ObjectId;
   images: string[];
   name: string;
-  description: string;
+  description?: string;
   price: number;
   offer_price?: number;
-  brand: string;
-  model: string;
+  brand?: string;
+  model?: string;
   condition: TCondition;
-  controller: number;
-  memory: string;
+  controller?: number;
+  memory?: string;
   quantity: number;
-  variants: Partial<TProduct>[];
-  product_type: string;
+  isVariant: boolean;
+  product_type?: string;
+  product_ref?: Types.ObjectId;
 };
 
 export type TCondition = 'fair' | 'good' | 'excellent';
