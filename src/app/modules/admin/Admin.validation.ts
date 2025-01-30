@@ -19,7 +19,6 @@ export const AdminValidation = {
           passwordRegex,
           'Password must be at least 8 characters long, with 1 uppercase letter, 1 number, and 1 special character',
         ),
-      avatar: z.string().url('Avatar should be a valid URL'),
     }),
   }),
 };

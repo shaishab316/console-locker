@@ -1,11 +1,20 @@
 import { StatusCodes } from 'http-status-codes';
 import config from '../../../config';
-import catchAsync from '../../../shared/catchAsync';
+import catchAsync, { catchAsyncWithCallback } from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { AdminService } from './Admin.service';
+import { imagesUploadRollback } from '../../middlewares/imageUploader';
 
 export const AdminController = {
-  registerAdmin: catchAsync(async (req, res) => {
+  registerAdmin: catchAsyncWithCallback(async (req, res) => {
+    const images: string[] = [];
+
+    if (req.files && 'images' in req.files && Array.isArray(req.files.images))
+      req.files.images.forEach(({ filename }) =>
+        images.push(`/images/${filename}`),
+      );
+
+    req.body.avatar = images[0];
     const newAdmin = await AdminService.registerAdmin(req.body);
 
     sendResponse(res, {
@@ -14,7 +23,7 @@ export const AdminController = {
       message: 'New Admin register successfully!',
       data: newAdmin,
     });
-  }),
+  }, imagesUploadRollback),
 
   loginAdmin: catchAsync(async (req, res) => {
     const { email, password } = req.body;

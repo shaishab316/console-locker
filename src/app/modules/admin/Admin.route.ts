@@ -5,12 +5,14 @@ import validateRequest from '../../middlewares/validateRequest';
 import { AdminValidation } from './Admin.validation';
 import verifyAdmin from '../../middlewares/verifyAdmin';
 import { ProductRoutes } from '../product/Product.route';
+import imageUploader from '../../middlewares/imageUploader';
 
 const router = Router();
 
 router.post(
   '/register',
   verifyAdmin,
+  imageUploader(),
   validateRequest(AdminValidation.registerAdminSchema),
   AdminController.registerAdmin,
 );

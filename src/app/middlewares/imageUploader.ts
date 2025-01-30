@@ -3,6 +3,8 @@ import path from 'path';
 import multer, { FileFilterCallback } from 'multer';
 import { StatusCodes } from 'http-status-codes';
 import ApiError from '../../errors/ApiError';
+import { ErrorRequestHandler } from 'express';
+import unlinkFile from '../../shared/unlinkFile';
 
 const imageUploader = () => {
   const baseUploadDir = path.join(process.cwd(), 'uploads');
@@ -51,6 +53,21 @@ const imageUploader = () => {
   }).fields([{ name: 'images', maxCount: 5 }]); // Allow up to 5 images
 
   return upload;
+};
+
+/** Middleware to ensure image rollbacks if an error occurs during the request handling */
+export const imagesUploadRollback: ErrorRequestHandler = (
+  err,
+  req,
+  _res,
+  next,
+) => {
+  if (req.files && 'images' in req.files && Array.isArray(req.files.images))
+    req.files.images.forEach(({ filename }) =>
+      unlinkFile(`/images/${filename}`),
+    );
+
+  next(err);
 };
 
 export default imageUploader;

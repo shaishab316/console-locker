@@ -2,20 +2,9 @@ import { StatusCodes } from 'http-status-codes';
 import sendResponse from '../../../shared/sendResponse';
 import { ProductService } from './Product.service';
 import catchAsync, { catchAsyncWithCallback } from '../../../shared/catchAsync';
-import unlinkFile from '../../../shared/unlinkFile';
-import { ErrorRequestHandler } from 'express';
 import ApiError from '../../../errors/ApiError';
 import Product from './Product.model';
-
-/** Middleware to ensure image rollbacks if an error occurs during the request handling */
-const imagesUploadRollback: ErrorRequestHandler = (err, req, _res, next) => {
-  if (req.files && 'images' in req.files && Array.isArray(req.files.images))
-    req.files.images.forEach(({ filename }) =>
-      unlinkFile(`/images/${filename}`),
-    );
-
-  next(err);
-};
+import { imagesUploadRollback } from '../../middlewares/imageUploader';
 
 export const ProductController = {
   /** for admin */
