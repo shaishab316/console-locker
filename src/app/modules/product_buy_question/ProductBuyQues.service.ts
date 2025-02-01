@@ -40,8 +40,11 @@ export const ProductBuyQuesService = {
     // const newQuestion = { ...questionData };
 
     // Create the update object to push the new question into the 'questions' array
-    const updatedProduct = await ProductBuyQues.findByIdAndUpdate(
-      productId,
+    const updatedProduct = await ProductBuyQues.findOneAndUpdate(
+      {
+        _id: new Types.ObjectId(productId),
+        'questions.name': { $ne: questionData.name },
+      },
       {
         $push: { questions: questionData },
       },
@@ -49,7 +52,7 @@ export const ProductBuyQuesService = {
     );
 
     if (!updatedProduct) {
-      throw new Error('Product not found!');
+      throw new ApiError(StatusCodes.CONFLICT, 'Something went wrong!');
     }
 
     return updatedProduct;
@@ -128,7 +131,8 @@ export const ProductBuyQuesService = {
       { new: true },
     );
 
-    if (!updatedProduct) throw new ApiError(StatusCodes.CONFLICT,'Something went wrong!');
+    if (!updatedProduct)
+      throw new ApiError(StatusCodes.CONFLICT, 'Something went wrong!');
 
     return updatedProduct;
   },
