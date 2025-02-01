@@ -25,6 +25,7 @@ router.patch(
   AdminController.updateAdmin,
 );
 router.post('/login', limiter, AdminController.loginAdmin);
+router.post('/log-out', AdminController.logoutAdmin);
 router.post('/send-otp', limiter, AdminController.sendOtp);
 router.post('/verify-otp', limiter, AdminController.verifyOtp);
 router.post('/change-password', verifyAdmin, AdminController.changePassword);

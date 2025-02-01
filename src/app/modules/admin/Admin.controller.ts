@@ -66,6 +66,17 @@ export const AdminController = {
     });
   }),
 
+  logoutAdmin: catchAsync((_, res) => {
+    res.clearCookie('refreshToken');
+    res.clearCookie('resetToken');
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Logout successfully.',
+    });
+  }),
+
   sendOtp: catchAsync(async (req, res) => {
     const { email } = req.body;
 
