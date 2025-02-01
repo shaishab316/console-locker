@@ -171,21 +171,22 @@ export const ProductBuyQuesService = {
     return updatedProduct;
   },
 
-  // async deleteOption(productId: string, questionId: string, optionId: string) {
-  //   const updatedProduct = await ProductBuyQues.findOneAndUpdate(
-  //     {
-  //       _id: new Types.ObjectId(productId),
-  //       'questions._id': new Types.ObjectId(questionId),
-  //     },
-  //     {
-  //       $pull: { 'questions.$.options': { _id: new Types.ObjectId(optionId) } },
-  //     },
-  //     { new: true },
-  //   );
+  async deleteOption(productId: string, questionId: string, optionId: string) {
+    const updatedProduct = await ProductBuyQues.findOneAndUpdate(
+      {
+        _id: new Types.ObjectId(productId),
+        'questions._id': new Types.ObjectId(questionId),
+      },
+      {
+        $pull: { 'questions.$.options': { _id: new Types.ObjectId(optionId) } },
+      },
+      { new: true },
+    );
 
-  //   if (!updatedProduct)
-  //     throw new Error('Product, question, or option not found!');
-
-  //   return updatedProduct;
-  // },
+    if (!updatedProduct)
+      throw new ApiError(
+        StatusCodes.NOT_FOUND,
+        'Product, question, or option not found!',
+      );
+  },
 };

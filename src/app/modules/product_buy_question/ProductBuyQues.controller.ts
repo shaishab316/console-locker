@@ -161,24 +161,20 @@ export const ProductBuyQuesController = {
     sendResponse(res, {
       success: true,
       statusCode: StatusCodes.OK,
-      message: 'Option update successfully!',
+      message: 'Option updated successfully!',
       data: updatedProduct,
     });
   }),
 
-  // async deleteOption(req: Request, res: Response) {
-  //   try {
-  //     const { productId, questionId, optionId } = req.params;
+  deleteOption: catchAsync(async (req, res) => {
+    const { id, quesId, optionId } = req.params;
 
-  //     const updatedProduct = await productService.deleteOptionFromQuestion(
-  //       productId,
-  //       questionId,
-  //       optionId,
-  //     );
+    await ProductBuyQuesService.deleteOption(id, quesId, optionId);
 
-  //     res.status(200).json(updatedProduct);
-  //   } catch (error) {
-  //     res.status(400).json({ message: error.message });
-  //   }
-  // },
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Option deleted successfully!',
+    });
+  }),
 };

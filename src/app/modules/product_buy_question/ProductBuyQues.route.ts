@@ -76,16 +76,9 @@ router.patch(
   ProductBuyQuesController.updateOption,
 );
 
-// router.post('/product/:productId/question/:questionId/option', addOption);
-
-// router.put(
-//   '/product/:productId/question/:questionId/option/:optionId',
-//   updateOption,
-// );
-
-// router.delete(
-//   '/product/:productId/question/:questionId/option/:optionId',
-//   deleteOption,
-// );
+router.delete(
+  '/:id/questions/:quesId/options/:optionId/delete',
+  ProductBuyQuesController.deleteOption,
+);
 
 export const ProductBuyQuesRoutes = router;
