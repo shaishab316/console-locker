@@ -35,7 +35,7 @@ privateRouter.delete('/:id/delete', ProductBuyQuesController.deleteQuestion);
 /**
  * *************************************************************************************************************
  *                                                                                                           *
- *                                           L I N E   B R A C K                                           *
+ *                                           L I N E   B R E A K                                           *
  *                                                                                                           *
  * **************************************************************************************************************
  */
@@ -60,7 +60,7 @@ privateRouter.delete(
 /**
  * *************************************************************************************************************
  *                                                                                                           *
- *                                           L I N E   B R A C K                                           *
+ *                                           L I N E   B R E A K                                           *
  *                                                                                                           *
  * **************************************************************************************************************
  */
@@ -85,13 +85,17 @@ privateRouter.delete(
 /**
  * *************************************************************************************************************
  *                                                                                                           *
- *                                           L I N E   B R A C K                                           *
+ *                                           L I N E   B R E A K                                           *
  *                                                                                                           *
  * **************************************************************************************************************
  */
 
-publicRouter.get('/', ProductBuyQuesController.retrieveQuestion);
-publicRouter.get('/:id', ProductBuyQuesController.retrieveSingleQuestion);
+publicRouter.get('/products', ProductBuyQuesController.retrieveQuestion);
+publicRouter.get(
+  '/products/:id',
+  ProductBuyQuesController.retrieveSingleQuestion,
+);
+publicRouter.post('/products/:id/price', ProductBuyQuesController.calcPrice);
 
 export const ProductBuyQuesRoutes = {
   adminRoutes: privateRouter,
