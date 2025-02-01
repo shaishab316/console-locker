@@ -1,6 +1,8 @@
 import { Types } from 'mongoose';
 import { TBuyQues, TProductBuyQues } from './ProductBuyQues.interface';
 import ProductBuyQues from './ProductBuyQues.model';
+import { StatusCodes } from 'http-status-codes';
+import ApiError from '../../../errors/ApiError';
 
 export const ProductBuyQuesService = {
   createQuestion: async (questionData: TProductBuyQues) =>
@@ -120,62 +122,63 @@ export const ProductBuyQuesService = {
       {
         _id: new Types.ObjectId(productId),
         'questions._id': new Types.ObjectId(questionId),
+        'questions.options.option': { $ne: option },
       },
       { $push: { 'questions.$.options': newOption } },
       { new: true },
     );
 
-    if (!updatedProduct) throw new Error('Product or question not found!');
+    if (!updatedProduct) throw new ApiError(StatusCodes.CONFLICT,'Something went wrong!');
 
     return updatedProduct;
   },
 
-  async updateOption(
-    productId: string,
-    questionId: string,
-    optionId: string,
-    option: string,
-    price: number,
-  ) {
-    const updatedProduct = await ProductBuyQues.findOneAndUpdate(
-      {
-        _id: new Types.ObjectId(productId),
-        'questions._id': new Types.ObjectId(questionId),
-        'questions.options._id': new Types.ObjectId(optionId),
-      },
-      {
-        $set: {
-          'questions.$.options.$[opt].option': option,
-          'questions.$.options.$[opt].price': price,
-        },
-      },
-      {
-        arrayFilters: [{ 'opt._id': new Types.ObjectId(optionId) }],
-        new: true,
-      },
-    );
+  // async updateOption(
+  //   productId: string,
+  //   questionId: string,
+  //   optionId: string,
+  //   option: string,
+  //   price: number,
+  // ) {
+  //   const updatedProduct = await ProductBuyQues.findOneAndUpdate(
+  //     {
+  //       _id: new Types.ObjectId(productId),
+  //       'questions._id': new Types.ObjectId(questionId),
+  //       'questions.options._id': new Types.ObjectId(optionId),
+  //     },
+  //     {
+  //       $set: {
+  //         'questions.$.options.$[opt].option': option,
+  //         'questions.$.options.$[opt].price': price,
+  //       },
+  //     },
+  //     {
+  //       arrayFilters: [{ 'opt._id': new Types.ObjectId(optionId) }],
+  //       new: true,
+  //     },
+  //   );
 
-    if (!updatedProduct)
-      throw new Error('Product, question, or option not found!');
+  //   if (!updatedProduct)
+  //     throw new Error('Product, question, or option not found!');
 
-    return updatedProduct;
-  },
+  //   return updatedProduct;
+  // },
 
-  async deleteOption(productId: string, questionId: string, optionId: string) {
-    const updatedProduct = await ProductBuyQues.findOneAndUpdate(
-      {
-        _id: new Types.ObjectId(productId),
-        'questions._id': new Types.ObjectId(questionId),
-      },
-      {
-        $pull: { 'questions.$.options': { _id: new Types.ObjectId(optionId) } },
-      },
-      { new: true },
-    );
+  // async deleteOption(productId: string, questionId: string, optionId: string) {
+  //   const updatedProduct = await ProductBuyQues.findOneAndUpdate(
+  //     {
+  //       _id: new Types.ObjectId(productId),
+  //       'questions._id': new Types.ObjectId(questionId),
+  //     },
+  //     {
+  //       $pull: { 'questions.$.options': { _id: new Types.ObjectId(optionId) } },
+  //     },
+  //     { new: true },
+  //   );
 
-    if (!updatedProduct)
-      throw new Error('Product, question, or option not found!');
+  //   if (!updatedProduct)
+  //     throw new Error('Product, question, or option not found!');
 
-    return updatedProduct;
-  },
+  //   return updatedProduct;
+  // },
 };

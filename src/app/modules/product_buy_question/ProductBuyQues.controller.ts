@@ -128,12 +128,12 @@ export const ProductBuyQuesController = {
    */
 
   addOption: catchAsync(async (req, res) => {
-    const { productId, questionId } = req.params;
+    const { id, quesId } = req.params;
     const { option, price } = req.body;
 
     const updatedProduct = await ProductBuyQuesService.addOption(
-      productId,
-      questionId,
+      id,
+      quesId,
       option,
       price,
     );

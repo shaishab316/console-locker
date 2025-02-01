@@ -64,6 +64,12 @@ router.delete(
  * **************************************************************************************************************
  */
 
+router.post(
+  '/:id/questions/:quesId/options/create',
+  validateRequest(ProductBuyQuesValidation.addOptionValidationSchema),
+  ProductBuyQuesController.addOption,
+);
+
 // router.post('/product/:productId/question/:questionId/option', addOption);
 
 // router.put(
