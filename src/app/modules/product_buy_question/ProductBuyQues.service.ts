@@ -36,6 +36,36 @@ export const ProductBuyQuesService = {
    * **************************************************************************************************************
    */
 
+  async retrieveQuestion({ page = '1', limit = '10' }) {
+    const products = await ProductBuyQues.find()
+      .select('name image base_price')
+      .skip((+page - 1) * +limit)
+      .limit(+limit);
+
+    const total = await ProductBuyQues.countDocuments();
+
+    return {
+      products,
+      meta: {
+        total,
+        page: +page,
+        limit: +limit,
+        totalPages: Math.ceil(total / +limit),
+      },
+    };
+  },
+
+  retrieveSingleQuestion: async (id: string) =>
+    await ProductBuyQues.findById(id),
+
+  /**
+   * *************************************************************************************************************
+   *                                                                                                           *
+   *                                           L I N E   B R A C K                                           *
+   *                                                                                                           *
+   * **************************************************************************************************************
+   */
+
   async addInnerQuestion(productId: string, questionData: TBuyQues) {
     // const newQuestion = { ...questionData };
 

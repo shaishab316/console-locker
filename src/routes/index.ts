@@ -5,6 +5,7 @@ import { TradeRoutes } from '../app/modules/trade/Trade.route';
 import { CustomerRoutes } from '../app/modules/customer/Customer.route';
 import { OrderRoutes } from '../app/modules/order/Order.route';
 import { PaymentRoutes } from '../app/modules/payment/Payment.route';
+import { ProductBuyQuesRoutes } from '../app/modules/product_buy_question/ProductBuyQues.route';
 
 const router = express.Router();
 
@@ -32,10 +33,16 @@ const apiRoutes: { path: string; route: Router }[] = [
   {
     path: '/payment',
     route: PaymentRoutes,
-  },{
-    path: "/checkout",
-    route: OrderRoutes
-  }
+  },
+  {
+    path: '/checkout',
+    route: OrderRoutes,
+  },
+  {
+    path: '/sell',
+    /** admin buy === customer sell */
+    route: ProductBuyQuesRoutes.customerRoutes,
+  },
 ];
 
 apiRoutes.forEach(route => router.use(route.path, route.route));

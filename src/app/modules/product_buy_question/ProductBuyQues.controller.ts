@@ -70,6 +70,37 @@ export const ProductBuyQuesController = {
    *                                                                                                           *
    * **************************************************************************************************************
    */
+  retrieveQuestion: catchAsync(async (req, res) => {
+    const data = await ProductBuyQuesService.retrieveQuestion(req.query);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Sellable product retrieved successfully!',
+      data,
+    });
+  }),
+
+  retrieveSingleQuestion: catchAsync(async (req, res) => {
+    const data = await ProductBuyQuesService.retrieveSingleQuestion(
+      req.params.id,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Product question retrieved successfully!',
+      data,
+    });
+  }),
+
+  /**
+   * *************************************************************************************************************
+   *                                                                                                           *
+   *                                           L I N E   B R A C K                                           *
+   *                                                                                                           *
+   * **************************************************************************************************************
+   */
 
   addInnerQuestion: catchAsyncWithCallback(async (req, res) => {
     const { id } = req.params;

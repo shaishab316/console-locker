@@ -4,9 +4,10 @@ import { ProductBuyQuesValidation } from './ProductBuyQues.validation';
 import { ProductBuyQuesController } from './ProductBuyQues.controller';
 import imageUploader from '../../middlewares/imageUploader';
 
-const router = Router();
+const privateRouter = Router();
+const publicRouter = Router();
 
-router.post(
+privateRouter.post(
   '/create',
   imageUploader(),
   (req, _, next) => {
@@ -17,7 +18,7 @@ router.post(
   ProductBuyQuesController.createQuestion,
 );
 
-router.patch(
+privateRouter.patch(
   '/:id/edit',
   imageUploader(),
   (req, _, next) => {
@@ -29,7 +30,7 @@ router.patch(
   ProductBuyQuesController.updateQuestion,
 );
 
-router.delete('/:id/delete', ProductBuyQuesController.deleteQuestion);
+privateRouter.delete('/:id/delete', ProductBuyQuesController.deleteQuestion);
 
 /**
  * *************************************************************************************************************
@@ -39,19 +40,19 @@ router.delete('/:id/delete', ProductBuyQuesController.deleteQuestion);
  * **************************************************************************************************************
  */
 
-router.post(
+privateRouter.post(
   '/:id/questions/create',
   validateRequest(ProductBuyQuesValidation.addInnerQuestionValidationSchema),
   ProductBuyQuesController.addInnerQuestion,
 );
 
-router.patch(
+privateRouter.patch(
   '/:id/questions/:quesId/edit',
   validateRequest(ProductBuyQuesValidation.updateInnerQuestionValidationSchema),
   ProductBuyQuesController.updateInnerQuestion,
 );
 
-router.delete(
+privateRouter.delete(
   '/:id/questions/:quesId/delete',
   ProductBuyQuesController.deleteInnerQuestion,
 );
@@ -64,21 +65,35 @@ router.delete(
  * **************************************************************************************************************
  */
 
-router.post(
+privateRouter.post(
   '/:id/questions/:quesId/options/create',
   validateRequest(ProductBuyQuesValidation.addOptionValidationSchema),
   ProductBuyQuesController.addOption,
 );
 
-router.patch(
+privateRouter.patch(
   '/:id/questions/:quesId/options/:optionId/edit',
   validateRequest(ProductBuyQuesValidation.updateOptionValidationSchema),
   ProductBuyQuesController.updateOption,
 );
 
-router.delete(
+privateRouter.delete(
   '/:id/questions/:quesId/options/:optionId/delete',
   ProductBuyQuesController.deleteOption,
 );
 
-export const ProductBuyQuesRoutes = router;
+/**
+ * *************************************************************************************************************
+ *                                                                                                           *
+ *                                           L I N E   B R A C K                                           *
+ *                                                                                                           *
+ * **************************************************************************************************************
+ */
+
+publicRouter.get('/', ProductBuyQuesController.retrieveQuestion);
+publicRouter.get('/:id', ProductBuyQuesController.retrieveSingleQuestion);
+
+export const ProductBuyQuesRoutes = {
+  adminRoutes: privateRouter,
+  customerRoutes: publicRouter,
+};

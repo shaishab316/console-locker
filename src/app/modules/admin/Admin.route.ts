@@ -58,6 +58,6 @@ router.use('/transaction', verifyAdmin, TransactionRoutes);
  * **************************************************************************************************************
  */
 
-router.use('/question/buy', verifyAdmin, ProductBuyQuesRoutes);
+router.use('/question/buy', verifyAdmin, ProductBuyQuesRoutes.adminRoutes);
 
 export const AdminRoutes = router;
