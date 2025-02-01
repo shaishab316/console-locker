@@ -7,6 +7,7 @@ import verifyAdmin from '../../middlewares/verifyAdmin';
 import { ProductRoutes } from '../product/Product.route';
 import imageUploader from '../../middlewares/imageUploader';
 import { TransactionRoutes } from '../transaction/Transaction.route';
+import { ProductBuyQuesRoutes } from '../product_buy_question/ProductBuyQues.route';
 
 const router = Router();
 
@@ -47,5 +48,15 @@ router.use('/product', verifyAdmin, ProductRoutes.adminProductRoutes);
  * **************************************************************************************************************
  */
 router.use('/transaction', verifyAdmin, TransactionRoutes);
+
+/**
+ * *************************************************************************************************************
+ *                                                                                                           *
+ *                                           L I N E   B R A C K                                           *
+ *                                                                                                           *
+ * **************************************************************************************************************
+ */
+
+router.use('/question/buy', verifyAdmin, ProductBuyQuesRoutes);
 
 export const AdminRoutes = router;
