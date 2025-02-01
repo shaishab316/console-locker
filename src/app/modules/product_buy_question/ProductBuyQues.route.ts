@@ -70,6 +70,12 @@ router.post(
   ProductBuyQuesController.addOption,
 );
 
+router.patch(
+  '/:id/questions/:quesId/options/:optionId/edit',
+  validateRequest(ProductBuyQuesValidation.updateOptionValidationSchema),
+  ProductBuyQuesController.updateOption,
+);
+
 // router.post('/product/:productId/question/:questionId/option', addOption);
 
 // router.put(

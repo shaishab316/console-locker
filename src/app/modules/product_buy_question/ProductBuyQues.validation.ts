@@ -67,10 +67,21 @@ const addOptionValidationSchema = z.object({
   body: optionSchema,
 });
 
+const updateOptionValidationSchema = z.object({
+  body: z.object({
+    option: z.string().optional(),
+    price: z
+      .number()
+      .max(1, { message: 'Price should be less than 1' })
+      .optional(),
+  }),
+});
+
 export const ProductBuyQuesValidation = {
   createQuestionValidationSchema,
   updateQuestionValidationSchema,
   addInnerQuestionValidationSchema,
   updateInnerQuestionValidationSchema,
   addOptionValidationSchema,
+  updateOptionValidationSchema,
 };

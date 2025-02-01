@@ -146,24 +146,25 @@ export const ProductBuyQuesController = {
     });
   }),
 
-  // async updateOption(req: Request, res: Response) {
-  //   try {
-  //     const { productId, questionId, optionId } = req.params;
-  //     const { option, price } = req.body; // Assuming body contains the updated option and price
+  updateOption: catchAsync(async (req, res) => {
+    const { id, quesId, optionId } = req.params;
+    const { option, price } = req.body;
 
-  //     const updatedProduct = await productService.updateOptionInQuestion(
-  //       productId,
-  //       questionId,
-  //       optionId,
-  //       option,
-  //       price,
-  //     );
+    const updatedProduct = await ProductBuyQuesService.updateOption(
+      id,
+      quesId,
+      optionId,
+      option,
+      price,
+    );
 
-  //     res.status(200).json(updatedProduct);
-  //   } catch (error) {
-  //     res.status(400).json({ message: error.message });
-  //   }
-  // },
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Option update successfully!',
+      data: updatedProduct,
+    });
+  }),
 
   // async deleteOption(req: Request, res: Response) {
   //   try {

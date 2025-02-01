@@ -137,36 +137,39 @@ export const ProductBuyQuesService = {
     return updatedProduct;
   },
 
-  // async updateOption(
-  //   productId: string,
-  //   questionId: string,
-  //   optionId: string,
-  //   option: string,
-  //   price: number,
-  // ) {
-  //   const updatedProduct = await ProductBuyQues.findOneAndUpdate(
-  //     {
-  //       _id: new Types.ObjectId(productId),
-  //       'questions._id': new Types.ObjectId(questionId),
-  //       'questions.options._id': new Types.ObjectId(optionId),
-  //     },
-  //     {
-  //       $set: {
-  //         'questions.$.options.$[opt].option': option,
-  //         'questions.$.options.$[opt].price': price,
-  //       },
-  //     },
-  //     {
-  //       arrayFilters: [{ 'opt._id': new Types.ObjectId(optionId) }],
-  //       new: true,
-  //     },
-  //   );
+  async updateOption(
+    productId: string,
+    questionId: string,
+    optionId: string,
+    option: string,
+    price: number,
+  ) {
+    const updatedProduct = await ProductBuyQues.findOneAndUpdate(
+      {
+        _id: new Types.ObjectId(productId),
+        'questions._id': new Types.ObjectId(questionId),
+        'questions.options._id': new Types.ObjectId(optionId),
+      },
+      {
+        $set: {
+          'questions.$.options.$[opt].option': option,
+          'questions.$.options.$[opt].price': price,
+        },
+      },
+      {
+        arrayFilters: [{ 'opt._id': new Types.ObjectId(optionId) }],
+        new: true,
+      },
+    );
 
-  //   if (!updatedProduct)
-  //     throw new Error('Product, question, or option not found!');
+    if (!updatedProduct)
+      throw new ApiError(
+        StatusCodes.NOT_FOUND,
+        'Product, question, or option not found!',
+      );
 
-  //   return updatedProduct;
-  // },
+    return updatedProduct;
+  },
 
   // async deleteOption(productId: string, questionId: string, optionId: string) {
   //   const updatedProduct = await ProductBuyQues.findOneAndUpdate(
