@@ -1,11 +1,11 @@
 import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../shared/catchAsync';
-import { TradeService } from './Trade.service';
 import sendResponse from '../../../shared/sendResponse';
+import { TradeInService } from './TradeIn.service';
 
-export const TradeController = {
+export const TradeInController = {
   createTrade: catchAsync(async (req, res) => {
-    const newTrade = await TradeService.createTrade(req.body);
+    const newTrade = await TradeInService.createTrade(req.body);
 
     sendResponse(res, {
       success: true,
@@ -16,7 +16,7 @@ export const TradeController = {
   }),
 
   deleteTrade: catchAsync(async (req, res) => {
-    await TradeService.deleteTrade(req.params.id);
+    await TradeInService.deleteTrade(req.params.id);
 
     sendResponse(res, {
       success: true,

@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
-import { TProductBuy } from './ProductBuy.interface';
+import { TTradeIn } from './TradeIn.interface';
 
-const productBuySchema = new Schema<TProductBuy>(
+const tradeInSchema = new Schema<TTradeIn>(
   {
     customer: {
       type: Schema.Types.ObjectId,
@@ -13,10 +13,14 @@ const productBuySchema = new Schema<TProductBuy>(
       ref: 'ProductBuyQues', 
       required: true,
     },
+    ref_product: {
+      type: Schema.Types.ObjectId,
+      ref: 'Product', 
+    },
     information: [
       {
         ques: { type: String, required: true },
-        option: { type: String, required: true },
+        value: { type: String, required: true },
       },
     ],
     price: {
@@ -31,6 +35,6 @@ const productBuySchema = new Schema<TProductBuy>(
   { timestamps: true },
 );
 
-const ProductBuy = model<TProductBuy>('ProductBuy', productBuySchema);
+const TradeIn = model<TTradeIn>('TradeIn', tradeInSchema);
 
-export default ProductBuy;
+export default TradeIn;

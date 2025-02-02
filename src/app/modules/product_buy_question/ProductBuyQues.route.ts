@@ -3,6 +3,7 @@ import validateRequest from '../../middlewares/validateRequest';
 import { ProductBuyQuesValidation } from './ProductBuyQues.validation';
 import { ProductBuyQuesController } from './ProductBuyQues.controller';
 import imageUploader from '../../middlewares/imageUploader';
+import { TradeInRoutes } from '../trade_in/TradeIn.route';
 
 const privateRouter = Router();
 const publicRouter = Router();
@@ -96,6 +97,7 @@ publicRouter.get(
   ProductBuyQuesController.retrieveSingleQuestion,
 );
 publicRouter.post('/products/:id/price', ProductBuyQuesController.calcPrice);
+publicRouter.use('/', TradeInRoutes);
 
 export const ProductBuyQuesRoutes = {
   adminRoutes: privateRouter,

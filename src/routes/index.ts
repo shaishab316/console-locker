@@ -1,7 +1,6 @@
 import express, { Router } from 'express';
 import { AdminRoutes } from '../app/modules/admin/Admin.route';
 import { ProductRoutes } from '../app/modules/product/Product.route';
-import { TradeRoutes } from '../app/modules/trade/Trade.route';
 import { CustomerRoutes } from '../app/modules/customer/Customer.route';
 import { OrderRoutes } from '../app/modules/order/Order.route';
 import { PaymentRoutes } from '../app/modules/payment/Payment.route';
@@ -17,10 +16,6 @@ const apiRoutes: { path: string; route: Router }[] = [
   {
     path: '/products',
     route: ProductRoutes.customerProductRoutes,
-  },
-  {
-    path: '/trade',
-    route: TradeRoutes,
   },
   {
     path: '/customer',

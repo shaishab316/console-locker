@@ -1,11 +1,12 @@
 import { Types } from 'mongoose';
 
-export type TProductBuy = {
+export type TTradeIn = {
   customer: Types.ObjectId;
   product: Types.ObjectId;
+  ref_product?: Types.ObjectId;
   information: {
     ques: string;
-    option: string;
+    value: string;
   }[];
   price: number;
   payment: {

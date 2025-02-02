@@ -295,6 +295,31 @@ export const ProductBuyQuesService = {
     if (!result.length)
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to calculate price');
 
-    return (Math.floor(result[0].total_price * 100) / 100).toFixed(2)
+    return (Math.floor(result[0].total_price * 100) / 100).toFixed(2);
   },
+
+  getInformation: async (
+    questionId: string,
+    selectedQuestions: { quesId: string; optionId: string }[],
+  ) =>
+    await ProductBuyQues.aggregate([
+      { $match: { _id: new Types.ObjectId(questionId) } },
+      { $unwind: '$questions' },
+      { $unwind: '$questions.options' },
+      {
+        $match: {
+          $or: selectedQuestions.map(({ quesId, optionId }) => ({
+            'questions._id': new Types.ObjectId(quesId),
+            'questions.options._id': new Types.ObjectId(optionId),
+          })),
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          ques: '$questions.name',
+          value: '$questions.options.option',
+        },
+      },
+    ]),
 };
