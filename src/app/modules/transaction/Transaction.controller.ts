@@ -5,7 +5,7 @@ import { TransactionService } from './Transaction.service';
 
 export const TransactionController = {
   retrieveTransaction: catchAsync(async (req, res) => {
-    const data = await TransactionService.retrieveTransaction(req);
+    const data = await TransactionService.retrieveTransaction(req.query);
 
     sendResponse(res, {
       success: true,

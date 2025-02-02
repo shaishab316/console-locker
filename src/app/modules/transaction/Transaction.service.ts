@@ -1,4 +1,3 @@
-import { Request } from 'express';
 import { TTransaction } from './Transaction.interface';
 import { Transaction } from './Transaction.model';
 
@@ -9,9 +8,21 @@ export const TransactionService = {
     return newTransaction;
   },
 
-  async retrieveTransaction() { 
-    const transactions = await Transaction.find();
+  async retrieveTransaction({ page = 1, limit = 10 }: Record<any, any>) {
+    const transactions = await Transaction.find()
+      .skip((+page - 1) * +limit)
+      .limit(+limit);
 
-    return transactions;
+    const totalCount = await Transaction.countDocuments();
+
+    return {
+      meta: {
+        totalPages: Math.ceil(totalCount / +limit),
+        page: +page,
+        limit: +limit,
+        total: totalCount,
+      },
+      transactions,
+    };
   },
 };
