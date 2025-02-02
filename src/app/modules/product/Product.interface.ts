@@ -10,13 +10,11 @@ export type TProduct = {
   offer_price?: number;
   brand?: string;
   model?: string;
-  condition: TCondition;
-  controller?: number;
+  condition: string;
+  controller?: string;
   memory?: string;
   quantity: number;
   isVariant: boolean;
   product_type?: string;
   product_ref?: Types.ObjectId;
 };
-
-export type TCondition = 'fair' | 'good' | 'excellent';

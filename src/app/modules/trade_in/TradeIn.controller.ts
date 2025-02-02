@@ -45,12 +45,13 @@ export const TradeInController = {
   }),
 
   confirmTrade: catchAsync(async (req, res) => {
-    await TradeInService.confirmTrade(req.params.id);
+    const newProduct = await TradeInService.confirmTrade(req.params.id);
 
     sendResponse(res, {
       success: true,
       statusCode: StatusCodes.OK,
       message: 'Product buy successful.',
+      data: newProduct,
     });
   }),
 };

@@ -14,7 +14,7 @@ const buyQuesSchema = new Schema<TBuyQues>({
 
 const productBuyQuesSchema = new Schema<TProductBuyQues>({
   image: { type: String, required: true },
-  name: { type: String, required: true },
+  name: { type: String, required: true, unique: true },
   base_price: { type: Number, required: true },
   questions: { type: [buyQuesSchema], required: true },
 });

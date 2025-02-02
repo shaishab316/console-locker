@@ -5,6 +5,7 @@ import { TTradeIn } from './TradeIn.interface';
 import TradeIn from './TradeIn.model';
 import { ProductBuyQuesService } from '../product_buy_question/ProductBuyQues.service';
 import { PaymentService } from '../payment/Payment.service';
+import ProductBuyQues from '../product_buy_question/ProductBuyQues.model';
 
 export const TradeInService = {
   async createTrade(
@@ -116,16 +117,47 @@ export const TradeInService = {
 
   async confirmTrade(tradeId: string) {
     const trade = await TradeIn.findById(tradeId);
+    const tradeProduct = await ProductBuyQues.findById(trade?.product);
+
+    if (trade?.state !== 'pending')
+      throw new ApiError(
+        StatusCodes.BAD_REQUEST,
+        'Trading is not available now.',
+      );
 
     if (trade?.payment.paypal) {
-      // trade.state = 'confirm';
-      // await trade.save()
-      const data = await PaymentService.paypal.payout(
+      const productData: Record<any, any> = {
+        images: [tradeProduct?.image],
+        name: tradeProduct?.name,
+        price: (Math.ceil(trade.price * 1.1) - 0.01).toFixed(2),
+        quantity: 1,
+      };
+
+      trade.information.forEach(info => {
+        if (
+          ['brand', 'model', 'controller', 'condition'].includes(
+            info.ques.toLowerCase(),
+          )
+        ) {
+          productData[info.ques.toLowerCase()] = info.value;
+        }
+      });
+
+      const newProduct = await Product.create(productData);
+
+      trade.state = 'confirm';
+      await trade.save();
+
+      /** do payment last,, because ,, ,, */
+      await PaymentService.paypal.payout(
         trade.payment.paypal,
         trade.price.toString(),
       );
 
-      /** TODO: ... */
+      return newProduct;
     }
+
+    /** if you are a sr. dev , then you understand */
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Something went wrong.');
   },
 };

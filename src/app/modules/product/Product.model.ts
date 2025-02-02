@@ -1,11 +1,11 @@
 import { Schema, model } from 'mongoose';
 import { TProduct } from './Product.interface';
+import Admin from '../admin/Admin.model';
 
 const productSchema = new Schema<TProduct>({
   admin: {
     type: Schema.Types.ObjectId,
     ref: 'Admin',
-    required: true,
   },
   images: {
     type: [String],
@@ -35,18 +35,15 @@ const productSchema = new Schema<TProduct>({
   },
   condition: {
     type: String,
-    enum: ['fair', 'good', 'excellent'],
-    required: true,
   },
   controller: {
-    type: Number,
+    type: String,
   },
   memory: {
     type: String,
   },
   quantity: {
     type: Number,
-    required: true,
   },
   isVariant: {
     type: Boolean,
@@ -59,6 +56,14 @@ const productSchema = new Schema<TProduct>({
     type: Schema.Types.ObjectId,
     ref: 'Product',
   },
+});
+
+productSchema.pre('save', async function (next) {
+  if (!this.admin) {
+    const admin = await Admin.findOne().select('_id');
+    this.admin = admin!._id;
+  }
+  next();
 });
 
 const Product = model('Product', productSchema);
