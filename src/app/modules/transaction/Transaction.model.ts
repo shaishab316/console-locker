@@ -27,6 +27,8 @@ const transactionSchema = new Schema<TTransaction>({
     required: true,
     trim: true,
   },
+},{
+  timestamps: true
 });
 
 export const Transaction = model<TTransaction>(
