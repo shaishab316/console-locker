@@ -9,6 +9,7 @@ import imageUploader from '../../middlewares/imageUploader';
 import { TransactionRoutes } from '../transaction/Transaction.route';
 import { ProductBuyQuesRoutes } from '../product_buy_question/ProductBuyQues.route';
 import { TradeInRoutes } from '../trade_in/TradeIn.route';
+import { OrderRoutes } from '../order/Order.route';
 
 const router = Router();
 
@@ -60,6 +61,16 @@ router.use('/transaction', verifyAdmin, TransactionRoutes);
  */
 
 router.use('/question/buy', verifyAdmin, ProductBuyQuesRoutes.adminRoutes);
-router.use("/buy", TradeInRoutes.adminRoutes)
+router.use('/buy', TradeInRoutes.adminRoutes);
+
+/**
+ * *************************************************************************************************************
+ *                                                                                                           *
+ *                                           L I N E   B R E A K                                           *
+ *                                                                                                           *
+ * **************************************************************************************************************
+ */
+
+router.use('/order', OrderRoutes.adminRoutes);
 
 export const AdminRoutes = router;

@@ -37,7 +37,7 @@ export const OrderController = {
   }),
 
   shipped: catchAsync(async (req, res) => {
-    await OrderService.cancel(req.params.id);
+    await OrderService.shipped(req.params.id);
 
     sendResponse(res, {
       success: true,
