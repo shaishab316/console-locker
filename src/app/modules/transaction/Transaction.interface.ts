@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 
 export type TTransaction = {
   _id?: Types.ObjectId;
-  transaction_id: string;
+  transaction_id?: string;
   customer: Types.ObjectId;
   amount: number;
   type: 'buy' | 'sell';

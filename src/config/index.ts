@@ -38,5 +38,6 @@ export default {
   },
   url: {
     local: process.env.LOCAL_BASE_URL,
+    paypal_base_url: process.env.PAYPAL_BASE_URL,
   },
 };

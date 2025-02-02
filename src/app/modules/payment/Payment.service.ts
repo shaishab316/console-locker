@@ -123,7 +123,7 @@ export const PaymentService = {
 
     async getToken() {
       const { data } = await axios.post(
-        'https://api-m.sandbox.paypal.com/v1/oauth2/token',
+        `${config.url.paypal_base_url}/v1/oauth2/token`,
         QueryString.stringify({ grant_type: 'client_credentials' }),
         {
           headers: {
@@ -157,7 +157,7 @@ export const PaymentService = {
       const token = await this.getToken();
 
       const { data } = await axios.post(
-        'https://api-m.sandbox.paypal.com/v1/payments/payouts',
+        `${config.url.paypal_base_url}/v1/payments/payouts`,
         payoutData,
         {
           headers: {
@@ -168,6 +168,22 @@ export const PaymentService = {
       );
 
       return data;
+    },
+
+    async getPayoutDetails(payoutBatchId: string) {
+      const token = await this.getToken();
+
+      const response = await axios.get(
+        `${config.url.paypal_base_url}/v1/payments/payouts/${payoutBatchId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      return response.data;
     },
   },
 };

@@ -4,7 +4,6 @@ import { TTransaction } from './Transaction.interface';
 const transactionSchema = new Schema<TTransaction>({
   transaction_id: {
     type: String,
-    required: true,
     unique: true,
     trim: true,
   },
