@@ -9,7 +9,7 @@ export const TransactionService = {
     return newTransaction;
   },
 
-  async retrieveTransaction(req: Request) {
+  async retrieveTransaction() { 
     const transactions = await Transaction.find();
 
     return transactions;

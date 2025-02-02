@@ -7,7 +7,9 @@ import { ProductBuyQuesService } from '../product_buy_question/ProductBuyQues.se
 import { PaymentService } from '../payment/Payment.service';
 import ProductBuyQues from '../product_buy_question/ProductBuyQues.model';
 import { TTransaction } from '../transaction/Transaction.interface';
-import { Transaction } from '../transaction/Transaction.model';
+import { TransactionService } from '../transaction/Transaction.service';
+import { ProductService } from '../product/Product.service';
+import { TProduct } from '../product/Product.interface';
 
 export const TradeInService = {
   async createTrade(
@@ -169,9 +171,9 @@ export const TradeInService = {
         transaction_id: payoutBatchId,
       };
 
-      await Transaction.create(transactionData);
+      await TransactionService.createTransaction(transactionData);
 
-      return await Product.create(productData);
+      return await ProductService.createProduct(productData as TProduct)
     }
 
     /** if you are a sr. dev , then you understand */
