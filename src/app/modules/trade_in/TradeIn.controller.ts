@@ -24,4 +24,33 @@ export const TradeInController = {
       message: 'Trade deleted successful.',
     });
   }),
+
+  /**
+   * *************************************************************************************************************
+   *                                                                                                           *
+   *                                           L I N E   B R E A K                                           *
+   *                                                                                                           *
+   * **************************************************************************************************************
+   */
+
+  retrieveTrade: catchAsync(async (req, res) => {
+    const trades = await TradeInService.retrieveTrade(req.query);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Trades are retrieved successful.',
+      data: trades,
+    });
+  }),
+
+  confirmTrade: catchAsync(async (req, res) => {
+    await TradeInService.confirmTrade(req.params.id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Product buy successful.',
+    });
+  }),
 };

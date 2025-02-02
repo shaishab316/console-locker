@@ -1,8 +1,23 @@
 import { Router } from 'express';
 import { TradeInController } from './TradeIn.controller';
 
-const router = Router();
+const publicRouter = Router();
+const privateRouter = Router();
 
-router.post('/', TradeInController.createTrade);
+publicRouter.post('/', TradeInController.createTrade);
 
-export const TradeInRoutes = router;
+/**
+ * *************************************************************************************************************
+ *                                                                                                           *
+ *                                           L I N E   B R E A K                                           *
+ *                                                                                                           *
+ * **************************************************************************************************************
+ */
+
+privateRouter.get('/', TradeInController.retrieveTrade);
+privateRouter.post('/:id', TradeInController.confirmTrade);
+
+export const TradeInRoutes = {
+  customerRoutes: publicRouter,
+  adminRoutes: privateRouter,
+};

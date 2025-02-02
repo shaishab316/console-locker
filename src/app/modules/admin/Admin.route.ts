@@ -8,6 +8,7 @@ import { ProductRoutes } from '../product/Product.route';
 import imageUploader from '../../middlewares/imageUploader';
 import { TransactionRoutes } from '../transaction/Transaction.route';
 import { ProductBuyQuesRoutes } from '../product_buy_question/ProductBuyQues.route';
+import { TradeInRoutes } from '../trade_in/TradeIn.route';
 
 const router = Router();
 
@@ -59,5 +60,6 @@ router.use('/transaction', verifyAdmin, TransactionRoutes);
  */
 
 router.use('/question/buy', verifyAdmin, ProductBuyQuesRoutes.adminRoutes);
+router.use("/buy", TradeInRoutes.adminRoutes)
 
 export const AdminRoutes = router;

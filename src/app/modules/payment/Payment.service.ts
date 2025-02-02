@@ -10,6 +10,8 @@ import { TTransaction } from '../transaction/Transaction.interface';
 import { Order } from '../order/Order.model';
 import { TransactionService } from '../transaction/Transaction.service';
 import Product from '../product/Product.model';
+import axios from 'axios';
+import QueryString from 'qs';
 
 export const PaymentService = {
   paypal: {
@@ -49,6 +51,7 @@ export const PaymentService = {
 
       return { redirectUrl, orderId: result.id };
     },
+
     async success(query: Record<any, any>) {
       const { orderId, transaction_id } = query;
 
@@ -90,6 +93,7 @@ export const PaymentService = {
 
       await order.save();
     },
+
     async refund(captureId: string, amount: string) {
       await paypalPaymentController.capturesRefund({
         captureId,
@@ -101,6 +105,7 @@ export const PaymentService = {
         },
       });
     },
+
     async captureOrder(orderId: string) {
       // Step 3: Capture the payment after user approval (backend step)
       const captureResponse = await paypalOrdersController.ordersCapture({
@@ -114,6 +119,53 @@ export const PaymentService = {
       console.log('Payment Captured. Capture ID:', captureId); // Capture ID for refunding
 
       return captureId; // Capture ID is used for refunds
+    },
+
+    async getToken() {
+      const { data } = await axios.post(
+        'https://api-m.sandbox.paypal.com/v1/oauth2/token',
+        QueryString.stringify({ grant_type: 'client_credentials' }),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Basic ${Buffer.from(`${config.payment.paypal.client}:${config.payment.paypal.secret}`).toString('base64')}`,
+          },
+        },
+      );
+
+      return data.access_token;
+    },
+
+    async payout(email: string, amount: string) {
+      const payoutData = {
+        sender_batch_header: {
+          email_subject: 'You have received a payment!',
+          sender_batch_id: `batch-${Date.now()}`,
+        },
+        items: [
+          {
+            recipient_type: 'EMAIL',
+            receiver: email,
+            amount: {
+              value: amount,
+              currency: 'USD',
+            },
+          },
+        ],
+      };
+
+      const { data } = await axios.post(
+        'https://api-m.sandbox.paypal.com/v1/payments/payouts',
+        payoutData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.getToken()}`,
+          },
+        },
+      );
+
+      return data;
     },
   },
 };

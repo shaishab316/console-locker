@@ -10,12 +10,12 @@ const tradeInSchema = new Schema<TTradeIn>(
     },
     product: {
       type: Schema.Types.ObjectId,
-      ref: 'ProductBuyQues', 
+      ref: 'ProductBuyQues',
       required: true,
     },
     ref_product: {
       type: Schema.Types.ObjectId,
-      ref: 'Product', 
+      ref: 'Product',
     },
     information: [
       {
@@ -30,6 +30,11 @@ const tradeInSchema = new Schema<TTradeIn>(
     payment: {
       paypal: { type: String },
       bank: { type: String },
+    },
+    state: {
+      type: String,
+      enum: ['pending', 'confirm', 'cancel'],
+      default: 'pending',
     },
   },
   { timestamps: true },

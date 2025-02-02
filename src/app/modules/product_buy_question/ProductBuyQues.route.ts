@@ -97,7 +97,16 @@ publicRouter.get(
   ProductBuyQuesController.retrieveSingleQuestion,
 );
 publicRouter.post('/products/:id/price', ProductBuyQuesController.calcPrice);
-publicRouter.use('/', TradeInRoutes);
+
+/**
+ * *************************************************************************************************************
+ *                                                                                                           *
+ *                                           L I N E   B R E A K                                           *
+ *                                                                                                           *
+ * **************************************************************************************************************
+ */
+
+publicRouter.use('/', TradeInRoutes.customerRoutes);
 
 export const ProductBuyQuesRoutes = {
   adminRoutes: privateRouter,

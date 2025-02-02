@@ -13,4 +13,5 @@ export type TTradeIn = {
     paypal?: string;
     bank?: string;
   };
+  state: 'pending' | 'confirm' | 'cancel';
 };
