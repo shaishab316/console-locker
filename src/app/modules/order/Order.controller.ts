@@ -25,4 +25,14 @@ export const OrderController = {
       },
     });
   }),
+
+  cancel: catchAsync(async (req, res) => {
+    await OrderService.cancel(req.params.id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Order has been cancel successfully!',
+    });
+  }),
 };

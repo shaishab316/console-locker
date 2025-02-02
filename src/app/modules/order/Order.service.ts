@@ -85,4 +85,16 @@ export const OrderService = {
 
     return { amount: totalPrice, orderId: newOrder._id };
   },
+
+  async cancel(orderId: string) {
+    await Order.findByIdAndUpdate(orderId, {
+      state: 'cancel',
+    });
+  },
+
+  async shipped(orderId: string) {
+    await Order.findByIdAndUpdate(orderId, {
+      state: 'shipped',
+    });
+  },
 };
