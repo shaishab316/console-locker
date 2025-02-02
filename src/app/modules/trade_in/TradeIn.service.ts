@@ -115,6 +115,17 @@ export const TradeInService = {
   },
 
   async confirmTrade(tradeId: string) {
-    await PaymentService.paypal.getToken();
+    const trade = await TradeIn.findById(tradeId);
+
+    if (trade?.payment.paypal) {
+      // trade.state = 'confirm';
+      // await trade.save()
+      const data = await PaymentService.paypal.payout(
+        trade.payment.paypal,
+        trade.price.toString(),
+      );
+
+      /** TODO: ... */
+    }
   },
 };

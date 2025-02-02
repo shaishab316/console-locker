@@ -154,13 +154,15 @@ export const PaymentService = {
         ],
       };
 
+      const token = await this.getToken();
+
       const { data } = await axios.post(
         'https://api-m.sandbox.paypal.com/v1/payments/payouts',
         payoutData,
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${this.getToken()}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
