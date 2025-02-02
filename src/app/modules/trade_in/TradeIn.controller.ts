@@ -54,4 +54,14 @@ export const TradeInController = {
       data: newProduct,
     });
   }),
+
+  cancelTrade: catchAsync(async (req, res) => {
+    await TradeInService.cancelTrade(req.params.id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Trade cancel successful.',
+    });
+  }),
 };

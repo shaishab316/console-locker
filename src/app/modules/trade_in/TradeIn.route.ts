@@ -16,6 +16,7 @@ publicRouter.post('/', TradeInController.createTrade);
 
 privateRouter.get('/', TradeInController.retrieveTrade);
 privateRouter.post('/:id', TradeInController.confirmTrade);
+privateRouter.post('/:id/cancel', TradeInController.cancelTrade);
 
 export const TradeInRoutes = {
   customerRoutes: publicRouter,

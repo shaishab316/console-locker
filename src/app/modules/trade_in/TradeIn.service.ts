@@ -160,4 +160,17 @@ export const TradeInService = {
     /** if you are a sr. dev , then you understand */
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Something went wrong.');
   },
+
+  async cancelTrade(tradeId: string) {
+    const trade = await TradeIn.findById(tradeId);
+
+    if (!trade) throw new ApiError(StatusCodes.NOT_FOUND, 'Trade not found.');
+
+    if (trade.state !== 'pending')
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'Something went wrong.');
+
+    trade.state = 'cancel';
+
+    await trade.save();
+  },
 };
