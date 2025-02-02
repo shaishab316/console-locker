@@ -35,4 +35,14 @@ export const OrderController = {
       message: 'Order has been cancel successfully!',
     });
   }),
+
+  shipped: catchAsync(async (req, res) => {
+    await OrderService.cancel(req.params.id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Order has been shipped successfully!',
+    });
+  }),
 };

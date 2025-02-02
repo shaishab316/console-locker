@@ -1,10 +1,24 @@
 import { Router } from 'express';
 import { OrderController } from './Order.controller';
 
-const router = Router();
+const publicRouter = Router();
+const privateRouter = Router();
 
 // create a order
-router.post('/', OrderController.checkout);
-router.post('/:id/cancel', OrderController.cancel);
+publicRouter.post('/checkout', OrderController.checkout);
+publicRouter.post('/:id/cancel', OrderController.cancel);
 
-export const OrderRoutes = router;
+/**
+ * *************************************************************************************************************
+ *                                                                                                           *
+ *                                           L I N E   B R E A K                                           *
+ *                                                                                                           *
+ * **************************************************************************************************************
+ */
+
+privateRouter.post('/:id/shipped', OrderController.shipped);
+
+export const OrderRoutes = {
+  customerRoutes: publicRouter,
+  adminRoutes: privateRouter,
+};

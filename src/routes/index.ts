@@ -23,15 +23,11 @@ const apiRoutes: { path: string; route: Router }[] = [
   },
   {
     path: '/order',
-    route: OrderRoutes,
+    route: OrderRoutes.customerRoutes,
   },
   {
     path: '/payment',
     route: PaymentRoutes,
-  },
-  {
-    path: '/checkout',
-    route: OrderRoutes,
   },
   {
     path: '/sell',
