@@ -13,4 +13,15 @@ export const SettingController = {
       message: 'Setting modified successful.',
     });
   }),
+
+  retrieve: catchAsync(async (req, res) => {
+    const settings = await SettingService.retrieve();
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Setting retrieved successful.',
+      data: settings,
+    });
+  }),
 };

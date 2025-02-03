@@ -6,6 +6,16 @@ const publicRouter = Router();
 
 privateRouter.patch('/set', SettingController.modify);
 
+/**
+ * *************************************************************************************************************
+ *                                                                                                           *
+ *                                           L I N E   B R E A K                                           *
+ *                                                                                                           *
+ * **************************************************************************************************************
+ */
+
+publicRouter.get('/', SettingController.retrieve);
+
 export const SettingRoutes = {
   adminRoutes: privateRouter,
   customerRoutes: publicRouter,
