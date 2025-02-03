@@ -41,6 +41,11 @@ export const ProductService = {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
     }
 
+    // delete product images
+    deletedProduct.images.forEach(
+      async (image: string) => await deleteFile(image),
+    );
+
     return deletedProduct;
   },
 

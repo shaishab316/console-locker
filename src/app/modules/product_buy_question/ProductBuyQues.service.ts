@@ -3,6 +3,7 @@ import { TBuyQues, TProductBuyQues } from './ProductBuyQues.interface';
 import ProductBuyQues from './ProductBuyQues.model';
 import { StatusCodes } from 'http-status-codes';
 import ApiError from '../../../errors/ApiError';
+import deleteFile from '../../../shared/deleteFile';
 
 export const ProductBuyQuesService = {
   createQuestion: async (questionData: TProductBuyQues) =>
@@ -15,7 +16,11 @@ export const ProductBuyQuesService = {
       { new: true },
     );
 
-    if (!updatedQuestion) throw new Error('Product buy question not found!');
+    if (!updatedQuestion)
+      throw new ApiError(
+        StatusCodes.NOT_FOUND,
+        'Product buy question not found!',
+      );
 
     return updatedQuestion;
   },
@@ -23,7 +28,14 @@ export const ProductBuyQuesService = {
   async deleteQuestion(id: string) {
     const deletedQuestion = await ProductBuyQues.findByIdAndDelete(id);
 
-    if (!deletedQuestion) throw new Error('Product buy question not found!');
+    if (!deletedQuestion)
+      throw new ApiError(
+        StatusCodes.NOT_FOUND,
+        'Product buy question not found!',
+      );
+
+    // delete question image
+    await deleteFile(deletedQuestion.image);
 
     return deletedQuestion;
   },
@@ -69,9 +81,8 @@ export const ProductBuyQuesService = {
     if (questionData.description)
       updateData['questions.$.description'] = questionData.description;
 
-    if (Object.keys(updateData).length === 0) {
-      throw new Error('No valid fields to update');
-    }
+    if (Object.keys(updateData).length === 0)
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'No valid fields to update');
 
     const updatedProduct = await ProductBuyQues.findOneAndUpdate(
       {
@@ -82,9 +93,11 @@ export const ProductBuyQuesService = {
       { new: true },
     );
 
-    if (!updatedProduct) {
-      throw new Error('Product or question not found!');
-    }
+    if (!updatedProduct)
+      throw new ApiError(
+        StatusCodes.NOT_FOUND,
+        'Product or question not found!',
+      );
 
     return updatedProduct;
   },
@@ -98,9 +111,11 @@ export const ProductBuyQuesService = {
       { new: true },
     );
 
-    if (!updatedProduct) {
-      throw new Error('Product or question not found!');
-    }
+    if (!updatedProduct)
+      throw new ApiError(
+        StatusCodes.NOT_FOUND,
+        'Product or question not found!',
+      );
 
     return updatedProduct;
   },
@@ -226,9 +241,8 @@ export const ProductBuyQuesService = {
   ) {
     const product = await ProductBuyQues.findById(questionId).lean();
 
-    if (!product) {
+    if (!product)
       throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
-    }
 
     const selectedQuesMap = new Map(
       selectedQuestions.map(q => [q.quesId, q.optionId]),

@@ -162,7 +162,10 @@ export const TradeInService = {
       const payoutBatchId = payoutResponse?.batch_header?.payout_batch_id;
 
       if (!payoutBatchId) {
-        throw new Error('Failed to retrieve payout batch ID');
+        throw new ApiError(
+          StatusCodes.NOT_FOUND,
+          'Failed to retrieve payout batch ID',
+        );
       }
 
       const transactionData: TTransaction = {
