@@ -4,7 +4,7 @@ import multer, { FileFilterCallback } from 'multer';
 import { StatusCodes } from 'http-status-codes';
 import ApiError from '../../errors/ApiError';
 import { ErrorRequestHandler } from 'express';
-import unlinkFile from '../../shared/unlinkFile';
+import deleteFile from '../../shared/deleteFile';
 
 const imageUploader = () => {
   const baseUploadDir = path.join(process.cwd(), 'uploads');
@@ -20,12 +20,12 @@ const imageUploader = () => {
   };
 
   const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
+    destination: (_req, _file, cb) => {
       const uploadDir = path.join(baseUploadDir, 'images');
       createDir(uploadDir);
       cb(null, uploadDir);
     },
-    filename: (req, file, cb) => {
+    filename: (_req, file, cb) => {
       const fileExt = path.extname(file.originalname);
       const fileName =
         file.originalname
@@ -39,7 +39,7 @@ const imageUploader = () => {
     },
   });
 
-  const fileFilter = (req: any, file: any, cb: FileFilterCallback) => {
+  const fileFilter = (_req: any, file: any, cb: FileFilterCallback) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
     } else {
@@ -63,8 +63,8 @@ export const imagesUploadRollback: ErrorRequestHandler = (
   next,
 ) => {
   if (req.files && 'images' in req.files && Array.isArray(req.files.images))
-    req.files.images.forEach(({ filename }) =>
-      unlinkFile(`/images/${filename}`),
+    req.files.images.forEach(
+      async ({ filename }) => await deleteFile(`/images/${filename}`),
     );
 
   next(err);

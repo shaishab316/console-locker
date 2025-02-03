@@ -3,8 +3,8 @@ import ApiError from '../../../errors/ApiError';
 import { TProduct } from './Product.interface';
 import Product from './Product.model';
 import { PipelineStage } from 'mongoose';
-import unlinkFile from '../../../shared/unlinkFile';
 import { mergeProducts } from './Product.utils';
+import deleteFile from '../../../shared/deleteFile';
 
 export const ProductService = {
   /** for admin */
@@ -28,9 +28,8 @@ export const ProductService = {
     );
 
     // Delete old images if new images were uploaded
-    if (updateData.images && updateData.images.length > 0) {
-      imagesToDelete.forEach((image: string) => unlinkFile(image));
-    }
+    if (updateData.images && updateData.images.length > 0)
+      imagesToDelete.forEach(async (image: string) => await deleteFile(image));
 
     return updatedProduct;
   },

@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import ApiError from '../../../errors/ApiError';
 import { TBlog } from './Blog.interface';
 import Blog from './Blog.model';
-import unlinkFile from '../../../shared/unlinkFile';
+import deleteFile from '../../../shared/deleteFile';
 
 export const BlogService = {
   create: async (blogData: TBlog) => await Blog.create(blogData),
@@ -17,7 +17,7 @@ export const BlogService = {
     });
 
     // Delete old image if new image was uploaded
-    if (updatedData.image) unlinkFile(existingBlog.image);
+    if (updatedData.image) await deleteFile(existingBlog.image);
 
     return updatedBlog;
   },

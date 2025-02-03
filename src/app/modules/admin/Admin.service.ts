@@ -9,7 +9,7 @@ import { sendOtpTemplate } from './Admin.template';
 import { generateOtp } from './Admin.utils';
 import { TAdmin } from './Admin.interface';
 import { Request } from 'express';
-import unlinkFile from '../../../shared/unlinkFile';
+import deleteFile from '../../../shared/deleteFile';
 
 export const AdminService = {
   async registerAdmin(newAdmin: TAdmin) {
@@ -33,13 +33,10 @@ export const AdminService = {
       runValidators: true,
     });
 
-    if (!updatedAdmin) {
-      throw new Error('Admin not found');
-    }
+    if (!updatedAdmin)
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Admin not found');
 
-    if (avatar) {
-      unlinkFile(imagesToDelete);
-    }
+    if (avatar) await deleteFile(imagesToDelete);
 
     return updatedAdmin;
   },
