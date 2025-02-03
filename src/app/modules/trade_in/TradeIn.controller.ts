@@ -45,7 +45,7 @@ export const TradeInController = {
   }),
 
   confirmTrade: catchAsync(async (req, res) => {
-    const newProduct = await TradeInService.confirmTrade(req.params.id);
+    const newProduct = await TradeInService.confirmTrade(req);
 
     sendResponse(res, {
       success: true,

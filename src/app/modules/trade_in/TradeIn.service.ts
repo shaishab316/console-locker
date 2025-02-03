@@ -10,6 +10,7 @@ import { TTransaction } from '../transaction/Transaction.interface';
 import { TransactionService } from '../transaction/Transaction.service';
 import { ProductService } from '../product/Product.service';
 import { TProduct } from '../product/Product.interface';
+import { Request } from 'express-serve-static-core';
 
 export const TradeInService = {
   async createTrade(
@@ -119,8 +120,8 @@ export const TradeInService = {
     };
   },
 
-  async confirmTrade(tradeId: string) {
-    const trade = await TradeIn.findById(tradeId);
+  async confirmTrade(req: Request) {
+    const trade = await TradeIn.findById(req.params.id);
     const tradeProduct = await ProductBuyQues.findById(trade?.product);
 
     if (trade?.state !== 'pending')
@@ -135,6 +136,7 @@ export const TradeInService = {
         name: tradeProduct?.name,
         price: (Math.ceil(trade.price * 1.1) - 0.01).toFixed(2),
         quantity: 1,
+        admin: req.admin!._id,
       };
 
       trade.information.forEach(info => {
@@ -173,7 +175,7 @@ export const TradeInService = {
 
       await TransactionService.createTransaction(transactionData);
 
-      return await ProductService.createProduct(productData as TProduct)
+      return await ProductService.createProduct(productData as TProduct);
     }
 
     /** if you are a sr. dev , then you understand */
