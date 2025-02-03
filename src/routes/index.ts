@@ -7,6 +7,7 @@ import { PaymentRoutes } from '../app/modules/payment/Payment.route';
 import { ProductBuyQuesRoutes } from '../app/modules/product_buy_question/ProductBuyQues.route';
 import { BlogRoutes } from '../app/modules/blog/Blog.route';
 import { SettingRoutes } from '../app/modules/setting/Setting.route';
+import { NotificationRoutes } from '../app/modules/notification/Notification.route';
 
 const router = express.Router();
 
@@ -43,6 +44,10 @@ const apiRoutes: { path: string; route: Router }[] = [
   {
     path: '/setting',
     route: SettingRoutes.customerRoutes,
+  },
+  {
+    path: '/contact',
+    route: NotificationRoutes.customerRoutes,
   },
 ];
 
