@@ -14,6 +14,15 @@ privateRouter.post(
   BlogController.create,
 );
 
+privateRouter.patch(
+  '/:id/edit',
+  imageUploader(),
+  validateRequest(BlogValidation.update),
+  BlogController.update,
+);
+
+privateRouter.delete('/:id/delete', BlogController.delete);
+
 export const BlogRoutes = {
   adminRoutes: privateRouter,
   customerRoutes: publicRouter,

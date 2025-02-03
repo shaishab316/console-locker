@@ -7,4 +7,10 @@ export const BlogValidation = {
       description: z.string().min(1, { message: 'Description is required' }),
     }),
   }),
+  update: z.object({
+    body: z.object({
+      title: z.string().optional(),
+      description: z.string().optional(),
+    }),
+  }),
 };

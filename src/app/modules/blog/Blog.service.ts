@@ -6,6 +6,7 @@ import deleteFile from '../../../shared/deleteFile';
 
 export const BlogService = {
   create: async (blogData: TBlog) => await Blog.create(blogData),
+
   async update(blogId: string, updatedData: Partial<TBlog>) {
     const existingBlog = await Blog.findById(blogId);
 
@@ -20,5 +21,15 @@ export const BlogService = {
     if (updatedData.image) await deleteFile(existingBlog.image);
 
     return updatedBlog;
+  },
+
+  async delete(blogId: string) {
+    const existingBlog = await Blog.findByIdAndDelete(blogId);
+
+    if (!existingBlog)
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Blog not found');
+
+    // Delete blog image
+    await deleteFile(existingBlog.image);
   },
 };

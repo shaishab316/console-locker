@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import { catchAsyncWithCallback } from '../../../shared/catchAsync';
+import catchAsync, { catchAsyncWithCallback } from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { imagesUploadRollback } from '../../middlewares/imageUploader';
 import { BlogService } from './Blog.service';
@@ -27,4 +27,37 @@ export const BlogController = {
       data: newBlog,
     });
   }, imagesUploadRollback),
+
+  update: catchAsyncWithCallback(async (req, res) => {
+    const newImages: string[] = [];
+
+    if (req.files && 'images' in req.files && Array.isArray(req.files.images))
+      req.files.images.forEach(({ filename }) =>
+        newImages.push(`/images/${filename}`),
+      );
+
+    if (newImages.length) req.body.image = newImages[0];
+
+    const updatedBlog = await BlogService.update(
+      req.params.id,
+      req.body,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Blog has been updated successfully!',
+      data: updatedBlog,
+    });
+  }, imagesUploadRollback),
+
+  delete: catchAsync(async (req, res) => {
+    await BlogService.delete(req.params.id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Blog has been deleted successfully!',
+    });
+  }),
 };
