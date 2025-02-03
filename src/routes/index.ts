@@ -5,6 +5,7 @@ import { CustomerRoutes } from '../app/modules/customer/Customer.route';
 import { OrderRoutes } from '../app/modules/order/Order.route';
 import { PaymentRoutes } from '../app/modules/payment/Payment.route';
 import { ProductBuyQuesRoutes } from '../app/modules/product_buy_question/ProductBuyQues.route';
+import { BlogRoutes } from '../app/modules/blog/Blog.route';
 
 const router = express.Router();
 
@@ -33,6 +34,10 @@ const apiRoutes: { path: string; route: Router }[] = [
     path: '/sell',
     /** admin buy === customer sell */
     route: ProductBuyQuesRoutes.customerRoutes,
+  },
+  {
+    path: '/blogs',
+    route: BlogRoutes.customerRoutes,
   },
 ];
 

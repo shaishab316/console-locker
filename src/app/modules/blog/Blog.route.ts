@@ -23,6 +23,16 @@ privateRouter.patch(
 
 privateRouter.delete('/:id/delete', BlogController.delete);
 
+/**
+ * *************************************************************************************************************
+ *                                                                                                           *
+ *                                           L I N E   B R E A K                                           *
+ *                                                                                                           *
+ * **************************************************************************************************************
+ */
+
+publicRouter.get('/', BlogController.list);
+
 export const BlogRoutes = {
   adminRoutes: privateRouter,
   customerRoutes: publicRouter,

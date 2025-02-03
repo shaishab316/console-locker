@@ -38,10 +38,7 @@ export const BlogController = {
 
     if (newImages.length) req.body.image = newImages[0];
 
-    const updatedBlog = await BlogService.update(
-      req.params.id,
-      req.body,
-    );
+    const updatedBlog = await BlogService.update(req.params.id, req.body);
 
     sendResponse(res, {
       success: true,
@@ -58,6 +55,17 @@ export const BlogController = {
       success: true,
       statusCode: StatusCodes.OK,
       message: 'Blog has been deleted successfully!',
+    });
+  }),
+
+  list: catchAsync(async (req, res) => {
+    const data = await BlogService.list(req.query);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Blogs retrieved successfully!',
+      data,
     });
   }),
 };
