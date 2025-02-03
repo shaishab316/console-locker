@@ -41,13 +41,13 @@ export const BlogService = {
    * **************************************************************************************************************
    */
 
-  // async retrieve(blogId: string) {
-  //   const blog = await Blog.findById(blogId);
+  async retrieve(blogId: string) {
+    const blog = await Blog.findById(blogId);
 
-  //   if (!blog) throw new ApiError(StatusCodes.NOT_FOUND, 'Blog not found');
+    if (!blog) throw new ApiError(StatusCodes.NOT_FOUND, 'Blog not found');
 
-  //   return blog;
-  // },
+    return blog;
+  },
 
   async list({ page = '1', limit = '10' }: Record<any, any>) {
     const skip = (+page - 1) * +limit;

@@ -58,6 +58,17 @@ export const BlogController = {
     });
   }),
 
+  retrieve: catchAsync(async (req, res) => {
+    const blog = await BlogService.retrieve(req.params.id);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Blog retrieved successfully!',
+      data: blog,
+    });
+  }),
+
   list: catchAsync(async (req, res) => {
     const data = await BlogService.list(req.query);
 

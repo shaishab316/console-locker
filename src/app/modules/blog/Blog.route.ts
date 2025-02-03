@@ -32,6 +32,7 @@ privateRouter.delete('/:id/delete', BlogController.delete);
  */
 
 publicRouter.get('/', BlogController.list);
+publicRouter.get('/:id', BlogController.retrieve);
 
 export const BlogRoutes = {
   adminRoutes: privateRouter,
