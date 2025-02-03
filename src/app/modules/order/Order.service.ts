@@ -87,7 +87,7 @@ export const OrderService = {
   },
 
   async cancel(orderId: string) {
-    await Order.findById(orderId, {
+    await Order.findByIdAndUpdate(orderId, {
       state: 'cancel',
     });
   },
