@@ -11,6 +11,7 @@ import { ProductBuyQuesRoutes } from '../product_buy_question/ProductBuyQues.rou
 import { TradeInRoutes } from '../trade_in/TradeIn.route';
 import { OrderRoutes } from '../order/Order.route';
 import { BlogRoutes } from '../blog/Blog.route';
+import { SettingRoutes } from '../setting/Setting.route';
 
 const router = Router();
 
@@ -83,5 +84,15 @@ router.use('/order', verifyAdmin, OrderRoutes.adminRoutes);
  */
 
 router.use('/blog', verifyAdmin, BlogRoutes.adminRoutes);
+
+/**
+ * *************************************************************************************************************
+ *                                                                                                           *
+ *                                           L I N E   B R E A K                                           *
+ *                                                                                                           *
+ * **************************************************************************************************************
+ */
+
+router.use('/setting', verifyAdmin, SettingRoutes.adminRoutes);
 
 export const AdminRoutes = router;
