@@ -17,6 +17,7 @@ publicRouter.post('/:id/cancel', OrderController.cancel);
  */
 
 privateRouter.post('/:id/shipped', OrderController.shipped);
+privateRouter.get('/', OrderController.retrieve);
 
 export const OrderRoutes = {
   customerRoutes: publicRouter,

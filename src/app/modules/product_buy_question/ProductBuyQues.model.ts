@@ -12,12 +12,17 @@ const buyQuesSchema = new Schema<TBuyQues>({
   options: { type: [optionSchema], required: true },
 });
 
-const productBuyQuesSchema = new Schema<TProductBuyQues>({
-  image: { type: String, required: true },
-  name: { type: String, required: true, unique: true },
-  base_price: { type: Number, required: true },
-  questions: { type: [buyQuesSchema], required: true },
-});
+const productBuyQuesSchema = new Schema<TProductBuyQues>(
+  {
+    image: { type: String, required: true },
+    name: { type: String, required: true, unique: true },
+    base_price: { type: Number, required: true },
+    questions: { type: [buyQuesSchema], required: true },
+  },
+  {
+    timestamps: true,
+  },
+);
 
 const ProductBuyQues = model<TProductBuyQues>(
   'ProductBuyQues',

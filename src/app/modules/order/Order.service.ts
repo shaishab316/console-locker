@@ -97,4 +97,29 @@ export const OrderService = {
       state: 'shipped',
     });
   },
+
+  async retrieve(query: Record<any, any>) {
+    const { page = '1', limit = '10', state } = query;
+    const filters: Record<string, any> = {};
+
+    if (state) {
+      filters.state = state;
+    }
+
+    const orders = await Order.find(filters)
+      .skip((+page - 1) * +limit)
+      .limit(+limit);
+
+    const totalOrders = await Order.countDocuments(filters);
+
+    return {
+      meta: {
+        totalPages: Math.ceil(totalOrders / +limit),
+        page: +page,
+        limit: +limit,
+        total: totalOrders,
+      },
+      orders,
+    };
+  },
 };

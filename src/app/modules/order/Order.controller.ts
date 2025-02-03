@@ -45,4 +45,15 @@ export const OrderController = {
       message: 'Order has been shipped successfully!',
     });
   }),
+
+  retrieve: catchAsync(async (req, res) => {
+    const data = await OrderService.retrieve(req.query);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Orders retrieved successfully!',
+      data,
+    });
+  }),
 };
