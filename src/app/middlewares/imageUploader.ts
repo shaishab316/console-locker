@@ -1,23 +1,18 @@
-import fs from 'fs';
 import path from 'path';
 import multer, { FileFilterCallback } from 'multer';
 import { StatusCodes } from 'http-status-codes';
 import ApiError from '../../errors/ApiError';
 import { ErrorRequestHandler } from 'express';
 import deleteFile from '../../shared/deleteFile';
+import { createDir } from '../../util/createDir';
 
 const imageUploader = () => {
-  const baseUploadDir = path.join(process.cwd(), 'uploads');
+  const baseUploadDir =
+    process.env.HOST === 'vercel'
+      ? path.join('/tmp', 'uploads')
+      : path.join(process.cwd(), 'uploads');
 
-  if (!fs.existsSync(baseUploadDir)) {
-    fs.mkdirSync(baseUploadDir);
-  }
-
-  const createDir = (dirPath: string) => {
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath);
-    }
-  };
+  createDir(baseUploadDir);
 
   const storage = multer.diskStorage({
     destination: (_req, _file, cb) => {
@@ -50,7 +45,7 @@ const imageUploader = () => {
   const upload = multer({
     storage,
     fileFilter,
-  }).fields([{ name: 'images', maxCount: 5 }]); // Allow up to 5 images
+  }).fields([{ name: 'images', maxCount: 20 }]); // Allow up to 20 images
 
   return upload;
 };
