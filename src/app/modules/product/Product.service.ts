@@ -274,6 +274,20 @@ export const ProductService = {
     return mergedProducts;
   },
 
+  async retrieveBySlug(slug: string) {
+    const product = await Product.findOne({ slug });
+    if (!product)
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
+
+    return { product };
+  },
+
+  async findSlug(filter: Partial<TProduct>) {
+    const product = await Product.findOne(filter).select('slug');
+
+    return product?.slug;
+  },
+
   async calculateProductPrice(
     params: Record<string, string>,
     query: Record<string, string>,

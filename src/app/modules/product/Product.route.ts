@@ -48,10 +48,14 @@ privateRouter.post(
 publicRouter.get('/', ProductController.list);
 
 // retrieved a product
-publicRouter.get(
-  '/:productType/:brand/:productName',
-  ProductController.retrieve,
-);
+// publicRouter.get(
+//   '/:productType/:brand/:productName',
+//   ProductController.retrieve,
+// );
+
+publicRouter.get('/:productName/find-slug', ProductController.findSlug);
+
+publicRouter.get('/:slug', ProductController.retrieveBySlug);
 
 // calculate a product price
 publicRouter.get(

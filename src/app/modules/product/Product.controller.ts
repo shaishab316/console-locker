@@ -25,7 +25,7 @@ export const ProductController = {
 
     sendResponse(res, {
       success: true,
-      statusCode: StatusCodes.OK,
+      statusCode: StatusCodes.CREATED,
       message: 'Product has created successfully!',
       data: newProduct,
     });
@@ -107,6 +107,36 @@ export const ProductController = {
       statusCode: StatusCodes.OK,
       message: 'Products retrieved successfully',
       data,
+    });
+  }),
+
+  retrieveBySlug: catchAsyncWithCallback(async (req, res) => {
+    const data = await ProductService.retrieveBySlug(req.params.slug as string);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Product has retrieved successfully',
+      data,
+    });
+  }),
+
+  findSlug: catchAsync(async (req, res) => {
+    const filter = {
+      name: req.params.productName,
+      model: req.query.model as string,
+      condition: req.query.condition as string,
+      memory: req.query.memory as string,
+      controller: req.query.controller as string,
+    };
+
+    const slug = await ProductService.findSlug(filter);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Slug find successfully',
+      data: { slug },
     });
   }),
 
