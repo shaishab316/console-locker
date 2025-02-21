@@ -8,7 +8,7 @@ import { imagesUploadRollback } from '../../middlewares/imageUploader';
 
 export const ProductController = {
   /** for admin */
-  createProduct: catchAsyncWithCallback(async (req, res) => {
+  create: catchAsyncWithCallback(async (req, res) => {
     const images: string[] = [];
 
     if (req.files && 'images' in req.files && Array.isArray(req.files.images))
@@ -18,7 +18,7 @@ export const ProductController = {
 
     req.body.images = images;
 
-    const newProduct = await ProductService.createProduct({
+    const newProduct = await ProductService.create({
       ...req.body,
       admin: req.admin!._id,
     });
@@ -31,7 +31,7 @@ export const ProductController = {
     });
   }, imagesUploadRollback),
 
-  updateProduct: catchAsyncWithCallback(async (req, res) => {
+  update: catchAsyncWithCallback(async (req, res) => {
     const newImages: string[] = [];
 
     if (req.files && 'images' in req.files && Array.isArray(req.files.images))
@@ -41,7 +41,7 @@ export const ProductController = {
 
     if (newImages.length) req.body.images = newImages;
 
-    const updatedProduct = await ProductService.updateProduct(
+    const updatedProduct = await ProductService.update(
       req.params.productId,
       req.body,
     );
@@ -54,8 +54,8 @@ export const ProductController = {
     });
   }, imagesUploadRollback),
 
-  deleteProduct: catchAsync(async (req, res) => {
-    const deletedProduct = await ProductService.deleteProduct(req.params.id);
+  delete: catchAsync(async (req, res) => {
+    const deletedProduct = await ProductService.delete(req.params.id);
 
     sendResponse(res, {
       success: true,
@@ -99,10 +99,8 @@ export const ProductController = {
 
   /** for user */
 
-  retrieveProducts: catchAsync(async (req, res) => {
-    const data = await ProductService.retrieveProducts(
-      req.query as Record<string, string>,
-    );
+  list: catchAsync(async (req, res) => {
+    const data = await ProductService.list(req.query as Record<string, string>);
 
     sendResponse(res, {
       success: true,
@@ -112,9 +110,9 @@ export const ProductController = {
     });
   }),
 
-  retrieveSingleProduct: catchAsyncWithCallback(
+  retrieve: catchAsyncWithCallback(
     async (req, res) => {
-      const data = await ProductService.retrieveSingleProduct(
+      const data = await ProductService.retrieve(
         req.params as Record<string, string>,
       );
 

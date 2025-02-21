@@ -1,7 +1,14 @@
 import { Schema, model } from 'mongoose';
 import { TProduct } from './Product.interface';
+import slugify from 'slugify';
 
 const productSchema = new Schema<TProduct>({
+  slug: {
+    type: String,
+    index: true,
+    unique: true,
+    required: true,
+  },
   admin: {
     type: Schema.Types.ObjectId,
     ref: 'Admin',
@@ -55,6 +62,52 @@ const productSchema = new Schema<TProduct>({
     type: Schema.Types.ObjectId,
     ref: 'Product',
   },
+});
+
+const generateProductSlug = (product: any): string => {
+  const fields = [
+    product.name,
+    product.memory,
+    product.controller,
+    product.product_type,
+    product.brand,
+    product.model,
+    product.condition,
+  ].filter(Boolean); // Remove empty values
+
+  return slugify(fields.join('-'), { lower: true, strict: true });
+};
+
+// Middleware to generate or update slug before saving
+productSchema.pre('validate', async function (next) {
+  if (
+    this.isModified('name') ||
+    this.isModified('memory') ||
+    this.isModified('controller') ||
+    this.isModified('product_type') ||
+    this.isModified('brand') ||
+    this.isModified('model') ||
+    this.isModified('condition') ||
+    this.isModified('slug')
+  ) {
+    const baseSlug = generateProductSlug(this);
+    let newSlug = baseSlug;
+
+    let existingProduct = await Product.findOne({ slug: newSlug });
+    let counter = 2;
+
+    while (
+      existingProduct &&
+      existingProduct._id.toString() !== this._id.toString()
+    ) {
+      newSlug = `${baseSlug}-${counter}`;
+      existingProduct = await Product.findOne({ slug: newSlug });
+      counter++;
+    }
+
+    this.slug = newSlug;
+  }
+  next();
 });
 
 const Product = model('Product', productSchema);

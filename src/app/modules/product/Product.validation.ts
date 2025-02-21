@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const ProductValidation = {
-  productCreateValidationSchema: z.object({
+  create: z.object({
     body: z.object({
       name: z.string().min(1),
       product_type: z.string().min(1),
@@ -41,7 +41,7 @@ export const ProductValidation = {
     }),
   }),
 
-  productVariantCreateValidationSchema: z.object({
+  createVariant: z.object({
     body: z.object({
       name: z.string().min(1),
       price: z
@@ -70,7 +70,7 @@ export const ProductValidation = {
     }),
   }),
 
-  productUpdateValidationSchema: z.object({
+  update: z.object({
     body: z.object({
       name: z.string().optional(),
       product_type: z.string().optional(),

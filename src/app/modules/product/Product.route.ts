@@ -12,26 +12,26 @@ const publicRouter = Router();
 privateRouter.post(
   '/create',
   imageUploader(),
-  validateRequest(ProductValidation.productCreateValidationSchema),
-  ProductController.createProduct,
+  validateRequest(ProductValidation.create),
+  ProductController.create,
 );
 
 // update a product
 privateRouter.patch(
   '/:productId/edit',
   imageUploader(),
-  validateRequest(ProductValidation.productUpdateValidationSchema),
-  ProductController.updateProduct,
+  validateRequest(ProductValidation.update),
+  ProductController.update,
 );
 
 // delete a product
-privateRouter.delete('/:id/delete', ProductController.deleteProduct);
+privateRouter.delete('/:id/delete', ProductController.delete);
 
 // create a new variant
 privateRouter.post(
   '/:productId/variant/create',
   imageUploader(),
-  validateRequest(ProductValidation.productVariantCreateValidationSchema),
+  validateRequest(ProductValidation.createVariant),
   ProductController.createVariant,
 );
 
@@ -45,12 +45,12 @@ privateRouter.post(
 
 /** for customer */
 // retrieved all products
-publicRouter.get('/', ProductController.retrieveProducts);
+publicRouter.get('/', ProductController.list);
 
 // retrieved a product
 publicRouter.get(
   '/:productType/:brand/:productName',
-  ProductController.retrieveSingleProduct,
+  ProductController.retrieve,
 );
 
 // calculate a product price

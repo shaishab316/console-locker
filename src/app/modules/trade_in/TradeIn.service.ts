@@ -178,7 +178,7 @@ export const TradeInService = {
 
       await TransactionService.createTransaction(transactionData);
 
-      return await ProductService.createProduct(productData as TProduct);
+      return await ProductService.create(productData as TProduct);
     }
 
     /** if you are a sr. dev , then you understand */

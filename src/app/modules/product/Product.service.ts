@@ -8,11 +8,11 @@ import deleteFile from '../../../shared/deleteFile';
 
 export const ProductService = {
   /** for admin */
-  async createProduct(newProduct: TProduct) {
+  async create(newProduct: TProduct) {
     return await Product.create(newProduct);
   },
 
-  async updateProduct(productId: string, updateData: Partial<TProduct>) {
+  async update(productId: string, updateData: Partial<TProduct>) {
     const existingProduct = await Product.findById(productId);
 
     if (!existingProduct) {
@@ -34,7 +34,7 @@ export const ProductService = {
     return updatedProduct;
   },
 
-  async deleteProduct(productId: string) {
+  async delete(productId: string) {
     const deletedProduct = await Product.findByIdAndDelete(productId);
 
     if (!deletedProduct) {
@@ -76,7 +76,7 @@ export const ProductService = {
 
   /** for users */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  async retrieveProducts(query: Record<string, string>) {
+  async list(query: Record<string, string>) {
     const {
       product_type: productType,
       brand,
@@ -249,7 +249,7 @@ export const ProductService = {
     };
   },
 
-  async retrieveSingleProduct(params: Record<string, string>) {
+  async retrieve(params: Record<string, string>) {
     const products = await Product.find({
       product_type: params.productType,
       brand: params.brand,
