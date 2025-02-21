@@ -110,6 +110,6 @@ productSchema.pre('validate', async function (next) {
   next();
 });
 
-const Product = model('Product', productSchema);
+const Product = model<TProduct>('Product', productSchema);
 
 export default Product;

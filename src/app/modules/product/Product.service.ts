@@ -249,43 +249,39 @@ export const ProductService = {
     };
   },
 
-  async retrieve(params: Record<string, string>) {
-    const products = await Product.find({
-      product_type: params.productType,
-      brand: params.brand,
-      name: params.productName,
-    }).select('-variants');
+  async retrieveMeta(productName: string) {
+    const products = await Product.find({ name: productName });
 
     // Merge products by name
     const mergedProducts = mergeProducts(products)[0];
 
-    // Uniquify specific fields and rename to plural forms
-    mergedProducts.models = [...new Set(mergedProducts.model)];
-    mergedProducts.controllers = [...new Set(mergedProducts.controller)];
-    mergedProducts.conditions = [...new Set(mergedProducts.condition)];
-    mergedProducts.memories = [...new Set(mergedProducts.memory)];
-
-    // Optionally, remove the original singular fields if not needed
-    delete mergedProducts.model;
-    delete mergedProducts.controller;
-    delete mergedProducts.condition;
-    delete mergedProducts.memory;
-
-    return mergedProducts;
+    // Return only required fields with unique values
+    return {
+      models: [...new Set(mergedProducts.model)],
+      controllers: [...new Set(mergedProducts.controller)],
+      conditions: [...new Set(mergedProducts.condition)],
+      memories: [...new Set(mergedProducts.memory)],
+    };
   },
 
-  async retrieveBySlug(slug: string) {
+  async retrieve(slug: string) {
     const product = await Product.findOne({ slug });
+
     if (!product)
       throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
 
-    return { product };
+    const meta = await this.retrieveMeta(product.name!);
+
+    return { product, meta };
   },
 
   async findSlug(filter: Partial<TProduct>) {
     const product = await Product.findOne(filter).select('slug');
 
-    return product?.slug;
+    if (!product)
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
+
+    return product.slug;
   },
 
   async calculateProductPrice(

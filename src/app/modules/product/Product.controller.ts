@@ -2,7 +2,6 @@ import { StatusCodes } from 'http-status-codes';
 import sendResponse from '../../../shared/sendResponse';
 import { ProductService } from './Product.service';
 import catchAsync, { catchAsyncWithCallback } from '../../../shared/catchAsync';
-import ApiError from '../../../errors/ApiError';
 import Product from './Product.model';
 import { imagesUploadRollback } from '../../middlewares/imageUploader';
 
@@ -110,14 +109,19 @@ export const ProductController = {
     });
   }),
 
-  retrieveBySlug: catchAsyncWithCallback(async (req, res) => {
-    const data = await ProductService.retrieveBySlug(req.params.slug as string);
+  retrieve: catchAsyncWithCallback(async (req, res) => {
+    const { meta, product } = await ProductService.retrieve(
+      req.params.slug as string,
+    );
 
     sendResponse(res, {
       success: true,
       statusCode: StatusCodes.OK,
       message: 'Product has retrieved successfully',
-      data,
+      data: {
+        meta,
+        product,
+      },
     });
   }),
 
@@ -139,24 +143,6 @@ export const ProductController = {
       data: { slug },
     });
   }),
-
-  retrieve: catchAsyncWithCallback(
-    async (req, res) => {
-      const data = await ProductService.retrieve(
-        req.params as Record<string, string>,
-      );
-
-      sendResponse(res, {
-        success: true,
-        statusCode: StatusCodes.OK,
-        message: req.params.productName + ' has retrieved successfully',
-        data,
-      });
-    },
-    (_err, _req, _res, next) => {
-      next(new ApiError(StatusCodes.NOT_FOUND, 'Product not found.'));
-    },
-  ),
 
   calculateProductPrice: catchAsyncWithCallback(
     async (req, res) => {
