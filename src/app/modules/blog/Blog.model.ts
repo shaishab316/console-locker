@@ -36,10 +36,11 @@ const blogSchema = new Schema<TBlog>(
 // Middleware to generate or update slug before saving
 blogSchema.pre('validate', async function (next) {
   if (this.isModified('title') || this.isModified('slug')) {
-    let newSlug = slugify(this.slug || this.title, {
+    const baseSlug = slugify(this.slug || this.title, {
       lower: true,
       strict: true,
     });
+    let newSlug = baseSlug;
 
     let existingBlog = await Blog.findOne({ slug: newSlug });
     let counter = 2;
@@ -48,7 +49,7 @@ blogSchema.pre('validate', async function (next) {
       existingBlog &&
       existingBlog._id.toString() !== this._id.toString()
     ) {
-      newSlug = `${newSlug}-${counter}`;
+      newSlug = `${baseSlug}-${counter}`; // Always append to baseSlug, not newSlug
       existingBlog = await Blog.findOne({ slug: newSlug });
       counter++;
     }
