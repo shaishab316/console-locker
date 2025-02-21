@@ -5,4 +5,5 @@ export type TBlog = {
   title: string;
   description: string;
   admin: Types.ObjectId;
+  slug: string;
 };
