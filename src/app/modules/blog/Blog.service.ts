@@ -3,6 +3,7 @@ import ApiError from '../../../errors/ApiError';
 import { TBlog } from './Blog.interface';
 import Blog from './Blog.model';
 import deleteFile from '../../../shared/deleteFile';
+import slugify from 'slugify';
 
 export const BlogService = {
   create: async (blogData: TBlog) => await Blog.create(blogData),
@@ -15,6 +16,7 @@ export const BlogService = {
 
     const updatedBlog = await Blog.findByIdAndUpdate(blogId, updatedData, {
       new: true,
+      runValidators: true,
     });
 
     // Delete old image if new image was uploaded
@@ -33,6 +35,14 @@ export const BlogService = {
     await deleteFile(existingBlog.image);
   },
 
+  async slugAvailable(slug: string) {
+    const existingBlog = await Blog.findOne({
+      slug: slugify(slug, { lower: true, strict: true }), // ! make sure slug is unique
+    });
+
+    return !existingBlog;
+  },
+
   /**
    * *************************************************************************************************************
    *                                                                                                           *
@@ -41,8 +51,8 @@ export const BlogService = {
    * **************************************************************************************************************
    */
 
-  async retrieve(blogId: string) {
-    const blog = await Blog.findById(blogId);
+  async retrieve(slug: string) {
+    const blog = await Blog.findOne({ slug });
 
     if (!blog) throw new ApiError(StatusCodes.NOT_FOUND, 'Blog not found');
 

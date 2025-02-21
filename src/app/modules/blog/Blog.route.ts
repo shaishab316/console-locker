@@ -23,6 +23,8 @@ privateRouter.patch(
 
 privateRouter.delete('/:id/delete', BlogController.delete);
 
+privateRouter.get('/check-slug', BlogController.slugAvailable);
+
 /**
  * *************************************************************************************************************
  *                                                                                                           *
@@ -32,7 +34,7 @@ privateRouter.delete('/:id/delete', BlogController.delete);
  */
 
 publicRouter.get('/', BlogController.list);
-publicRouter.get('/:id', BlogController.retrieve);
+publicRouter.get('/:slug', BlogController.retrieve);
 
 export const BlogRoutes = {
   adminRoutes: privateRouter,

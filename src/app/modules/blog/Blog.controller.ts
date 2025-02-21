@@ -48,6 +48,19 @@ export const BlogController = {
     });
   }, imagesUploadRollback),
 
+  slugAvailable: catchAsync(async (req, res) => {
+    const isSlugAvailable = await BlogService.slugAvailable(
+      req.query.slug as string,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Slug check successfully!',
+      data: { isSlugAvailable },
+    });
+  }),
+
   delete: catchAsync(async (req, res) => {
     await BlogService.delete(req.params.id);
 
@@ -59,7 +72,7 @@ export const BlogController = {
   }),
 
   retrieve: catchAsync(async (req, res) => {
-    const blog = await BlogService.retrieve(req.params.id);
+    const blog = await BlogService.retrieve(req.params.slug);
 
     sendResponse(res, {
       success: true,

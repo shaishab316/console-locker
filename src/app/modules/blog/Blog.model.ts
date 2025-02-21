@@ -33,18 +33,22 @@ const blogSchema = new Schema<TBlog>(
   },
 );
 
-// Middleware to generate slug before saving
+// Middleware to generate or update slug before saving
 blogSchema.pre('validate', async function (next) {
-  if (this.isModified('title')) {
-    const baseSlug = slugify(this.title, { lower: true, strict: true });
-    let newSlug = baseSlug;
+  if (this.isModified('title') || this.isModified('slug')) {
+    let newSlug = slugify(this.slug || this.title, {
+      lower: true,
+      strict: true,
+    });
 
-    // Check if the base slug exists
     let existingBlog = await Blog.findOne({ slug: newSlug });
-    let counter = 2; // Start from 2 instead of 1
+    let counter = 2;
 
-    while (existingBlog) {
-      newSlug = `${baseSlug}-${counter}`;
+    while (
+      existingBlog &&
+      existingBlog._id.toString() !== this._id.toString()
+    ) {
+      newSlug = `${newSlug}-${counter}`;
       existingBlog = await Blog.findOne({ slug: newSlug });
       counter++;
     }
