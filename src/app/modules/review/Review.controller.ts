@@ -26,6 +26,20 @@ export const ReviewController = {
     });
   }),
 
+  update: catchAsync(async (req, res) => {
+    const updatedReview = await ReviewService.update(
+      req.params.reviewId,
+      req.body,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Review has updated successfully!',
+      data: updatedReview,
+    });
+  }),
+
   delete: catchAsync(async (req, res) => {
     await ReviewService.delete(req.params.reviewId);
 

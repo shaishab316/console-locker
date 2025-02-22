@@ -37,6 +37,16 @@ export const ReviewService = {
     return reviews;
   },
 
+  async update(reviewId: string, reviewData: TReview) {
+    const updatedReview = await Review.findOneAndUpdate(
+      { _id: reviewId },
+      reviewData,
+      { new: true, runValidators: true },
+    );
+
+    return updatedReview;
+  },
+
   async delete(reviewId: string) {
     const deletedReview = await Review.findByIdAndDelete(reviewId);
 

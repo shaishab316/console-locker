@@ -14,6 +14,7 @@ import { BlogRoutes } from '../blog/Blog.route';
 import { SettingRoutes } from '../setting/Setting.route';
 import { NotificationRoutes } from '../notification/Notification.route';
 import { NotificationController } from '../notification/Notification.controller';
+import { ReviewController } from '../review/Review.controller';
 
 const router = Router();
 
@@ -96,6 +97,16 @@ router.use('/blog', verifyAdmin, BlogRoutes.adminRoutes);
  */
 
 router.use('/setting', verifyAdmin, SettingRoutes.adminRoutes);
+
+/**
+ * *************************************************************************************************************
+ *                                                                                                           *
+ *                                           L I N E   B R E A K                                           *
+ *                                                                                                           *
+ * **************************************************************************************************************
+ */
+
+router.patch('/review/:reviewId/edit', verifyAdmin, ReviewController.update);
 
 /**
  * *************************************************************************************************************
