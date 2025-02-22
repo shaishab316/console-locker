@@ -266,12 +266,15 @@ export const ProductService = {
   },
 
   async retrieve(slug: string) {
-    const product = await Product.findOne({ slug });
+    const product = await Product.findOne({ slug }).lean();
 
     if (!product)
       throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
 
     const meta = await this.retrieveMeta(product.name!);
+    const reviews = await this.getReviews(product.name!);
+
+    Object.assign(product, reviews);
 
     return { product, meta };
   },
@@ -283,26 +286,6 @@ export const ProductService = {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
 
     return product.slug;
-  },
-
-  async calculateProductPrice(
-    params: Record<string, string>,
-    query: Record<string, string>,
-  ) {
-    const { _id, offer_price, price } = (await Product.findOne({
-      product_type: params.productType,
-      brand: params.brand,
-      name: params.productName,
-      memory: query.memory,
-      condition: query.condition,
-      controller: query.controller,
-      model: query.model,
-    }).select('price offer_price')) as TProduct;
-
-    return {
-      productId: _id,
-      price: offer_price ?? price,
-    };
   },
 
   async getReviews(productName: string) {
@@ -317,17 +300,9 @@ export const ProductService = {
       },
     ]);
 
-    // if (reviews.length > 0) {
-    //   const { avgRating, totalReviews } = reviews[0];
-
-    //   return { rating: avgRating.toFixed(1), reviewCount: totalReviews };
-    // }
-
-    // return { rating: 0, reviewCount: 0 };
-
     return {
-      rating: reviews?.[0]?.avgRating?.toFixed(1) || 0,
-      reviewCount: reviews?.[0]?.totalReviews || 0,
+      ratings: +reviews?.[0]?.avgRating?.toFixed(1) || 0,
+      reviewCount: +reviews?.[0]?.totalReviews || 0,
     };
   },
 };

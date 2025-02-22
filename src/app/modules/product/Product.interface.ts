@@ -18,4 +18,8 @@ export type TProduct = {
   isVariant: boolean;
   product_type?: string;
   product_ref?: Types.ObjectId;
+  createdAt?: Date;
+  updatedAt?: Date;
+  ratings?: number;
+  reviewCount?: number;
 };

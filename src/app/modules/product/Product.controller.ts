@@ -2,7 +2,6 @@ import { StatusCodes } from 'http-status-codes';
 import sendResponse from '../../../shared/sendResponse';
 import { ProductService } from './Product.service';
 import catchAsync, { catchAsyncWithCallback } from '../../../shared/catchAsync';
-import Product from './Product.model';
 import { imagesUploadRollback } from '../../middlewares/imageUploader';
 
 export const ProductController = {
@@ -143,34 +142,4 @@ export const ProductController = {
       data: { slug },
     });
   }),
-
-  calculateProductPrice: catchAsyncWithCallback(
-    async (req, res) => {
-      const data = await ProductService.calculateProductPrice(
-        req.params as Record<string, string>,
-        req.query as Record<string, string>,
-      );
-
-      sendResponse(res, {
-        success: true,
-        statusCode: StatusCodes.OK,
-        message: 'Product price calculate successfully',
-        data,
-      });
-    },
-    async (_err, { params }, res) => {
-      const product = await Product.findOne({
-        product_type: params.productType,
-        brand: params.brand,
-        name: params.productName,
-      }).select('model controller condition memory -_id');
-
-      sendResponse(res, {
-        success: false,
-        statusCode: StatusCodes.NOT_FOUND,
-        message: 'This product is out of stock.',
-        data: { help: product },
-      });
-    },
-  ),
 };

@@ -51,12 +51,6 @@ publicRouter.get('/:productName/find-slug', ProductController.findSlug);
 
 publicRouter.get('/:slug', ProductController.retrieve);
 
-// calculate a product price
-publicRouter.get(
-  '/:productType/:brand/:productName/price',
-  ProductController.calculateProductPrice,
-);
-
 export const ProductRoutes = {
   adminProductRoutes: privateRouter,
   customerProductRoutes: publicRouter,
