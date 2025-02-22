@@ -22,7 +22,7 @@ export const ProductValidation = {
         }),
       brand: z.string().min(1),
       model: z.string().min(1),
-      condition: z.enum(['fair', 'good', 'excellent']),
+      condition: z.string().min(1),
       controller: z
         .string()
         .min(1)
@@ -59,7 +59,7 @@ export const ProductValidation = {
           message: 'Offer price must be a valid number',
         }),
       brand: z.string().min(1),
-      condition: z.enum(['fair', 'good', 'excellent']),
+      condition: z.string().min(1),
       quantity: z
         .string()
         .min(1)
@@ -95,7 +95,7 @@ export const ProductValidation = {
         }),
       brand: z.string().optional(),
       model: z.string().optional(),
-      condition: z.enum(['fair', 'good', 'excellent']).optional(),
+      condition: z.string().optional(),
       controller: z
         .union([z.string(), z.number()])
         .optional()
