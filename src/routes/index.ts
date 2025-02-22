@@ -8,6 +8,7 @@ import { ProductBuyQuesRoutes } from '../app/modules/product_buy_question/Produc
 import { BlogRoutes } from '../app/modules/blog/Blog.route';
 import { SettingRoutes } from '../app/modules/setting/Setting.route';
 import { NotificationRoutes } from '../app/modules/notification/Notification.route';
+import { ReviewRoutes } from '../app/modules/review/Review.route';
 
 const router = express.Router();
 
@@ -48,6 +49,10 @@ const apiRoutes: { path: string; route: Router }[] = [
   {
     path: '/contact',
     route: NotificationRoutes.customerRoutes,
+  },
+  {
+    path: '/review',
+    route: ReviewRoutes,
   },
 ];
 
