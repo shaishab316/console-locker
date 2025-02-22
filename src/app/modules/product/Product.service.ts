@@ -5,6 +5,7 @@ import Product from './Product.model';
 import { PipelineStage } from 'mongoose';
 import { mergeProducts } from './Product.utils';
 import deleteFile from '../../../shared/deleteFile';
+import Review from '../review/Review.model';
 
 export const ProductService = {
   /** for admin */
@@ -301,6 +302,32 @@ export const ProductService = {
     return {
       productId: _id,
       price: offer_price ?? price,
+    };
+  },
+
+  async getReviews(productName: string) {
+    const reviews = await Review.aggregate([
+      { $match: { product: productName } },
+      {
+        $group: {
+          _id: '$product',
+          avgRating: { $avg: '$rating' },
+          totalReviews: { $sum: 1 },
+        },
+      },
+    ]);
+
+    // if (reviews.length > 0) {
+    //   const { avgRating, totalReviews } = reviews[0];
+
+    //   return { rating: avgRating.toFixed(1), reviewCount: totalReviews };
+    // }
+
+    // return { rating: 0, reviewCount: 0 };
+
+    return {
+      rating: reviews?.[0]?.avgRating?.toFixed(1) || 0,
+      reviewCount: reviews?.[0]?.totalReviews || 0,
     };
   },
 };

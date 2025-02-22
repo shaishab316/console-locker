@@ -9,7 +9,7 @@ lerna-debug.log*
 winston*
 
 # Uploaded Files
-uploads
+# uploads
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
