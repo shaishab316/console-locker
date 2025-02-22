@@ -109,7 +109,7 @@ export const ProductController = {
   }),
 
   retrieve: catchAsyncWithCallback(async (req, res) => {
-    const { meta, product } = await ProductService.retrieve(
+    const { meta, product, relatedProducts } = await ProductService.retrieve(
       req.params.slug as string,
     );
 
@@ -120,6 +120,7 @@ export const ProductController = {
       data: {
         meta,
         product,
+        relatedProducts,
       },
     });
   }),

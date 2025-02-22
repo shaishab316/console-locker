@@ -273,10 +273,11 @@ export const ProductService = {
 
     const meta = await this.retrieveMeta(product.name!);
     const reviews = await this.getReviews(product.name!);
+    const relatedProducts = await this.relatedProducts(product.brand!);
 
     Object.assign(product, reviews);
 
-    return { product, meta };
+    return { product, meta, relatedProducts };
   },
 
   async findSlug(filter: Partial<TProduct>) {
@@ -304,5 +305,11 @@ export const ProductService = {
       ratings: +reviews?.[0]?.avgRating?.toFixed(1) || 0,
       reviewCount: +reviews?.[0]?.totalReviews || 0,
     };
+  },
+
+  async relatedProducts(brand: string) {
+    const products = await Product.find({ brand }).limit(4).lean();
+
+    return products;
   },
 };
