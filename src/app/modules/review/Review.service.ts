@@ -25,11 +25,11 @@ export const ReviewService = {
     return review;
   },
 
-  async list(query: Record<any, any>) {
+  async list(productName: string, query: Record<any, any>) {
     const { page = '1', limit = '10' } = query;
     const skip = (+page - 1) * +limit;
 
-    const reviews = await Review.find()
+    const reviews = await Review.find({ product: productName })
       .skip(skip)
       .limit(+limit)
       .populate('customer', 'name avatar');

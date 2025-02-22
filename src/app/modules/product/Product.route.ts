@@ -3,6 +3,7 @@ import validateRequest from '../../middlewares/validateRequest';
 import { ProductValidation } from './Product.validation';
 import { ProductController } from './Product.controller';
 import imageUploader from '../../middlewares/imageUploader';
+import { ReviewController } from '../review/Review.controller';
 
 const privateRouter = Router();
 const publicRouter = Router();
@@ -48,6 +49,7 @@ privateRouter.post(
 publicRouter.get('/', ProductController.list);
 
 publicRouter.get('/:productName/find-slug', ProductController.findSlug);
+publicRouter.get('/:productName/reviews', ReviewController.list);
 
 publicRouter.get('/:slug', ProductController.retrieve);
 
