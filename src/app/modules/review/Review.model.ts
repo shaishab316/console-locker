@@ -9,9 +9,8 @@ const reviewSchema = new Schema<TReview>(
       ref: 'Customer',
     },
     product: {
-      type: Schema.Types.ObjectId,
+      type: String,
       required: true,
-      ref: 'Product',
     },
     rating: {
       type: Number,

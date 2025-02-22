@@ -7,7 +7,7 @@ import { Customer } from '../customer/Customer.model';
 
 export const ReviewService = {
   async store(reviewData: TReview) {
-    const productExists = await Product.exists({ _id: reviewData.product });
+    const productExists = await Product.exists({ name: reviewData.product });
     const customerExists = await Customer.exists({ _id: reviewData.customer });
 
     if (!productExists || !customerExists)
@@ -16,11 +16,13 @@ export const ReviewService = {
         'Product not found or customer not found',
       );
 
-    return await Review.findOneAndUpdate(
+    const review = await Review.findOneAndUpdate(
       { customer: reviewData.customer, product: reviewData.product },
       reviewData,
       { new: true, upsert: true, runValidators: true },
     );
+
+    return review;
   },
 
   async list(query: Record<any, any>) {
