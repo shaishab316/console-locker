@@ -81,7 +81,7 @@ export const ProductService = {
     const {
       product_type: productType,
       brand,
-      sort = 'max_price',
+      sort = '',
       page = '1',
       limit = '5',
       search,
@@ -125,7 +125,11 @@ export const ProductService = {
 
     // Determine sorting order
     const sortField: Record<string, 1 | -1> =
-      sort === 'max_price' ? { price: -1 } : { price: 1 };
+      sort === 'max_price'
+        ? { price: -1 }
+        : sort === 'min_price'
+          ? { price: 1 }
+          : { createdAt: -1 };
 
     // Calculate skip value for pagination
     const skip = (parsedPage - 1) * parsedLimit;
