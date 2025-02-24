@@ -47,12 +47,21 @@ export const ReviewService = {
     return updatedReview;
   },
 
-  async delete(reviewId: string) {
+  async deleteById(reviewId: string) {
     const deletedReview = await Review.findByIdAndDelete(reviewId);
 
     if (!deletedReview)
       throw new ApiError(StatusCodes.NOT_FOUND, 'Review not found');
 
     return deletedReview;
+  },
+
+  async delete(customer: string) {
+    const deletedReview = await Review.findOneAndDelete({ customer });
+
+    if (!deletedReview)
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Review not found');
+
+    return deletedReview as TReview;
   },
 };

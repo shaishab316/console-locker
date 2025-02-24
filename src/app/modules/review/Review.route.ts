@@ -1,9 +1,16 @@
 import { Router } from 'express';
 import { ReviewController } from './Review.controller';
 
-const router = Router();
+const adminRoutes = Router();
 
-router.post('/store', ReviewController.store);
-router.delete('/:reviewId/delete', ReviewController.delete);
+//>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-export const ReviewRoutes = router;
+const customerRoutes = Router();
+
+customerRoutes.post('/store', ReviewController.store);
+customerRoutes.delete('/delete', ReviewController.delete);
+
+export const ReviewRoutes = {
+  customerRoutes,
+  adminRoutes,
+};

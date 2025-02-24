@@ -52,7 +52,7 @@ const apiRoutes: { path: string; route: Router }[] = [
   },
   {
     path: '/review',
-    route: ReviewRoutes,
+    route: ReviewRoutes.customerRoutes,
   },
 ];
 

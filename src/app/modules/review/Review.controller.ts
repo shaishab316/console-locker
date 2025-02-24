@@ -40,8 +40,18 @@ export const ReviewController = {
     });
   }),
 
+  deleteBYId: catchAsync(async (req, res) => {
+    await ReviewService.deleteById(req.params.reviewId);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Review has deleted successfully!',
+    });
+  }),
+
   delete: catchAsync(async (req, res) => {
-    await ReviewService.delete(req.params.reviewId);
+    await ReviewService.delete(req.body.customer);
 
     sendResponse(res, {
       success: true,
