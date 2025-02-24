@@ -57,9 +57,14 @@ export const ReviewController = {
   }),
 
   update: catchAsync(async (req, res) => {
+    const reviewData: Partial<TReview> = {
+      rating: req.body.rating,
+      comment: (req.body.comment as string)?.trim(),
+    };
+
     const updatedReview = await ReviewService.update(
       req.params.reviewId,
-      req.body,
+      reviewData,
     );
 
     sendResponse(res, {
@@ -70,7 +75,7 @@ export const ReviewController = {
     });
   }),
 
-  deleteBYId: catchAsync(async (req, res) => {
+  deleteById: catchAsync(async (req, res) => {
     await ReviewService.deleteById(req.params.reviewId);
 
     sendResponse(res, {

@@ -48,11 +48,11 @@ export const ReviewService = {
     return reviews;
   },
 
-  async update(reviewId: string, reviewData: TReview) {
+  async update(reviewId: string, reviewData: Partial<TReview>) {
     const updatedReview = await Review.findOneAndUpdate(
       { _id: reviewId },
       reviewData,
-      { new: true, runValidators: true },
+      { new: true, upsert: true, runValidators: true },
     );
 
     return updatedReview;
@@ -67,8 +67,8 @@ export const ReviewService = {
     return deletedReview;
   },
 
-  async delete(customer: string) {
-    const deletedReview = await Review.findOneAndDelete({ customer });
+  async delete(customerRef: string) {
+    const deletedReview = await Review.findOneAndDelete({ customerRef });
 
     if (!deletedReview)
       throw new ApiError(StatusCodes.NOT_FOUND, 'Review not found');

@@ -13,6 +13,12 @@ adminRoutes.post(
   ReviewController.create,
 );
 
+adminRoutes.patch(
+  '/:reviewId/edit',
+  validateRequest(ReviewValidation.update),
+  ReviewController.update,
+);
+
 //>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 const customerRoutes = Router();

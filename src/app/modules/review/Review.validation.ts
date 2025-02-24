@@ -16,4 +16,15 @@ export const ReviewValidation = {
       comment: z.string().min(1, 'Comment is required'),
     }),
   }),
+
+  update: z.object({
+    body: z.object({
+      rating: z
+        .number()
+        .min(1, 'Rating is required')
+        .max(5, 'Rating must be between 1 and 5')
+        .optional(),
+      comment: z.string().min(1, 'Comment is required').optional(),
+    }),
+  }),
 };
