@@ -8,21 +8,32 @@ import { Customer } from '../customer/Customer.model';
 export const ReviewService = {
   async store(reviewData: TReview) {
     const productExists = await Product.exists({ name: reviewData.product });
-    const customerExists = await Customer.exists({ _id: reviewData.customer });
+    const customer = await Customer.findById(reviewData.customer);
 
-    if (!productExists || !customerExists)
+    if (!productExists || !customer)
       throw new ApiError(
         StatusCodes.NOT_FOUND,
         'Product not found or customer not found',
       );
 
+    reviewData.customer = {
+      name: customer.name,
+      avatar: customer.avatar,
+    };
+
+    reviewData.customerRef = customer._id;
+
     const review = await Review.findOneAndUpdate(
-      { customer: reviewData.customer, product: reviewData.product },
+      { customerRef: customer._id, product: reviewData.product },
       reviewData,
       { new: true, upsert: true, runValidators: true },
     );
 
     return review;
+  },
+
+  async create(reviewData: TReview) {
+    return await Review.create(reviewData);
   },
 
   async list(productName: string, query: Record<any, any>) {

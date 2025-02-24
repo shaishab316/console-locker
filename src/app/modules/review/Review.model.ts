@@ -4,9 +4,12 @@ import { TReview } from './Review.interface';
 const reviewSchema = new Schema<TReview>(
   {
     customer: {
+      name: { type: String, required: true },
+      avatar: { type: String, required: true },
+    },
+    customerRef: {
       type: Schema.Types.ObjectId,
-      required: true,
-      ref: 'Customer',
+      select: false,
     },
     product: {
       type: String,
@@ -23,7 +26,7 @@ const reviewSchema = new Schema<TReview>(
           'Rating must be in increments of 0.5 (e.g., 0.5, 1, 1.5, ..., 5)',
       },
     },
-    review: { type: String, required: true },
+    comment: { type: String, required: true },
   },
   {
     timestamps: true,

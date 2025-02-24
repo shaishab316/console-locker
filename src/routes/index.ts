@@ -51,7 +51,7 @@ const apiRoutes: { path: string; route: Router }[] = [
     route: NotificationRoutes.customerRoutes,
   },
   {
-    path: '/review',
+    path: '/reviews',
     route: ReviewRoutes.customerRoutes,
   },
 ];
