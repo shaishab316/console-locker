@@ -4,6 +4,7 @@ import { TBuyQues, TProductBuyQues } from './ProductBuyQues.interface';
 const optionSchema = new Schema({
   option: { type: String, required: true },
   price: { type: Number, required: true },
+  description: { type: String, required: true },
 });
 
 const buyQuesSchema = new Schema<TBuyQues>({

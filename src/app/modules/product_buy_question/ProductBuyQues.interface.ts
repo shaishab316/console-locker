@@ -8,5 +8,9 @@ export type TProductBuyQues = {
 export type TBuyQues = {
   name: string;
   description: string;
-  options: { option: string; price: number }[];
+  options: {
+    option: string;
+    description: string;
+    price: number;
+  }[];
 };
