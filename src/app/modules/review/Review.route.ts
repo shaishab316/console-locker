@@ -19,6 +19,8 @@ adminRoutes.patch(
   ReviewController.update,
 );
 
+adminRoutes.delete('/:reviewId/delete', ReviewController.deleteById);
+
 //>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 const customerRoutes = Router();

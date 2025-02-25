@@ -4,6 +4,7 @@ import Product from '../product/Product.model';
 import { TReview } from './Review.interface';
 import Review from './Review.model';
 import { Customer } from '../customer/Customer.model';
+import deleteFile from '../../../shared/deleteFile';
 
 export const ReviewService = {
   async store(reviewData: TReview) {
@@ -59,12 +60,14 @@ export const ReviewService = {
   },
 
   async deleteById(reviewId: string) {
-    const deletedReview = await Review.findByIdAndDelete(reviewId);
+    const deletedReview =
+      await Review.findByIdAndDelete(reviewId).select('+customerRef');
 
     if (!deletedReview)
       throw new ApiError(StatusCodes.NOT_FOUND, 'Review not found');
 
-    return deletedReview;
+    if (!deletedReview.customerRef)
+      await deleteFile(deletedReview.customer.avatar);
   },
 
   async delete(customerRef: string) {
@@ -72,7 +75,5 @@ export const ReviewService = {
 
     if (!deletedReview)
       throw new ApiError(StatusCodes.NOT_FOUND, 'Review not found');
-
-    return deletedReview as TReview;
   },
 };
