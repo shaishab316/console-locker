@@ -4,12 +4,20 @@ import { Transaction } from './Transaction.model';
 export const TransactionService = {
   async createTransaction(transactionData: TTransaction) {
     const newTransaction = await Transaction.create(transactionData);
-
     return newTransaction;
   },
 
   async retrieveTransaction({ page = 1, limit = 10 }: Record<string, any>) {
     const pipeline: any[] = [
+      {
+        $lookup: {
+          from: 'customers',
+          localField: 'customer',
+          foreignField: '_id',
+          as: 'customer',
+        },
+      },
+      { $unwind: '$customer' },
       {
         $facet: {
           paginatedResults: [
