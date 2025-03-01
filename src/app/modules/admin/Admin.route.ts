@@ -36,7 +36,7 @@ router.post('/log-out', AdminController.logoutAdmin);
 router.post('/send-otp', limiter, AdminController.sendOtp);
 router.post('/verify-otp', limiter, AdminController.verifyOtp);
 router.post('/change-password', verifyAdmin, AdminController.changePassword);
-router.post('/reset-password', AdminController.resetPassword);
+router.post('/reset-password', verifyAdmin, AdminController.resetPassword);
 
 /**
  * *************************************************************************************************************

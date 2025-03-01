@@ -122,13 +122,13 @@ export const AdminService = {
     admin.otpExp = undefined;
     await admin.save();
 
-    const resetToken = jwtHelper.createToken(
+    const accessToken = jwtHelper.createToken(
       { email: admin.email, adminId: admin._id },
       config.jwt.jwt_secret as string,
-      '2m',
+      config.jwt.jwt_expire_in as string,
     );
 
-    return { resetToken };
+    return { accessToken };
   },
 
   async changePassword(admin: any, oldPassword: string, newPassword: string) {
@@ -139,12 +139,7 @@ export const AdminService = {
     await admin.save();
   },
 
-  async resetPassword(token: string, password: string) {
-    const { email } = jwtHelper.verifyToken(
-      token,
-      config.jwt.jwt_secret as string,
-    );
-
+  async resetPassword(email: string, password: string) {
     const admin = await Admin.findOne({ email });
 
     if (!admin)
@@ -155,30 +150,5 @@ export const AdminService = {
 
     admin.password = password;
     await admin.save();
-
-    const accessToken = jwtHelper.createToken(
-      { email: admin.email, adminId: admin._id },
-      config.jwt.jwt_secret as string,
-      config.jwt.jwt_expire_in as string,
-    );
-
-    const refreshToken = jwtHelper.createToken(
-      { email: admin.email, adminId: admin._id },
-      config.jwt.jwtRefreshSecret as string,
-      config.jwt.jwtRefreshExpiresIn as string,
-    );
-
-    return {
-      token: {
-        accessToken,
-        refreshToken,
-      },
-      admin: {
-        name: admin.name,
-        email: admin.email,
-        phone: admin.phone,
-        avatar: admin.avatar,
-      },
-    };
   },
 };
