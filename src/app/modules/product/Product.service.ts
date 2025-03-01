@@ -90,11 +90,13 @@ export const ProductService = {
     } = query;
 
     // Helper to parse numbers safely with a default fallback
-    const parseNumber = (value: string, fallback: number) =>
-      !isNaN(Number(value)) ? Number(value) : fallback;
+    const parseNumber = (value: string | undefined, fallback: number) =>
+      value !== undefined && !isNaN(Number(value)) ? Number(value) : fallback;
 
     const parsedPage = parseNumber(page, 1);
     const parsedLimit = parseNumber(limit, 5);
+    const parsedMinPrice = parseNumber(minPrice, 0);
+    const parsedMaxPrice = parseNumber(maxPrice, Number.MAX_SAFE_INTEGER);
 
     // Construct filters for MongoDB query
     const filters: Record<string, any> = {};
@@ -109,21 +111,38 @@ export const ProductService = {
       filtersForPrice.brand = brand;
     }
 
-    // Add price range filtering
+    // Price filter considering offer_price
     if (minPrice || maxPrice) {
-      filters.price = {};
-      if (minPrice) filters.price.$gte = parseNumber(minPrice, 0); // Greater than or equal to minPrice
-      if (maxPrice)
-        filters.price.$lte = parseNumber(maxPrice, Number.MAX_SAFE_INTEGER); // Less than or equal to maxPrice
+      filters.$expr = {
+        $and: [],
+      };
+
+      if (minPrice) {
+        filters.$expr.$and.push({
+          $gte: [
+            { $ifNull: ['$offer_price', '$price'] },
+            parsedMinPrice, // Ensure type is number
+          ],
+        });
+      }
+
+      if (maxPrice) {
+        filters.$expr.$and.push({
+          $lte: [
+            { $ifNull: ['$offer_price', '$price'] },
+            parsedMaxPrice, // Ensure type is number
+          ],
+        });
+      }
     }
 
-    // Add search functionality for product_type and brand
+    // Add search functionality
     if (search) {
-      const searchRegex = new RegExp(search, 'i'); // Case-insensitive search
+      const searchRegex = new RegExp(search, 'i');
       filters.$or = [{ name: searchRegex }, { description: searchRegex }];
     }
 
-    // Determine sorting order
+    // Sorting order (considering offer_price)
     const sortField: Record<string, 1 | -1> =
       sort === 'max_price'
         ? { price: -1 }
@@ -131,69 +150,22 @@ export const ProductService = {
           ? { price: 1 }
           : { createdAt: -1 };
 
-    // Calculate skip value for pagination
+    // Pagination logic
     const skip = (parsedPage - 1) * parsedLimit;
 
-    // Define aggregation pipelines for products, product types, brands, and conditions
-    const createPipeline = {
-      products: (): PipelineStage[] => [
-        { $match: filters },
-        { $group: { _id: '$name', product: { $first: '$$ROOT' } } },
-        { $sort: sortField },
-        { $skip: skip },
-        { $limit: parsedLimit },
-        {
-          $project: {
-            _id: 0,
-            name: '$_id',
-            product: 1,
-          },
-        },
-      ],
-      productTypes: (): PipelineStage[] => [
-        { $group: { _id: '$product_type' } },
-        {
-          $project: {
-            _id: 0,
-            productType: '$_id',
-          },
-        },
-      ],
-      brands: (): PipelineStage[] => [
-        { $match: productType ? { product_type: productType } : {} },
-        { $group: { _id: '$brand' } },
-        {
-          $project: {
-            _id: 0,
-            brand: '$_id',
-          },
-        },
-      ],
-      conditions: (): PipelineStage[] => [
-        { $match: filters },
-        { $group: { _id: '$condition' } },
-        {
-          $project: {
-            _id: 0,
-            condition: '$_id',
-          },
-        },
-      ],
-    };
-
-    // Fetch min and max price dynamically
+    // Aggregation pipeline for price range (considering offer_price)
     const priceRangePipeline: PipelineStage[] = [
       { $match: filtersForPrice },
       {
         $group: {
           _id: null,
-          minPrice: { $min: '$price' },
-          maxPrice: { $max: '$price' },
+          minPrice: { $min: { $ifNull: ['$offer_price', '$price'] } },
+          maxPrice: { $max: { $ifNull: ['$offer_price', '$price'] } },
         },
       },
     ];
 
-    // Fetch data in parallel for better performance
+    // Execute queries concurrently
     const [
       productsResult,
       productTypesResult,
@@ -201,10 +173,28 @@ export const ProductService = {
       conditionsResult,
       priceRangeResult,
     ] = await Promise.all([
-      Product.aggregate(createPipeline.products()),
-      Product.aggregate(createPipeline.productTypes()),
-      Product.aggregate(createPipeline.brands()),
-      Product.aggregate(createPipeline.conditions()),
+      Product.aggregate([
+        { $match: filters },
+        { $group: { _id: '$name', product: { $first: '$$ROOT' } } },
+        { $sort: sortField },
+        { $skip: skip },
+        { $limit: parsedLimit },
+        { $project: { _id: 0, name: '$_id', product: 1 } },
+      ]),
+      Product.aggregate([
+        { $group: { _id: '$product_type' } },
+        { $project: { _id: 0, productType: '$_id' } },
+      ]),
+      Product.aggregate([
+        { $match: productType ? { product_type: productType } : {} },
+        { $group: { _id: '$brand' } },
+        { $project: { _id: 0, brand: '$_id' } },
+      ]),
+      Product.aggregate([
+        { $match: filters },
+        { $group: { _id: '$condition' } },
+        { $project: { _id: 0, condition: '$_id' } },
+      ]),
       Product.aggregate(priceRangePipeline),
     ]);
 
@@ -214,8 +204,8 @@ export const ProductService = {
     const brands = brandsResult.map(item => item.brand);
     const conditions = conditionsResult.map(item => item.condition);
 
-    const dynamicMinPrice = priceRangeResult[0]?.minPrice || 0;
-    const dynamicMaxPrice = priceRangeResult[0]?.maxPrice || 0;
+    const dynamicMinPrice = priceRangeResult[0]?.minPrice ?? 0;
+    const dynamicMaxPrice = priceRangeResult[0]?.maxPrice ?? 0;
 
     // Calculate total count
     const totalCountResult = await Product.aggregate([
@@ -247,8 +237,8 @@ export const ProductService = {
           brand: brand || null,
           condition: query.condition || null,
           search: search || null,
-          min_price: +minPrice || dynamicMinPrice,
-          max_price: +maxPrice || dynamicMaxPrice,
+          min_price: parsedMinPrice || dynamicMinPrice,
+          max_price: parsedMaxPrice || dynamicMaxPrice,
         },
       },
     };
