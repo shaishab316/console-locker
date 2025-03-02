@@ -18,11 +18,14 @@ export default {
     jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
   },
   payment: {
-    stripe_secret_key: process.env.STRIPE_SECRET_KEY,
-    stripe_webhook_secret: process.env.STRIPE_WEBHOOK_SECRET,
     paypal: {
       client: process.env.PAYMENT_PAYPAL_CLIENT,
       secret: process.env.PAYMENT_PAYPAL_SECRET,
+    },
+    stripe: {
+      client: process.env.PAYMENT_STRIPE_CLIENT as string,
+      secret: process.env.PAYMENT_STRIPE_SECRET as string,
+      webhook_secret: process.env.PAYMENT_STRIPE_WEBHOOK_SECRET as string,
     },
   },
   email: {

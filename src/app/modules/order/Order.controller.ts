@@ -3,6 +3,7 @@ import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { OrderService } from './Order.service';
 import config from '../../../config';
+import { PaymentService } from '../payment/Payment.service';
 
 export const OrderController = {
   checkout: catchAsync(async (req, res) => {
@@ -11,8 +12,10 @@ export const OrderController = {
       any
     >;
 
-    req.body.orderId = orderId;
-    req.body.amount = amount;
+    const klarna = await PaymentService.stripe.create({
+      name: orderId.toString(),
+      amount,
+    });
 
     sendResponse(res, {
       success: true,
@@ -22,6 +25,7 @@ export const OrderController = {
         amount,
         orderId,
         client_id: config.payment.paypal.client as string,
+        klarna,
       },
     });
   }),

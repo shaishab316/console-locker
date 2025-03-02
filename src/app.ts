@@ -28,7 +28,10 @@ app.use(
 // cookie parser
 app.use(cookieParser());
 
-app.use(express.json());
+app.use((req, res, next) => {
+  if (req.originalUrl === '/api/v1/payment/stripe/webhook') next();
+  else express.json()(req, res, next);
+});
 app.use(express.urlencoded({ extended: true }));
 
 //file retrieve
@@ -48,16 +51,13 @@ app.use(globalErrorHandler);
 
 //handle not found route;
 app.use((req, res) => {
-  res.status(StatusCodes.NOT_FOUND).json({
-    success: false,
-    message: 'Not found',
-    errorMessages: [
-      {
-        path: req.originalUrl,
-        message: 'API NOT FOUND',
-      },
-    ],
-  });
+  res
+    .status(StatusCodes.NOT_FOUND)
+    .json({
+      success: false,
+      message: 'Not found',
+      errorMessages: [{ path: req.originalUrl, message: 'API NOT FOUND' }],
+    });
 });
 
 export default app;

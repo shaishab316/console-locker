@@ -12,6 +12,7 @@ import { TransactionService } from '../transaction/Transaction.service';
 import Product from '../product/Product.model';
 import axios from 'axios';
 import QueryString from 'qs';
+import stripe from './Payment.utils';
 
 export const PaymentService = {
   paypal: {
@@ -20,12 +21,7 @@ export const PaymentService = {
         body: {
           intent: CheckoutPaymentIntent.Capture,
           purchaseUnits: [
-            {
-              amount: {
-                currencyCode: 'USD',
-                value: totalPrice.toString(),
-              },
-            },
+            { amount: { currencyCode: 'USD', value: totalPrice.toString() } },
           ],
           application_context: {
             return_url: `${config.url.local}/payment/paypal/success?orderId=${orderId}`,
@@ -97,12 +93,7 @@ export const PaymentService = {
     async refund(captureId: string, amount: string) {
       await paypalPaymentController.capturesRefund({
         captureId,
-        body: {
-          amount: {
-            value: amount,
-            currencyCode: 'USD',
-          },
-        },
+        body: { amount: { value: amount, currencyCode: 'USD' } },
       });
     },
 
@@ -146,10 +137,7 @@ export const PaymentService = {
           {
             recipient_type: 'EMAIL',
             receiver: email,
-            amount: {
-              value: amount,
-              currency: 'USD',
-            },
+            amount: { value: amount, currency: 'USD' },
           },
         ],
       };
@@ -184,6 +172,29 @@ export const PaymentService = {
       );
 
       return response.data;
+    },
+  },
+
+  stripe: {
+    create: async (data: Record<string, any>) => {
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['klarna'],
+        mode: 'payment',
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product_data: { name: data.name },
+              unit_amount: Math.round(data.amount * 100),
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: 'https://yourwebsite.com/success',
+        cancel_url: 'https://yourwebsite.com/cancel',
+      });
+
+      return session.url;
     },
   },
 };
