@@ -204,10 +204,26 @@ export const PaymentService = {
         session.id,
       );
 
-      await Order.findByIdAndUpdate(lineItems.data[0].description, {
-        state: 'success',
+      const order = await Order.findById(lineItems.data[0].description);
+
+      if (!order) return;
+
+      const transactionData: TTransaction = {
+        transaction_id: session.payment_intent,
+        type: 'sell',
         payment_method: 'klarna',
-      });
+        amount: order.amount,
+        customer: order.customer,
+      };
+
+      const transaction =
+        await TransactionService.createTransaction(transactionData);
+
+      order.transaction = transaction._id;
+      order.payment_method = 'klarna';
+      order.state = 'success';
+
+      await order.save();
     },
   },
 };
