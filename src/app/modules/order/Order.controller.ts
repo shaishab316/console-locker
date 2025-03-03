@@ -2,7 +2,6 @@ import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { OrderService } from './Order.service';
-import config from '../../../config';
 import { PaymentService } from '../payment/Payment.service';
 
 export const OrderController = {
@@ -12,7 +11,7 @@ export const OrderController = {
       any
     >;
 
-    const klarna = await PaymentService.stripe.create({
+    const checkout_url = await PaymentService.create({
       name: orderId.toString(),
       amount,
     });
@@ -20,12 +19,9 @@ export const OrderController = {
     sendResponse(res, {
       success: true,
       statusCode: StatusCodes.OK,
-      message: 'Order has been created successfully!',
+      message: 'Order created successfully!',
       data: {
-        amount,
-        orderId,
-        client_id: config.payment.paypal.client as string,
-        klarna,
+        checkout_url,
       },
     });
   }),

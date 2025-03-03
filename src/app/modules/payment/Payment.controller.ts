@@ -6,51 +6,29 @@ import { PaymentService } from './Payment.service';
 import stripe from './Payment.utils';
 
 export const PaymentController = {
-  paypal: {
-    config: catchAsync(async (_req, res) => {
-      sendResponse(res, {
-        success: true,
-        statusCode: StatusCodes.OK,
-        message: 'Paypal config retrieved successfully!',
-        data: { client_id: config.payment.paypal.client },
-      });
-    }),
-    success: catchAsync(async (req, res) => {
-      await PaymentService.paypal.success(req.query);
+  create: catchAsync(async (req, res) => {
+    const data = await PaymentService.create(req.body);
 
-      sendResponse(res, {
-        success: true,
-        statusCode: StatusCodes.OK,
-        message: 'Order payment successfully!',
-      });
-    }),
-  },
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Order created successfully!',
+      data,
+    });
+  }),
 
-  stripe: {
-    create: catchAsync(async (req, res) => {
-      const data = await PaymentService.stripe.create(req.body);
+  webhook: catchAsync(async (req, res) => {
+    const sig = req.headers['stripe-signature'];
 
-      sendResponse(res, {
-        success: true,
-        statusCode: StatusCodes.OK,
-        message: 'Order created successfully!',
-        data,
-      });
-    }),
+    const event = stripe.webhooks.constructEvent(
+      req.body,
+      sig as string,
+      config.payment.stripe.webhook_secret,
+    );
 
-    webhook: catchAsync(async (req, res) => {
-      const sig = req.headers['stripe-signature'];
+    if (event.type === 'checkout.session.completed')
+      await PaymentService.success(event);
 
-      const event = stripe.webhooks.constructEvent(
-        req.body,
-        sig as string,
-        config.payment.stripe.webhook_secret,
-      );
-
-      if (event.type === 'checkout.session.completed')
-        await PaymentService.stripe.success(event);
-
-      res.json({ received: !!1 });
-    }),
-  },
+    res.json({ received: !!1 });
+  }),
 };
