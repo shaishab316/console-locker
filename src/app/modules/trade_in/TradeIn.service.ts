@@ -4,7 +4,6 @@ import Product from '../product/Product.model';
 import { TTradeIn } from './TradeIn.interface';
 import TradeIn from './TradeIn.model';
 import { ProductBuyQuesService } from '../product_buy_question/ProductBuyQues.service';
-import { PaymentService } from '../payment/Payment.service';
 import ProductBuyQues from '../product_buy_question/ProductBuyQues.model';
 import { TTransaction } from '../transaction/Transaction.interface';
 import { TransactionService } from '../transaction/Transaction.service';
@@ -152,28 +151,11 @@ export const TradeInService = {
       trade.state = 'confirm';
       await trade.save();
 
-      /** do payment last,, because ,, ,, */
-      const payoutResponse = await PaymentService.paypal.payout(
-        trade.payment.paypal,
-        trade.price.toString(),
-      );
-
-      // Extract payout_batch_id
-      const payoutBatchId = payoutResponse?.batch_header?.payout_batch_id;
-
-      if (!payoutBatchId) {
-        throw new ApiError(
-          StatusCodes.NOT_FOUND,
-          'Failed to retrieve payout batch ID',
-        );
-      }
-
       const transactionData: TTransaction = {
         customer: trade.customer,
         amount: trade.price,
-        payment_method: 'paypal',
+        payment_method: 'cash',
         type: 'buy',
-        transaction_id: payoutBatchId,
       };
 
       await TransactionService.createTransaction(transactionData);
