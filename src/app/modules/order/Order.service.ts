@@ -7,7 +7,7 @@ import { Types } from 'mongoose';
 
 export const OrderService = {
   async checkout(req: Request) {
-    const { productDetails, customer, payment_method } = req.body;
+    const { productDetails, customer } = req.body;
 
     if (
       !productDetails ||
@@ -79,7 +79,6 @@ export const OrderService = {
     const newOrder = await Order.create({
       productDetails: validProducts,
       customer,
-      payment_method,
       amount: totalPrice,
     });
 

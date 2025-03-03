@@ -13,6 +13,7 @@ import Product from '../product/Product.model';
 import axios from 'axios';
 import QueryString from 'qs';
 import stripe from './Payment.utils';
+import Stripe from 'stripe';
 
 export const PaymentService = {
   paypal: {
@@ -195,6 +196,18 @@ export const PaymentService = {
       });
 
       return session.url;
+    },
+    success: async (event: Stripe.Event) => {
+      const session: any = event.data.object;
+
+      const lineItems = await stripe.checkout.sessions.listLineItems(
+        session.id,
+      );
+
+      await Order.findByIdAndUpdate(lineItems.data[0].description, {
+        state: 'success',
+        payment_method: 'klarna',
+      });
     },
   },
 };

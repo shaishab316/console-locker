@@ -47,18 +47,10 @@ export const PaymentController = {
         config.payment.stripe.webhook_secret,
       );
 
-      switch (event.type) {
-        case 'payment_intent.succeeded':
-          console.log('✅ Payment Intent Succeeded:', event.data.object);
-          break;
-        case 'payment_intent.payment_failed':
-          console.log('❌ Payment Failed:', event.data.object);
-          break;
-        default:
-          console.log(`I Received unknown event type: ${event.type}`);
-      }
+      if (event.type === 'checkout.session.completed')
+        await PaymentService.stripe.success(event);
 
-      res.json({ received: true });
+      res.json({ received: !!1 });
     }),
   },
 };
