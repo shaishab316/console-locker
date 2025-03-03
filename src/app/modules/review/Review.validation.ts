@@ -7,7 +7,7 @@ export const ReviewValidation = {
       customerName: z.string().trim().min(1, 'Customer name is required'),
       product: z
         .string()
-        .refine(async id => !!(await Product.exists({ _id: id })), {
+        .refine(async name => !!(await Product.exists({ name })), {
           message: 'Product not found',
         }),
       rating: z

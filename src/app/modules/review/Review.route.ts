@@ -25,7 +25,7 @@ adminRoutes.delete('/:reviewId/delete', ReviewController.deleteById);
 
 const customerRoutes = Router();
 
-customerRoutes.get('/', ReviewController.list);
+customerRoutes.get('/:productName', ReviewController.list);
 customerRoutes.post('/store', ReviewController.store);
 customerRoutes.delete('/delete', ReviewController.delete);
 
