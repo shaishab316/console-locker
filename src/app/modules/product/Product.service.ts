@@ -283,8 +283,9 @@ export const ProductService = {
   async findSlug(filter: Partial<TProduct>) {
     const product = await Product.findOne(filter).select('slug');
 
+    /** product don't found, skip the error */
     if (!product)
-      throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
+      throw new ApiError(StatusCodes.NO_CONTENT, 'Product not found');
 
     return product.slug;
   },
