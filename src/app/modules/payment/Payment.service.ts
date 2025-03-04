@@ -31,6 +31,14 @@ export const PaymentService = {
 
     const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
 
+    const paymentIntent: any = await stripe.paymentIntents.retrieve(
+      session.payment_intent,
+    );
+
+    const paymentMethod = await stripe.paymentMethods.retrieve(
+      paymentIntent.payment_method,
+    );
+
     const order = await Order.findById(lineItems.data[0].description);
 
     if (!order) return;
@@ -38,7 +46,7 @@ export const PaymentService = {
     const transactionData: TTransaction = {
       transaction_id: session.payment_intent,
       type: 'sell',
-      payment_method: 'klarna',
+      payment_method: paymentMethod.type,
       amount: order.amount,
       customer: order.customer,
     };
@@ -47,7 +55,7 @@ export const PaymentService = {
       await TransactionService.createTransaction(transactionData);
 
     order.transaction = transaction._id;
-    order.payment_method = 'klarna';
+    order.payment_method = paymentMethod.type;
     order.state = 'success';
 
     await order.save();
