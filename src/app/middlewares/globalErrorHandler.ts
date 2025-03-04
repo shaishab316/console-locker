@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unused-expressions */
@@ -10,7 +11,7 @@ import { errorLogger } from '../../shared/logger';
 import { IErrorMessage } from '../../types/errors.types';
 import { StatusCodes } from 'http-status-codes';
 
-const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
+const globalErrorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
   config.node_env === 'development'
     ? console.log('🚨 globalErrorHandler ~~ ', error)
     : errorLogger.error('🚨 globalErrorHandler ~~ ', error);

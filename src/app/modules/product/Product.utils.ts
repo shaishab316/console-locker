@@ -1,9 +1,9 @@
 import { TProduct } from './Product.interface';
 
-export const mergeProducts = (products: (TProduct & {_doc?: any})[]) => {
+export const mergeProducts = (products: (TProduct & { _doc?: any })[]) => {
   const mergedProducts: Record<any, any> = {};
 
-  products.forEach((product) => {
+  products.forEach(product => {
     // If the product name already exists in the merged products object, combine the data
     if (mergedProducts[product.name]) {
       const existingProduct = mergedProducts[product.name];
