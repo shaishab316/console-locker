@@ -1,4 +1,4 @@
 import fs from 'fs';
 
-export const createDir = (dirPath: string) =>
-  !fs.existsSync(dirPath) && fs.mkdirSync(dirPath);
+export const createDir = (path: string) =>
+  !fs.existsSync(path) && fs.mkdirSync(path);

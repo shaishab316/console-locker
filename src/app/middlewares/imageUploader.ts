@@ -7,10 +7,7 @@ import deleteFile from '../../shared/deleteFile';
 import { createDir } from '../../util/createDir';
 
 const imageUploader = () => {
-  const baseUploadDir =
-    process.env.HOST === 'vercel'
-      ? path.join('/tmp', 'uploads')
-      : path.join(process.cwd(), 'uploads');
+  const baseUploadDir = path.resolve(process.cwd(), 'uploads');
 
   createDir(baseUploadDir);
 

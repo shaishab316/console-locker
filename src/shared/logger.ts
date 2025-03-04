@@ -27,10 +27,7 @@ const myFormat = printf(
   },
 );
 
-const logDir =
-  process.env.HOST === 'vercel'
-    ? '/tmp/winston'
-    : path.join(process.cwd(), 'winston');
+const logDir = path.resolve(process.cwd(), 'winston');
 
 createDir(logDir);
 
