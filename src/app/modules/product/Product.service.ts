@@ -142,14 +142,6 @@ export const ProductService = {
       filters.$or = [{ name: searchRegex }, { description: searchRegex }];
     }
 
-    // Sorting order (considering offer_price)
-    const sortField: Record<string, 1 | -1> =
-      sort === 'max_price'
-        ? { price: -1 }
-        : sort === 'min_price'
-          ? { price: 1 }
-          : { createdAt: -1 };
-
     // Pagination logic
     const skip = (parsedPage - 1) * parsedLimit;
 
@@ -176,7 +168,6 @@ export const ProductService = {
       Product.aggregate([
         { $match: filters },
         { $group: { _id: '$name', product: { $first: '$$ROOT' } } },
-        { $sort: sortField },
         { $skip: skip },
         { $limit: parsedLimit },
         { $project: { _id: 0, name: '$_id', product: 1 } },
@@ -206,6 +197,21 @@ export const ProductService = {
 
     const dynamicMinPrice = priceRangeResult[0]?.minPrice ?? 0;
     const dynamicMaxPrice = priceRangeResult[0]?.maxPrice ?? 0;
+
+    // **Manually sort products**
+    if (sort === 'max_price')
+      products.sort(
+        (a, b) => (b.offer_price ?? b.price) - (a.offer_price ?? a.price),
+      );
+    else if (sort === 'min_price')
+      products.sort(
+        (a, b) => (a.offer_price ?? a.price) - (b.offer_price ?? b.price),
+      );
+    else
+      products.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
 
     // Calculate total count
     const totalCountResult = await Product.aggregate([
