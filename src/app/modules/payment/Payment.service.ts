@@ -3,6 +3,7 @@ import { Order } from '../order/Order.model';
 import { TransactionService } from '../transaction/Transaction.service';
 import stripe from './Payment.utils';
 import Stripe from 'stripe';
+import config from '../../../config';
 
 export const PaymentService = {
   create: async (data: Record<string, any>) => {
@@ -19,8 +20,8 @@ export const PaymentService = {
           quantity: 1,
         },
       ],
-      success_url: 'https://yourwebsite.com/success',
-      cancel_url: 'https://yourwebsite.com/cancel',
+      success_url: config.url.payment.success,
+      cancel_url: config.url.payment.cancel,
     });
 
     return session.url;
