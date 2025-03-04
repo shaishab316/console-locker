@@ -79,8 +79,9 @@ export const ProductService = {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   async list(query: Record<string, string>) {
     const {
-      product_type: productType,
+      product_type,
       brand,
+      condition,
       sort = '',
       page = '1',
       limit = '5',
@@ -102,13 +103,17 @@ export const ProductService = {
     const filters: Record<string, any> = {};
     const filtersForPrice: Record<string, any> = {};
 
-    if (productType) {
-      filters.product_type = productType;
-      filtersForPrice.product_type = productType;
+    if (product_type) {
+      filters.product_type = product_type;
+      filtersForPrice.product_type = product_type;
     }
     if (brand) {
       filters.brand = brand;
       filtersForPrice.brand = brand;
+    }
+    if (condition) {
+      filters.condition = condition;
+      filtersForPrice.condition = condition;
     }
 
     // Price filter considering offer_price
@@ -177,12 +182,17 @@ export const ProductService = {
         { $project: { _id: 0, productType: '$_id' } },
       ]),
       Product.aggregate([
-        { $match: productType ? { product_type: productType } : {} },
+        { $match: product_type ? { product_type } : {} },
         { $group: { _id: '$brand' } },
         { $project: { _id: 0, brand: '$_id' } },
       ]),
       Product.aggregate([
-        { $match: filters },
+        {
+          $match: {
+            ...(product_type ? { product_type } : {}),
+            ...(brand ? { brand } : {}),
+          },
+        },
         { $group: { _id: '$condition' } },
         { $project: { _id: 0, condition: '$_id' } },
       ]),
@@ -239,7 +249,7 @@ export const ProductService = {
           max_price: dynamicMaxPrice,
         },
         current: {
-          product_type: productType || null,
+          product_type: product_type || null,
           brand: brand || null,
           condition: query.condition || null,
           search: search || null,
