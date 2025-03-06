@@ -107,7 +107,10 @@ export const OrderService = {
 
     const orders = await Order.find(filters)
       .skip((+page - 1) * +limit)
-      .limit(+limit);
+      .limit(+limit)
+      .populate('customer', 'name')
+      .populate('productDetails.product', 'name images')
+      .populate('transaction', 'transaction_id');
 
     const totalOrders = await Order.countDocuments(filters);
 
