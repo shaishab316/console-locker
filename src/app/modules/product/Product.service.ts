@@ -263,15 +263,13 @@ export const ProductService = {
   async retrieveMeta(productName: string) {
     const products = await Product.find({ name: productName });
 
-    // Merge products by name
     const mergedProducts = mergeProducts(products)[0];
 
-    // Return only required fields with unique values
     return {
-      models: [...new Set(mergedProducts.model)],
-      controllers: [...new Set(mergedProducts.controller)],
-      conditions: [...new Set(mergedProducts.condition)],
-      memories: [...new Set(mergedProducts.memory)],
+      models: mergedProducts.model,
+      controllers: mergedProducts.controller,
+      conditions: mergedProducts.condition,
+      memories: mergedProducts.memory,
     };
   },
 

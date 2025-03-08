@@ -7,3 +7,12 @@ export const productModifiedFields = [
   'model',
   'condition',
 ];
+
+export const productMergedFields = [
+  'model',
+  'condition',
+  'controller',
+  'memory',
+  'product_type',
+  'brand',
+];

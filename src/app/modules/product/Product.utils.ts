@@ -1,46 +1,53 @@
 import { Document } from 'mongoose';
 import { TProduct } from './Product.interface';
 import slugify from 'slugify';
-import { productModifiedFields as fields } from './Product.constant';
+import {
+  productModifiedFields as modifiedFields,
+  productMergedFields as mergedFields,
+} from './Product.constant';
 
 export const mergeProducts = (products: (TProduct & { _doc?: any })[]) => {
-  const mergedProducts: Record<any, any> = {};
+  const mergedProducts: Record<string, any> = {};
 
   products.forEach(product => {
-    // If the product name already exists in the merged products object, combine the data
-    if (mergedProducts[product.name]) {
-      const existingProduct = mergedProducts[product.name];
+    const name = product.name;
 
-      // Merge product fields into arrays
-      existingProduct.model.push(product.model);
-      existingProduct.condition.push(product.condition);
-      existingProduct.controller.push(product.controller);
-      existingProduct.memory.push(product.memory);
-      existingProduct.quantity += product.quantity; // Sum quantities
-    } else {
-      // If the product doesn't exist, just add it to the merged products object
-      mergedProducts[product.name] = {
-        ...product._doc,
-        model: [product.model],
-        condition: [product.condition],
-        controller: [product.controller],
-        memory: [product.memory],
-      };
-    }
+    if (!mergedProducts[name])
+      mergedProducts[name] = initializeProduct(product);
+    else mergeProductData(mergedProducts[name], product);
   });
 
-  // Convert merged products object back to an array
   return Object.values(mergedProducts);
 };
 
 export const isProductModified = (doc: Document) =>
-  fields.some(key => doc.isModified(key));
+  modifiedFields.some(key => doc.isModified(key));
 
 export const generateProductSlug = (product: TProduct) => {
-  const slug = fields
+  const slug = modifiedFields
     .map(key => product[key as keyof TProduct])
     .filter(Boolean)
     .join('-');
 
   return slugify(slug, { lower: true, strict: true });
 };
+
+const initializeProduct = (product: TProduct & { _doc?: any }) => ({
+  ...product._doc,
+  ...mergedFields.reduce(
+    (acc, field) => {
+      const value = product[field as keyof TProduct];
+      acc[field] = value ? [value] : [];
+      return acc;
+    },
+    {} as Record<string, any[]>,
+  ),
+});
+
+const mergeProductData = (existingProduct: any, newProduct: TProduct) =>
+  mergedFields.forEach(field =>
+    addUnique(existingProduct[field], newProduct[field as keyof TProduct]),
+  );
+
+const addUnique = (arr: any[], value: any) =>
+  !!value && !arr.includes(value) && arr.push(value);
