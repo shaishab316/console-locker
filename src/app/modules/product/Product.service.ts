@@ -296,7 +296,9 @@ export const ProductService = {
     const variants: TProduct[] = await Product.find({
       _id: { $nin: ids },
       product_ref: { $in: ids },
-    }).select('-product_ref');
+    })
+      .select('-product_ref')
+      .limit(10);
 
     return { products, variants };
   },
