@@ -242,9 +242,9 @@ export const ProductService = {
           current_product_limit: parsedLimit,
         },
         product_meta: {
-          product_types: productTypes,
-          brands,
-          conditions,
+          product_types: productTypes.filter(Boolean),
+          brands: brands.filter(Boolean),
+          conditions: conditions.filter(Boolean),
           min_price: dynamicMinPrice,
           max_price: dynamicMaxPrice,
         },
