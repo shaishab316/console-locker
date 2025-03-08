@@ -48,6 +48,8 @@ privateRouter.post(
 // retrieved all products
 publicRouter.get('/', ProductController.list);
 
+publicRouter.get('/retrieve', ProductController.retrieveByIds);
+
 publicRouter.get('/:productName/find-slug', ProductController.findSlug);
 publicRouter.get('/:productName/reviews', ReviewController.list);
 

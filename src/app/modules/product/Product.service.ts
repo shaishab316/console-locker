@@ -290,6 +290,17 @@ export const ProductService = {
     return { product, meta, relatedProducts };
   },
 
+  async retrieveByIds(ids: string[]) {
+    const products: TProduct[] = await Product.find({ _id: { $in: ids } });
+
+    const variants: TProduct[] = await Product.find({
+      _id: { $nin: ids },
+      product_ref: { $in: ids },
+    }).select('-product_ref');
+
+    return { products, variants };
+  },
+
   async findSlug(filter: Partial<TProduct>) {
     const product = await Product.findOne(filter).select('slug');
 

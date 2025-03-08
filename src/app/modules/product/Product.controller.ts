@@ -125,6 +125,22 @@ export const ProductController = {
     });
   }),
 
+  retrieveByIds: catchAsync(async (req, res) => {
+    const ids = (req.query as { ids: string })?.ids
+      ?.split(',')
+      ?.map((id: string) => id?.trim())
+      .filter(Boolean);
+
+    const { products, variants } = await ProductService.retrieveByIds(ids);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Products retrieved successfully',
+      data: { products, variants },
+    });
+  }),
+
   findSlug: catchAsync(async (req, res) => {
     const filter = {
       name: req.params.productName,
