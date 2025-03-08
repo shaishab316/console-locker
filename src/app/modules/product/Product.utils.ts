@@ -1,4 +1,7 @@
+import { Document } from 'mongoose';
 import { TProduct } from './Product.interface';
+import slugify from 'slugify';
+import { productModifiedFields } from './Product.constant';
 
 export const mergeProducts = (products: (TProduct & { _doc?: any })[]) => {
   const mergedProducts: Record<any, any> = {};
@@ -28,4 +31,15 @@ export const mergeProducts = (products: (TProduct & { _doc?: any })[]) => {
 
   // Convert merged products object back to an array
   return Object.values(mergedProducts);
+};
+
+export const isProductModified = (doc: Document) =>
+  productModifiedFields.some(key => doc.isModified(key));
+
+export const generateProductSlug = (product: TProduct) => {
+  const fields = productModifiedFields
+    .map(key => product[key as keyof TProduct])
+    .filter(Boolean);
+
+  return slugify(fields.join('-'), { lower: true, strict: true });
 };
