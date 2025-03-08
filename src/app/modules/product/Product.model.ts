@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { TProduct } from './Product.interface';
-import { injectProductModelMiddlewares } from './Product.model.middleware';
+import { injectProductModelMiddlewares } from './Product.middleware';
 const productSchema = new Schema<TProduct>({
   slug: {
     type: String,
