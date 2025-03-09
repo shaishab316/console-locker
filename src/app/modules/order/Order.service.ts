@@ -8,9 +8,14 @@ import { Customer } from '../customer/Customer.model';
 
 export const OrderService = {
   async checkout(req: Request) {
-    const { productDetails, customer } = req.body;
+    const { productDetails, customer, secondary_phone } = req.body;
 
-    const address = (await Customer.findById(customer))?.address;
+    const customerDoc = await Customer.findById(customer);
+
+    if (!customerDoc)
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Customer not found');
+
+    const address = customerDoc.address;
 
     if (
       !productDetails ||
@@ -84,6 +89,7 @@ export const OrderService = {
       customer,
       amount: totalPrice,
       address,
+      secondary_phone,
     });
 
     return { amount: totalPrice, orderId: newOrder._id };

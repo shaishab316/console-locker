@@ -20,9 +20,8 @@ const orderSchema = new Schema<TOrder>(
       required: true,
       ref: 'Customer',
     },
-    address: {
-      type: addressSchema,
-    },
+    address: addressSchema,
+    secondary_phone: String,
     transaction: {
       type: Schema.Types.ObjectId,
       ref: 'Transaction',

@@ -13,7 +13,10 @@ export type TOrder = {
   payment_method?: string;
   amount: number;
   state: TOrderState;
-  address: TAddress;
+  address?: TAddress;
+  secondary_phone?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export type TOrderState = 'pending' | 'shipped' | 'success' | 'cancel';
