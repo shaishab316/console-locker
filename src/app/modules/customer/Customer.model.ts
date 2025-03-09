@@ -24,36 +24,37 @@ const addressSchema = new Schema<TAddress>({
   },
 });
 
-const customerSchema = new Schema<TCustomer>({
-  name: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true,
-  },
-  address: {
-    type: addressSchema,
-    required: true,
-  },
-  phone: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  avatar: {
-    type: String,
-    required: true,
-    trim: true,
-    default: function () {
-      return `https://avatar.iran.liara.run/username?username=${this.name}`;
+const customerSchema = new Schema<TCustomer>(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+    },
+    address: {
+      type: addressSchema,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    avatar: {
+      type: String,
+      default: '/images/placeholder.png',
     },
   },
-});
+  {
+    timestamps: true,
+  },
+);
 
 export const Customer = model('Customer', customerSchema);

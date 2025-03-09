@@ -2,9 +2,13 @@ import { TCustomer } from './Customer.interface';
 import { Customer } from './Customer.model';
 
 export const CustomerService = {
-  async createCustomer(customerData: TCustomer) {
-    const newCustomer = await Customer.create(customerData);
+  async resolve(customerData: TCustomer) {
+    const customer = await Customer.findOneAndUpdate(
+      { email: customerData.email },
+      { $set: customerData },
+      { new: true, upsert: true },
+    );
 
-    return newCustomer;
+    return customer;
   },
 };

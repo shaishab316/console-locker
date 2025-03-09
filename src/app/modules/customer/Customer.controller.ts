@@ -4,14 +4,14 @@ import sendResponse from '../../../shared/sendResponse';
 import { CustomerService } from './Customer.service';
 
 export const CustomerController = {
-  createCustomer: catchAsync(async (req, res) => {
-    const newCustomer = await CustomerService.createCustomer(req.body);
+  resolve: catchAsync(async (req, res) => {
+    const customer = await CustomerService.resolve(req.body);
 
     sendResponse(res, {
       success: true,
       statusCode: StatusCodes.OK,
-      message: 'Customer has created successfully!',
-      data: newCustomer,
+      message: 'Customer resolved successfully!',
+      data: customer,
     });
   }),
 };
