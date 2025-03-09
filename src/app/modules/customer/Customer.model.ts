@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
 import { TAddress, TCustomer } from './Customer.interface';
 
-const addressSchema = new Schema<TAddress>({
+export const addressSchema = new Schema<TAddress>({
   address: {
     type: String,
     required: true,

@@ -1,5 +1,6 @@
 import { model, Schema } from 'mongoose';
 import { TOrder } from './Order.interface';
+import { addressSchema } from '../customer/Customer.model';
 
 const orderSchema = new Schema<TOrder>(
   {
@@ -18,6 +19,9 @@ const orderSchema = new Schema<TOrder>(
       type: Schema.Types.ObjectId,
       required: true,
       ref: 'Customer',
+    },
+    address: {
+      type: addressSchema,
     },
     transaction: {
       type: Schema.Types.ObjectId,

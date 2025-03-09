@@ -4,10 +4,13 @@ import ApiError from '../../../errors/ApiError';
 import { StatusCodes } from 'http-status-codes';
 import Product from '../product/Product.model';
 import { Types } from 'mongoose';
+import { Customer } from '../customer/Customer.model';
 
 export const OrderService = {
   async checkout(req: Request) {
     const { productDetails, customer } = req.body;
+
+    const address = (await Customer.findById(customer))?.address;
 
     if (
       !productDetails ||
@@ -64,7 +67,7 @@ export const OrderService = {
     }
 
     const existingOrder = await Order.findOne({
-      customer: new Types.ObjectId(customer),
+      customer: new Types.ObjectId(customer as string),
       state: 'pending',
     });
 
@@ -80,6 +83,7 @@ export const OrderService = {
       productDetails: validProducts,
       customer,
       amount: totalPrice,
+      address,
     });
 
     return { amount: totalPrice, orderId: newOrder._id };
