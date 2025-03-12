@@ -48,7 +48,19 @@ export const ReviewService = {
       .limit(+limit)
       .populate('customer', 'name avatar');
 
-    return reviews;
+    const total = await Review.countDocuments(
+      productName ? { product: productName } : {},
+    );
+
+    return {
+      reviews,
+      meta: {
+        total,
+        page: +page,
+        limit: +limit,
+        totalPage: Math.ceil(total / +limit),
+      },
+    };
   },
 
   async update(reviewId: string, reviewData: Partial<TReview>) {
