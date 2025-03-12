@@ -46,13 +46,24 @@ export const OrderController = {
     });
   }),
 
+  list: catchAsync(async (req, res) => {
+    const data = await OrderService.list(req.query);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Orders retrieved successfully!',
+      data,
+    });
+  }),
+
   retrieve: catchAsync(async (req, res) => {
     const data = await OrderService.retrieve(req.query);
 
     sendResponse(res, {
       success: true,
       statusCode: StatusCodes.OK,
-      message: 'Orders retrieved successfully!',
+      message: 'Order retrieved successfully!',
       data,
     });
   }),

@@ -107,13 +107,11 @@ export const OrderService = {
     });
   },
 
-  async retrieve(query: Record<any, any>) {
+  async list(query: Record<any, any>) {
     const { page = '1', limit = '10', state } = query;
     const filters: Record<string, any> = {};
 
-    if (state) {
-      filters.state = state;
-    }
+    if (state) filters.state = state;
 
     const orders = await Order.find(filters)
       .skip((+page - 1) * +limit)
@@ -133,5 +131,24 @@ export const OrderService = {
       },
       orders,
     };
+  },
+
+  async retrieve(query: Record<any, any>) {
+    if (query.orderId) {
+      const order = await Order.findById(query.orderId);
+
+      if (!order) throw new ApiError(StatusCodes.NOT_FOUND, 'Order not found');
+
+      if (order.customer.toString() !== query.customer)
+        throw new ApiError(StatusCodes.FORBIDDEN, 'You are not authorized');
+
+      return order;
+    }
+
+    const orders = await Order.find({
+      customer: new Types.ObjectId(query.customer as string),
+    });
+
+    return orders;
   },
 };

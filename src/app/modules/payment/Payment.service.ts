@@ -6,7 +6,7 @@ import Stripe from 'stripe';
 import config from '../../../config';
 
 export const PaymentService = {
-  create: async (data: Record<string, any>) => {
+  create: async ({ name, amount }: Record<string, any>) => {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['klarna', 'paypal'],
       mode: 'payment',
@@ -14,14 +14,14 @@ export const PaymentService = {
         {
           price_data: {
             currency: 'eur',
-            product_data: { name: data.name },
-            unit_amount: Math.round(data.amount * 100),
+            product_data: { name },
+            unit_amount: Math.round(amount * 100),
           },
           quantity: 1,
         },
       ],
-      success_url: config.url.payment.success,
-      cancel_url: config.url.payment.cancel,
+      success_url: `${config.url.payment.success}?orderId=${name}`,
+      cancel_url: `${config.url.payment.cancel}?orderId=${name}`,
     });
 
     return session.url;
