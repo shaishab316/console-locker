@@ -37,11 +37,13 @@ export const ReviewService = {
     return await Review.create(reviewData);
   },
 
-  async list(productName: string, query: Record<any, any>) {
-    const { page = '1', limit = '10' } = query;
+  async list(query: Record<any, any>) {
+    const { page = '1', limit = '10', productName } = query;
     const skip = (+page - 1) * +limit;
 
-    const reviews = await Review.find({ product: productName })
+    const reviews = await Review.find(
+      productName ? { product: productName } : {},
+    )
       .skip(skip)
       .limit(+limit)
       .populate('customer', 'name avatar');

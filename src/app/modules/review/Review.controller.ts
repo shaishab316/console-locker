@@ -46,7 +46,7 @@ export const ReviewController = {
   }, imagesUploadRollback),
 
   list: catchAsync(async (req, res) => {
-    const reviews = await ReviewService.list(req.params.productName, req.query);
+    const reviews = await ReviewService.list(req.query);
 
     sendResponse(res, {
       success: true,
