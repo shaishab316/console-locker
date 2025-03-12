@@ -135,7 +135,9 @@ export const OrderService = {
 
   async retrieve(query: Record<any, any>) {
     if (query.orderId) {
-      const order = await Order.findById(query.orderId);
+      const order = await Order.findById(query.orderId)
+        .populate('transaction', 'transaction_id')
+        .populate('productDetails.product', 'name images slug');
 
       if (!order) throw new ApiError(StatusCodes.NOT_FOUND, 'Order not found');
 
@@ -147,7 +149,9 @@ export const OrderService = {
 
     const orders = await Order.find({
       customer: new Types.ObjectId(query.customer as string),
-    });
+    })
+      .populate('transaction', 'transaction_id')
+      .populate('productDetails.product', 'name images slug');
 
     return orders;
   },
