@@ -4,6 +4,7 @@ import { TBlog } from './Blog.interface';
 import Blog from './Blog.model';
 import deleteFile from '../../../shared/deleteFile';
 import slugify from 'slugify';
+import { Types } from 'mongoose';
 
 export const BlogService = {
   create: async (blogData: TBlog) => await Blog.create(blogData),
@@ -52,17 +53,28 @@ export const BlogService = {
    */
 
   async retrieve(slug: string) {
-    const blog = await Blog.findOne({ slug });
+    const blog = await Blog.findOne({ slug }).populate('admin', 'name avatar');
 
     if (!blog) throw new ApiError(StatusCodes.NOT_FOUND, 'Blog not found');
 
-    return blog;
+    const relatedBlogs = await this.relatedBlogs(blog._id);
+
+    return { blog, relatedBlogs };
   },
 
   async list({ page = '1', limit = '10' }: Record<any, any>) {
     const skip = (+page - 1) * +limit;
 
     const result = await Blog.aggregate([
+      {
+        $lookup: {
+          from: 'admins',
+          localField: 'admin',
+          foreignField: '_id',
+          as: 'admin',
+        },
+      },
+      { $unwind: '$admin' },
       {
         $facet: {
           metadata: [{ $count: 'total' }],
@@ -75,6 +87,15 @@ export const BlogService = {
                 description: {
                   $concat: [{ $substrCP: ['$description', 0, 150] }, '...'],
                 },
+              },
+            },
+            {
+              $project: {
+                admin: { name: 1, avatar: 1 },
+                image: 1,
+                title: 1,
+                description: 1,
+                slug: 1,
               },
             },
           ],
@@ -94,5 +115,15 @@ export const BlogService = {
       },
       blogs,
     };
+  },
+
+  relatedBlogs: async (blogId: Types.ObjectId) => {
+    const blogs = await Blog.find({
+      _id: { $ne: blogId },
+    })
+      .limit(3)
+      .populate('admin', 'name avatar');
+
+    return blogs;
   },
 };
