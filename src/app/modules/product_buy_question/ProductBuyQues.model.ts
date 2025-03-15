@@ -19,6 +19,7 @@ const productBuyQuesSchema = new Schema<TProductBuyQues>(
     name: { type: String, required: true, unique: true },
     base_price: { type: Number, required: true },
     questions: { type: [buyQuesSchema], required: true },
+    product_type: { type: String, required: true },
   },
   {
     timestamps: true,

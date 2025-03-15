@@ -3,6 +3,7 @@ export type TProductBuyQues = {
   name: string;
   base_price: number;
   questions: TBuyQues[];
+  product_type: string;
 };
 
 export type TBuyQues = {

@@ -14,6 +14,7 @@ const questionSchema = z.object({
 const createQuestionValidationSchema = z.object({
   body: z.object({
     name: z.string(),
+    product_type: z.string(),
     base_price: z.preprocess(
       val => (typeof val === 'string' ? parseFloat(val) : val),
       z.number(),
@@ -25,6 +26,7 @@ const createQuestionValidationSchema = z.object({
 const updateQuestionValidationSchema = z.object({
   body: z.object({
     name: z.string().optional(),
+    product_type: z.string().optional(),
     base_price: z
       .preprocess(
         val => (typeof val === 'string' ? parseFloat(val) : val),
