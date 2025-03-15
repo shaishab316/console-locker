@@ -213,13 +213,15 @@ export const ProductBuyQuesService = {
    * **************************************************************************************************************
    */
 
-  async retrieveQuestion({ page = '1', limit = '10' }) {
-    const products = await ProductBuyQues.find()
+  async retrieveQuestion({ page = '1', limit = '10', product_type = '' }) {
+    const filter = product_type ? { product_type } : {};
+
+    const products = await ProductBuyQues.find(filter)
       .select('name image base_price')
       .skip((+page - 1) * +limit)
       .limit(+limit);
 
-    const total = await ProductBuyQues.countDocuments();
+    const total = await ProductBuyQues.countDocuments(filter);
 
     return {
       products,
