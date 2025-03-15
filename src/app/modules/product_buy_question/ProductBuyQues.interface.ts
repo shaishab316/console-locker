@@ -4,6 +4,7 @@ export type TProductBuyQues = {
   base_price: number;
   questions: TBuyQues[];
   product_type: string;
+  brand: string;
 };
 
 export type TBuyQues = {
