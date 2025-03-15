@@ -6,14 +6,14 @@ import Stripe from 'stripe';
 import config from '../../../config';
 
 export const PaymentService = {
-  create: async ({ name, amount }: Record<string, any>) => {
+  create: async ({ name, amount, method = 'klarna' }: Record<string, any>) => {
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['klarna', 'paypal'],
+      payment_method_types: [method],
       mode: 'payment',
       line_items: [
         {
           price_data: {
-            currency: 'eur',
+            currency: method === 'klarna' ? 'eur' : 'usd',
             product_data: { name },
             unit_amount: Math.round(amount * 100),
           },

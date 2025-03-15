@@ -18,7 +18,6 @@ export default {
   },
   payment: {
     stripe: {
-      client: process.env.PAYMENT_STRIPE_CLIENT as string,
       secret: process.env.PAYMENT_STRIPE_SECRET as string,
       webhook_secret: process.env.PAYMENT_STRIPE_WEBHOOK_SECRET as string,
     },

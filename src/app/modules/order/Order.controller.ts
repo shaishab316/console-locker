@@ -14,6 +14,7 @@ export const OrderController = {
     const checkout_url = await PaymentService.create({
       name: orderId.toString(),
       amount,
+      method: req.query.method,
     });
 
     sendResponse(res, {
