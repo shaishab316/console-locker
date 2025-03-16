@@ -7,7 +7,7 @@ export type TOrder = {
     product: Types.ObjectId;
     price: number;
     quantity: number;
-  };
+  }[];
   customer: Types.ObjectId;
   transaction?: Types.ObjectId;
   payment_method?: string;
