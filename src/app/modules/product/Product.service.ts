@@ -260,17 +260,51 @@ export const ProductService = {
     };
   },
 
-  async retrieveMeta(productName: string) {
-    const products = await Product.find({ name: productName });
-
+  async retrieveMeta(product: TProduct) {
+    const products = await Product.find({ name: product.name });
     const mergedProducts = mergeProducts(products)[0];
 
-    return {
-      models: mergedProducts.model,
-      controllers: mergedProducts.controller,
-      conditions: mergedProducts.condition,
-      memories: mergedProducts.memory,
-    };
+    const attributes = [
+      { key: 'model', values: mergedProducts.model },
+      { key: 'controller', values: mergedProducts.controller },
+      { key: 'condition', values: mergedProducts.condition },
+      { key: 'memory', values: mergedProducts.memory },
+    ];
+
+    const results = await Promise.all(
+      attributes.map(async ({ key, values }) => {
+        const processedValues = await Promise.all(
+          values.map(async (value: string) => {
+            if (value === product[key as keyof TProduct])
+              return { [key]: value, price: 0 };
+
+            const query = {
+              brand: product.brand,
+              product_type: product.product_type,
+              model: product.model,
+              controller: product.controller,
+              condition: product.condition,
+              memory: product.memory,
+              [key]: value,
+            };
+
+            const temProduct = await Product.findOne(query);
+
+            return {
+              [key]: value,
+              price: !temProduct
+                ? 0
+                : (product.offer_price ?? product.price) -
+                  (temProduct.offer_price ?? temProduct.price),
+            };
+          }),
+        );
+
+        return { [key + 's']: processedValues };
+      }),
+    );
+
+    return results.reduce((acc, curr) => ({ ...acc, ...curr }), {});
   },
 
   async retrieve(slug: string) {
@@ -279,7 +313,7 @@ export const ProductService = {
     if (!product)
       throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
 
-    const meta = await this.retrieveMeta(product.name!);
+    const meta = await this.retrieveMeta(product);
     const reviews = await this.getReviews(product.name!);
     const relatedProducts = await this.relatedProducts(product.brand!);
 
