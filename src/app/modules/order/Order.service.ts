@@ -141,7 +141,7 @@ export const OrderService = {
 
       if (!order) throw new ApiError(StatusCodes.NOT_FOUND, 'Order not found');
 
-      if (!authorized) return order;
+      if (authorized) return order;
 
       if (order.customer.toString() !== query.customer)
         throw new ApiError(StatusCodes.FORBIDDEN, 'You are not authorized');

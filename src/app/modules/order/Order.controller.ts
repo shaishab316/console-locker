@@ -59,9 +59,20 @@ export const OrderController = {
   }),
 
   retrieve: catchAsync(async (req, res) => {
-    const authorized = req.admin ? true : false;
+    const data = await OrderService.retrieve(req.query);
 
-    const data = await OrderService.retrieve(req.query, authorized);
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Order retrieved successfully!',
+      data,
+    });
+  }),
+
+  adminRetrieve: catchAsync(async (req, res) => {
+    req.query.orderId = req.params.id;
+
+    const data = await OrderService.retrieve(req.query, true);
 
     sendResponse(res, {
       success: true,
