@@ -133,13 +133,15 @@ export const OrderService = {
     };
   },
 
-  async retrieve(query: Record<any, any>) {
+  async retrieve(query: Record<any, any>, authorized: boolean = false) {
     if (query.orderId) {
       const order = await Order.findById(query.orderId)
         .populate('transaction', 'transaction_id')
         .populate('productDetails.product', 'name images slug');
 
       if (!order) throw new ApiError(StatusCodes.NOT_FOUND, 'Order not found');
+
+      if (!authorized) return order;
 
       if (order.customer.toString() !== query.customer)
         throw new ApiError(StatusCodes.FORBIDDEN, 'You are not authorized');

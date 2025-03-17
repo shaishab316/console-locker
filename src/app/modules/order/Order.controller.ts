@@ -59,7 +59,9 @@ export const OrderController = {
   }),
 
   retrieve: catchAsync(async (req, res) => {
-    const data = await OrderService.retrieve(req.query);
+    const authorized = req.admin ? true : false;
+
+    const data = await OrderService.retrieve(req.query, authorized);
 
     sendResponse(res, {
       success: true,
