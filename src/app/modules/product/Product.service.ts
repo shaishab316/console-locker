@@ -276,7 +276,7 @@ export const ProductService = {
         const processedValues = await Promise.all(
           values.map(async (value: string) => {
             if (value === product[key as keyof TProduct])
-              return { [key]: value, price: 0 };
+              return { [key]: value, price: '+0' };
 
             const query = {
               brand: product.brand,
@@ -290,12 +290,22 @@ export const ProductService = {
 
             const temProduct = await Product.findOne(query);
 
+            if (!temProduct) return { [key]: value, price: '+0' };
+
+            const priceDiff =
+              (temProduct.offer_price ?? temProduct.price) -
+              (product.offer_price ?? product.price);
+
+            const priceString =
+              priceDiff === 0
+                ? '+0'
+                : priceDiff > 0
+                  ? `+${priceDiff}`
+                  : `${priceDiff}`;
+
             return {
               [key]: value,
-              price: !temProduct
-                ? 0
-                : (product.offer_price ?? product.price) -
-                  (temProduct.offer_price ?? temProduct.price),
+              price: priceString,
             };
           }),
         );
