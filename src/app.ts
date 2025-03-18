@@ -15,12 +15,7 @@ app.use(Morgan.errorHandler);
 //body parser
 app.use(
   cors({
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:5174',
-      'http://localhost:3000',
-      'http://localhost:3001',
-    ],
+    origin: '*',
     credentials: true,
   }),
 );
@@ -36,7 +31,9 @@ app.use(express.urlencoded({ extended: true }));
 
 //file retrieve
 app.use(express.static('uploads'));
+app.use(express.static('public'));
 app.use('/api/v1', express.static('uploads'));
+app.use('/api/v1', express.static('public'));
 
 //router
 app.use('/api/v1', router);
