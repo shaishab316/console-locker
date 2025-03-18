@@ -4,6 +4,7 @@ import { TransactionService } from '../transaction/Transaction.service';
 import stripe from './Payment.utils';
 import Stripe from 'stripe';
 import config from '../../../config';
+import { OrderService } from '../order/Order.service';
 
 export const PaymentService = {
   create: async ({ name, amount, method = 'klarna' }: Record<string, any>) => {
@@ -60,5 +61,7 @@ export const PaymentService = {
     order.state = 'success';
 
     await order.save();
+
+    await OrderService.sendReceipt({ orderId: order._id, receipt: order._id });
   },
 };

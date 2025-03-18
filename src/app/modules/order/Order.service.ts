@@ -107,6 +107,14 @@ export const OrderService = {
     await Order.findByIdAndUpdate(orderId, {
       state: 'shipped',
     });
+
+    const order: any = await this.retrieve({ orderId }, true);
+
+    await emailHelper.sendEmail({
+      to: order.customer.email,
+      subject: `Console Locker Products Shipped - Receipt #${order.receipt}`,
+      html: OrderTemplate.success(order),
+    });
   },
 
   async list(query: Record<any, any>) {
