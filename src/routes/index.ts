@@ -1,4 +1,4 @@
-import express, { Router } from 'express';
+import { Router } from 'express';
 import { AdminRoutes } from '../app/modules/admin/Admin.route';
 import { ProductRoutes } from '../app/modules/product/Product.route';
 import { CustomerRoutes } from '../app/modules/customer/Customer.route';
@@ -9,8 +9,9 @@ import { BlogRoutes } from '../app/modules/blog/Blog.route';
 import { SettingRoutes } from '../app/modules/setting/Setting.route';
 import { NotificationRoutes } from '../app/modules/notification/Notification.route';
 import { ReviewRoutes } from '../app/modules/review/Review.route';
+import { ConfigAttrRoutes } from '../app/modules/configattr/ConfigAttr.route';
 
-const router = express.Router();
+const router = Router();
 
 const apiRoutes: { path: string; route: Router }[] = [
   {
@@ -53,6 +54,10 @@ const apiRoutes: { path: string; route: Router }[] = [
   {
     path: '/reviews',
     route: ReviewRoutes.customerRoutes,
+  },
+  {
+    path: '/config-attr',
+    route: ConfigAttrRoutes,
   },
 ];
 

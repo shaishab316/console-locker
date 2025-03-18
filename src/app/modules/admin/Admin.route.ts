@@ -15,6 +15,7 @@ import { SettingRoutes } from '../setting/Setting.route';
 import { NotificationRoutes } from '../notification/Notification.route';
 import { NotificationController } from '../notification/Notification.controller';
 import { ReviewRoutes } from '../review/Review.route';
+import { ConfigAttrControllers } from '../configattr/ConfigAttr.controller';
 
 const router = Router();
 
@@ -122,5 +123,7 @@ router.get(
   verifyAdmin,
   NotificationController.unReadCount,
 );
+
+router.post('/config-attr/set', ConfigAttrControllers.set);
 
 export const AdminRoutes = router;
