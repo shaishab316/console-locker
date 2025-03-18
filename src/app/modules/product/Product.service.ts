@@ -378,4 +378,9 @@ export const ProductService = {
 
     return products;
   },
+  async listByName(name: string) {
+    const products = await Product.find({ name }).lean();
+
+    return products.map(product => ({ ...product, byName: true }));
+  },
 };

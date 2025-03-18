@@ -47,6 +47,7 @@ privateRouter.post(
 /** for customer */
 // retrieved all products
 publicRouter.get('/', ProductController.list);
+publicRouter.get('/name/:productName', ProductController.listByName);
 
 publicRouter.get('/retrieve', ProductController.retrieveByIds);
 

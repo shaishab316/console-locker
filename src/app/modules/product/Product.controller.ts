@@ -159,4 +159,15 @@ export const ProductController = {
       data: { slug },
     });
   }),
+
+  listByName: catchAsync(async (req, res) => {
+    const data = await ProductService.listByName(req.params.productName);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Slug find successfully',
+      data,
+    });
+  }),
 };
