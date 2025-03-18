@@ -8,6 +8,7 @@ export default {
   database_url: process.env.DATABASE_URL,
   node_env: process.env.NODE_ENV,
   port: process.env.PORT,
+  href: process.env.HREF,
   bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
   google_maps: process.env.GOOGLE_MAPS,
   jwt: {
@@ -39,5 +40,6 @@ export default {
       success: process.env.PAYMENT_SUCCESS_URL,
       cancel: process.env.PAYMENT_CANCEL_URL,
     },
+    ui: process.env.UI_URL,
   },
 };

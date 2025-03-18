@@ -41,6 +41,7 @@ const orderSchema = new Schema<TOrder>(
       enum: ['pending', 'shipped', 'success', 'cancel'],
       default: 'pending',
     },
+    receipt: String,
   },
   {
     timestamps: true,

@@ -137,7 +137,8 @@ export const OrderService = {
     if (query.orderId) {
       const order = await Order.findById(query.orderId)
         .populate('transaction', 'transaction_id')
-        .populate('productDetails.product', 'name images slug');
+        .populate('productDetails.product')
+        .populate('customer', 'name email');
 
       if (!order) throw new ApiError(StatusCodes.NOT_FOUND, 'Order not found');
 

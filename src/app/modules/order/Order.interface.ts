@@ -15,6 +15,7 @@ export type TOrder = {
   state: TOrderState;
   address?: TAddress;
   secondary_phone?: string;
+  receipt?: string;
   createdAt?: Date;
   updatedAt?: Date;
 };
