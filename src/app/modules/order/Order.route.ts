@@ -21,6 +21,8 @@ privateRouter.post('/:id/shipped', OrderController.shipped);
 privateRouter.get('/', OrderController.list);
 privateRouter.get('/:id', OrderController.adminRetrieve);
 
+privateRouter.post('/send-receipt', OrderController.sendReceipt);
+
 export const OrderRoutes = {
   customerRoutes: publicRouter,
   adminRoutes: privateRouter,

@@ -17,7 +17,7 @@ export const OrderTemplate = {
         }
       </style>
     </head>
-    <body style="background-color: #f5f5f5;">
+    <body>
       <div style="max-width: 600px; overflow: hidden; margin: 20px auto; border: 1px solid #e5e7eb; border-radius: 15px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); background-color: #ffffff;">
         <table border="0" cellpadding="0" cellspacing="0" width="100%">
           <tr>
@@ -41,7 +41,7 @@ export const OrderTemplate = {
                   <td style="padding: 0 32px 24px; border-bottom: 1px solid #e5e7eb;">
                     <h3 style="margin:0;">Hi, ${customer.name}</h3>
                     <h1 style="margin: 0;color: #1f2937; font-size: 24px;">Order Confirmation</h1>
-                    <p style="margin: 0;">Receipt: - <span style="color:rgb(206, 42, 157); font-weight: 700;">${receipt}</span> -</p>
+                    <p style="margin: 0;">Receipt: <span style="color:rgb(238, 40, 40); font-weight: 700; font-size: 17px; letter-spacing: 1px;">#${receipt}</span></p>
                   </td>
                 </tr>
 
@@ -55,13 +55,21 @@ export const OrderTemplate = {
                         <tr>
                           <td>
                             <a href="${config.url.ui}/buy/${product.slug}" style="text-decoration: none; color: black;" target="_blank">
-                              <h3 style="margin: 0 0 8px; color: #1f2937; font-size: 16px; display: flex; justify-content: space-between; gap: 10px;">
-                                <span>${product.name}</span>
-                                <span>$${(price! * quantity!).toFixed(2)}<span>
+                              <h3 style="margin: 0 0 8px; color: #1f2937; font-size: 16px;">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                  <tr>
+                                    <td><span>${product.name}</span></td>
+                                    <td align="right"><span>$${(price! * quantity!).toFixed(2)}</span></td>
+                                  </tr>
+                                </table>
                               </h3>
-                              <p style="margin: 0; color: #6b7280; display: flex; justify-content: space-between; gap: 10px;">
-                                <span>Quantity: ${quantity}</span>
-                                <span>$${price} each</span>
+                              <p style="margin: 0; color: #6b7280;">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                  <tr>
+                                    <td><span>Quantity: ${quantity}</span></td>
+                                    <td align="right"><span>$${price} each</span></td>
+                                  </tr>
+                                </table>
                               </p>
                               <p style="margin: 5px 0; font-size: 12px;">
                                 Model: <span style="color: blue;">${product.model}</span>,

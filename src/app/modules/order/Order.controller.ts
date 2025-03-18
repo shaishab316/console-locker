@@ -81,4 +81,15 @@ export const OrderController = {
       data,
     });
   }),
+
+  sendReceipt: catchAsync(async (req, res) => {
+    const data = await OrderService.sendReceipt(req.body);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Receipt send successfully!',
+      data,
+    });
+  }),
 };

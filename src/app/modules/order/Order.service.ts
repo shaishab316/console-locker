@@ -5,6 +5,8 @@ import { StatusCodes } from 'http-status-codes';
 import Product from '../product/Product.model';
 import { Types } from 'mongoose';
 import { Customer } from '../customer/Customer.model';
+import { emailHelper } from '../../../helpers/emailHelper';
+import { OrderTemplate } from './Order.template';
 
 export const OrderService = {
   async checkout(req: Request) {
@@ -144,7 +146,7 @@ export const OrderService = {
 
       if (authorized) return order;
 
-      if (order.customer.toString() !== query.customer)
+      if (order.customer._id.toString() !== query.customer)
         throw new ApiError(StatusCodes.FORBIDDEN, 'You are not authorized');
 
       return order;
@@ -157,5 +159,19 @@ export const OrderService = {
       .populate('productDetails.product', 'name images slug');
 
     return orders;
+  },
+
+  async sendReceipt({ orderId, receipt }: any) {
+    const order: any = await this.retrieve({ orderId }, true);
+
+    order.receipt = receipt;
+
+    await order.save();
+
+    await emailHelper.sendEmail({
+      to: order.customer.email,
+      subject: `Console Locker Order Confirmation - Receipt #${receipt}`,
+      html: OrderTemplate.receipt(order),
+    });
   },
 };
