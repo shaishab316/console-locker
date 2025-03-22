@@ -17,7 +17,7 @@ export type TProduct = {
   quantity: number;
   isVariant: boolean;
   product_type?: string;
-  product_ref?: Types.ObjectId;
+  product_ref?: string;
   createdAt?: Date;
   updatedAt?: Date;
   ratings?: number;

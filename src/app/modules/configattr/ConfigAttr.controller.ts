@@ -15,7 +15,7 @@ export const ConfigAttrControllers = {
     });
   }),
 
-  get: catchAsync(async (req, res) => {
+  get: catchAsync(async (_, res) => {
     const data = await ConfigAttrServices.get();
 
     sendResponse(res, {

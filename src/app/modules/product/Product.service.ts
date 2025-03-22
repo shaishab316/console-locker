@@ -57,7 +57,7 @@ export const ProductService = {
     }
 
     variantData.isVariant = true;
-    variantData.product_ref = product._id;
+    variantData.product_ref = product.name;
 
     if (!variantData.product_type)
       variantData.product_type = product.product_type;
@@ -337,7 +337,7 @@ export const ProductService = {
 
     const variants: TProduct[] = await Product.find({
       _id: { $nin: ids },
-      product_ref: { $in: ids },
+      product_ref: { $in: products.map(product => product.name) },
     })
       .select('-product_ref')
       .limit(10);

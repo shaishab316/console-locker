@@ -58,8 +58,7 @@ const productSchema = new Schema<TProduct>({
     type: String,
   },
   product_ref: {
-    type: Schema.Types.ObjectId,
-    ref: 'Product',
+    type: String,
   },
 });
 
