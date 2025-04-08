@@ -96,6 +96,8 @@ export const BlogService = {
                 title: 1,
                 description: 1,
                 slug: 1,
+                createdAt: 1,
+                updatedAt: 1,
               },
             },
           ],
