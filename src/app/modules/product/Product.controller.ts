@@ -63,6 +63,17 @@ export const ProductController = {
     });
   }),
 
+  deleteByName: catchAsync(async (req, res) => {
+    const deletedProduct = await ProductService.deleteByName(req.params.name);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Product deleted successfully',
+      data: deletedProduct,
+    });
+  }),
+
   createVariant: catchAsyncWithCallback(async (req, res) => {
     const images: string[] = [];
 

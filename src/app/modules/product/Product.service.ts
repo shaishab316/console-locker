@@ -50,6 +50,21 @@ export const ProductService = {
     return deletedProduct;
   },
 
+  async deleteByName(name: string) {
+    const deletedProduct = await Product.findOneAndDelete({ name });
+
+    if (!deletedProduct) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
+    }
+
+    // delete product images
+    deletedProduct.images.forEach(
+      async (image: string) => await deleteFile(image),
+    );
+
+    return deletedProduct;
+  },
+
   async createVariant(productId: string, variantData: Partial<TProduct>) {
     const product = await Product.findById(productId);
     if (!product || product.isVariant) {

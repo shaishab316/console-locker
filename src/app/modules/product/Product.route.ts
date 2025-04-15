@@ -27,6 +27,7 @@ privateRouter.patch(
 
 // delete a product
 privateRouter.delete('/:id/delete', ProductController.delete);
+privateRouter.delete('/delete/:name', ProductController.deleteByName);
 
 // create a new variant
 privateRouter.post(
