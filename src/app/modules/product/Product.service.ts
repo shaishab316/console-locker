@@ -315,8 +315,8 @@ export const ProductService = {
               priceDiff === 0
                 ? '+0'
                 : priceDiff > 0
-                  ? `+${priceDiff}`
-                  : `${priceDiff}`;
+                  ? `+${priceDiff.toFixed(2)}`
+                  : `${priceDiff.toFixed(2)}`;
 
             return {
               [key]: value,
