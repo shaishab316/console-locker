@@ -38,6 +38,10 @@ export const ProductValidation = {
         .refine(val => !isNaN(val), {
           message: 'Quantity must be a valid number',
         }),
+      modelDes: z.string().optional(),
+      conditionDes: z.string().optional(),
+      controllerDes: z.string().optional(),
+      memoryDes: z.string().optional(),
     }),
   }),
 
@@ -115,6 +119,10 @@ export const ProductValidation = {
         .refine(val => val === undefined || !isNaN(val), {
           message: 'Quantity must be a valid number',
         }),
+      modelDes: z.string().optional(),
+      conditionDes: z.string().optional(),
+      controllerDes: z.string().optional(),
+      memoryDes: z.string().optional(),
     }),
   }),
 };

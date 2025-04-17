@@ -22,4 +22,10 @@ export type TProduct = {
   updatedAt?: Date;
   ratings?: number;
   reviewCount?: number;
+
+  /** For description */
+  modelDes?: string;
+  conditionDes?: string;
+  controllerDes?: string;
+  memoryDes?: string;
 };

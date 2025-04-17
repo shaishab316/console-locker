@@ -60,6 +60,10 @@ const productSchema = new Schema<TProduct>({
   product_ref: {
     type: String,
   },
+  modelDes: String,
+  conditionDes: String,
+  controllerDes: String,
+  memoryDes: String,
 });
 
 injectProductModelMiddlewares(productSchema);
