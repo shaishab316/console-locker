@@ -393,4 +393,8 @@ export const ProductService = {
 
     return products.map(product => ({ ...product, byName: true }));
   },
+
+  async exists(name: string) {
+    return Product.exists({ name });
+  },
 };

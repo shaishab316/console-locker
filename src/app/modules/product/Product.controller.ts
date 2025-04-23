@@ -181,4 +181,15 @@ export const ProductController = {
       data,
     });
   }),
+
+  exists: catchAsync(async (req, res) => {
+    const exists = !!(await ProductService.exists(req.params.productName));
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: exists ? `${req.params.productName} exists` : 'Not exists',
+      data: { exists },
+    });
+  }),
 };

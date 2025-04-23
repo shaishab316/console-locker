@@ -50,6 +50,8 @@ privateRouter.post(
 publicRouter.get('/', ProductController.list);
 publicRouter.get('/name/:productName', ProductController.listByName);
 
+publicRouter.get('/name/:productName/exists', ProductController.exists);
+
 publicRouter.get('/retrieve', ProductController.retrieveByIds);
 
 publicRouter.get('/:productName/find-slug', ProductController.findSlug);
