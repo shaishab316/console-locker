@@ -40,7 +40,7 @@ export const ProductController = {
     if (newImages.length) req.body.images = newImages;
 
     const updatedProduct = await ProductService.update(
-      req.params.productId,
+      req.params.slug,
       req.body,
     );
 
@@ -179,6 +179,17 @@ export const ProductController = {
       statusCode: StatusCodes.OK,
       message: 'Slug find successfully',
       data,
+    });
+  }),
+
+  exists: catchAsync(async (req, res) => {
+    const exists = !!(await ProductService.exists(req.params.productName));
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: exists ? `${req.params.productName} exists` : 'Not exists',
+      data: { exists },
     });
   }),
 };

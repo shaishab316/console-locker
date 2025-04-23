@@ -13,19 +13,17 @@ export const ProductService = {
     return await Product.create(newProduct);
   },
 
-  async update(productId: string, updateData: Partial<TProduct>) {
-    const existingProduct = await Product.findById(productId);
+  async update(slug: string, updateData: Partial<TProduct>) {
+    const existingProduct = await Product.findOne({ slug });
 
-    if (!existingProduct) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
-    }
+    let imagesToDelete: string[] = [];
 
-    const imagesToDelete = existingProduct.images || [];
+    if (existingProduct) imagesToDelete = existingProduct.images;
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-      productId,
+    const updatedProduct = await Product.findOneAndUpdate(
+      { slug },
       updateData,
-      { new: true },
+      { new: true, upsert: true },
     );
 
     // Delete old images if new images were uploaded
@@ -294,13 +292,10 @@ export const ProductService = {
               return { [key]: value, price: '+0' };
 
             const query = {
-              brand: product.brand,
-              product_type: product.product_type,
               model: product.model,
               controller: product.controller,
               condition: product.condition,
               memory: product.memory,
-              [key]: value,
             };
 
             const temProduct = await Product.findOne(query);
@@ -397,5 +392,9 @@ export const ProductService = {
     const products = await Product.find({ name }).lean();
 
     return products.map(product => ({ ...product, byName: true }));
+  },
+
+  async exists(name: string) {
+    return Product.exists({ name });
   },
 };

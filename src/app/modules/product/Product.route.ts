@@ -19,7 +19,7 @@ privateRouter.post(
 
 // update a product
 privateRouter.patch(
-  '/:productId/edit',
+  '/:slug/edit',
   imageUploader(),
   validateRequest(ProductValidation.update),
   ProductController.update,
@@ -49,6 +49,8 @@ privateRouter.post(
 // retrieved all products
 publicRouter.get('/', ProductController.list);
 publicRouter.get('/name/:productName', ProductController.listByName);
+
+publicRouter.get('/name/:productName/exists', ProductController.exists);
 
 publicRouter.get('/retrieve', ProductController.retrieveByIds);
 
