@@ -19,7 +19,7 @@ privateRouter.post(
 
 // update a product
 privateRouter.patch(
-  '/:productId/edit',
+  '/:slug/edit',
   imageUploader(),
   validateRequest(ProductValidation.update),
   ProductController.update,

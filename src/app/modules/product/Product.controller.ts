@@ -40,7 +40,7 @@ export const ProductController = {
     if (newImages.length) req.body.images = newImages;
 
     const updatedProduct = await ProductService.update(
-      req.params.productId,
+      req.params.slug,
       req.body,
     );
 

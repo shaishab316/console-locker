@@ -23,13 +23,7 @@ export const ProductValidation = {
       brand: z.string().min(1),
       model: z.string().min(1),
       condition: z.string().min(1),
-      controller: z
-        .string()
-        .min(1)
-        .transform(val => parseInt(val, 10))
-        .refine(val => !isNaN(val), {
-          message: 'Controller must be a valid number',
-        }),
+      controller: z.string().min(1),
       memory: z.string().min(1),
       quantity: z
         .string()
@@ -100,15 +94,7 @@ export const ProductValidation = {
       brand: z.string().optional(),
       model: z.string().optional(),
       condition: z.string().optional(),
-      controller: z
-        .union([z.string(), z.number()])
-        .optional()
-        .transform(val =>
-          val === undefined ? undefined : parseInt(val as string, 10),
-        )
-        .refine(val => val === undefined || !isNaN(val), {
-          message: 'Controller must be a valid number',
-        }),
+      controller: z.string().optional(),
       memory: z.string().optional(),
       quantity: z
         .union([z.string(), z.number()])
