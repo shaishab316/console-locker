@@ -292,10 +292,13 @@ export const ProductService = {
               return { [key]: value, price: '+0' };
 
             const query = {
+              brand: product.brand,
+              product_type: product.product_type,
               model: product.model,
               controller: product.controller,
               condition: product.condition,
               memory: product.memory,
+              [key]: value,
             };
 
             const temProduct = await Product.findOne(query);
