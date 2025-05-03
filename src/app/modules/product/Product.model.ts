@@ -64,10 +64,23 @@ const productSchema = new Schema<TProduct>({
   conditionDes: String,
   controllerDes: String,
   memoryDes: String,
-  modelLabel: String,
-  conditionLabel: String,
-  controllerLabel: String,
-  memoryLabel: String,
+
+  modelLabel: {
+    type: String,
+    default: 'Select Model',
+  },
+  conditionLabel: {
+    type: String,
+    default: 'Select Condition',
+  },
+  controllerLabel: {
+    type: String,
+    default: 'Select Controller',
+  },
+  memoryLabel: {
+    type: String,
+    default: 'Select Memory',
+  },
 });
 
 injectProductModelMiddlewares(productSchema);
