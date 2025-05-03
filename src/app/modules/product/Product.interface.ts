@@ -28,4 +28,10 @@ export type TProduct = {
   conditionDes?: string;
   controllerDes?: string;
   memoryDes?: string;
+
+  /** For label */
+  modelLabel?: string;
+  conditionLabel?: string;
+  controllerLabel?: string;
+  memoryLabel?: string;
 };

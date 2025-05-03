@@ -16,6 +16,11 @@ privateRouter.post(
   validateRequest(ProductValidation.create),
   ProductController.create,
 );
+privateRouter.patch(
+  '/label/edit/:name',
+  validateRequest(ProductValidation.editLabel),
+  ProductController.editLabel,
+);
 
 // update a product
 privateRouter.patch(

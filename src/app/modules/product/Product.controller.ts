@@ -192,4 +192,14 @@ export const ProductController = {
       data: { exists },
     });
   }),
+
+  editLabel: catchAsync(async (req, res) => {
+    await ProductService.editLabel(req.params.name, req.body);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Product label has been updated successfully!',
+    });
+  }),
 };

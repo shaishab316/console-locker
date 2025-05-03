@@ -36,6 +36,11 @@ export const ProductValidation = {
       conditionDes: z.string().optional(),
       controllerDes: z.string().optional(),
       memoryDes: z.string().optional(),
+
+      modelLabel: z.string().optional(),
+      conditionLabel: z.string().optional(),
+      controllerLabel: z.string().optional(),
+      memoryLabel: z.string().optional(),
     }),
   }),
 
@@ -109,6 +114,15 @@ export const ProductValidation = {
       conditionDes: z.string().optional(),
       controllerDes: z.string().optional(),
       memoryDes: z.string().optional(),
+    }),
+  }),
+
+  editLabel: z.object({
+    body: z.object({
+      modelLabel: z.string().optional(),
+      conditionLabel: z.string().optional(),
+      controllerLabel: z.string().optional(),
+      memoryLabel: z.string().optional(),
     }),
   }),
 };

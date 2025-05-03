@@ -400,4 +400,8 @@ export const ProductService = {
   async exists(name: string) {
     return Product.exists({ name });
   },
+
+  async editLabel(name: string, data: Partial<TProduct>) {
+    return Product.updateMany({ name }, { $set: data });
+  },
 };
