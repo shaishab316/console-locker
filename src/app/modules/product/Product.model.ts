@@ -23,6 +23,7 @@ const productSchema = new Schema<TProduct>({
   name: {
     type: String,
     required: true,
+    trim: true,
   },
   description: {
     type: String,
