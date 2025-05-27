@@ -6,15 +6,21 @@ import { PipelineStage } from 'mongoose';
 import { mergeProducts } from './Product.utils';
 import deleteFile from '../../../shared/deleteFile';
 import Review from '../review/Review.model';
+import slugify from 'slugify';
 
 export const ProductService = {
   /** for admin */
   async create(newProduct: TProduct) {
+    if (newProduct.slug)
+      newProduct.slug = slugify(newProduct.slug, { lower: true, strict: true });
     return await Product.create(newProduct);
   },
 
   async update(slug: string, updateData: Partial<TProduct>) {
     const existingProduct = await Product.findOne({ slug });
+
+    if (updateData.slug)
+      updateData.slug = slugify(updateData.slug, { lower: true, strict: true });
 
     let imagesToDelete: string[] = [];
 
