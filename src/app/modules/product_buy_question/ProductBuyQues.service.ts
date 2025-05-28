@@ -284,7 +284,6 @@ export const ProductBuyQuesService = {
       {
         $group: {
           _id: '$_id',
-          base_price: { $first: '$base_price' },
           optionPrices: { $push: '$questions.options.price' },
         },
       },
@@ -292,16 +291,7 @@ export const ProductBuyQuesService = {
         $project: {
           _id: 0,
           total_price: {
-            $multiply: [
-              '$base_price',
-              {
-                $reduce: {
-                  input: '$optionPrices',
-                  initialValue: 1,
-                  in: { $multiply: ['$$value', '$$this'] },
-                },
-              },
-            ],
+            $sum: '$optionPrices', // Simply sum all option prices
           },
         },
       },
