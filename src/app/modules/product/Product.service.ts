@@ -11,9 +11,48 @@ import slugify from 'slugify';
 export const ProductService = {
   /** for admin */
   async create(newProduct: TProduct) {
+    const existingProduct = await Product.findOne({
+      product_type: newProduct.product_type,
+      name: newProduct.name,
+      model: newProduct.model,
+      controller: newProduct.controller,
+      condition: newProduct.condition,
+      memory: newProduct.memory,
+    });
+
+    if (existingProduct)
+      throw new ApiError(
+        StatusCodes.BAD_REQUEST,
+        'Product variant already exists',
+      );
+
     if (newProduct.slug)
       newProduct.slug = slugify(newProduct.slug, { lower: true, strict: true });
-    return await Product.create(newProduct);
+
+    const oldProduct = await Product.findOne({
+      name: newProduct.name,
+      product_type: newProduct.product_type,
+    });
+
+    if (oldProduct) {
+      newProduct.modelLabel ??= oldProduct.modelLabel;
+      newProduct.conditionLabel ??= oldProduct.conditionLabel;
+      newProduct.controllerLabel ??= oldProduct.controllerLabel;
+      newProduct.memoryLabel ??= oldProduct.memoryLabel;
+
+      newProduct.order ??= oldProduct.order;
+    } else {
+      const lastOrder = await Product.findOne(
+        { product_type: newProduct.product_type },
+        {},
+        { sort: { order: -1 } },
+      );
+
+      if (lastOrder) newProduct.order ??= -~lastOrder.order;
+      newProduct.order ??= 1;
+    }
+
+    return Product.create(newProduct);
   },
 
   async update(slug: string, updateData: Partial<TProduct>) {
@@ -236,11 +275,7 @@ export const ProductService = {
       products.sort(
         (a, b) => (a.offer_price ?? a.price) - (b.offer_price ?? b.price),
       );
-    else
-      products.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      );
+    else products.sort((a, b) => a.order - b.order);
 
     // Calculate total count
     const totalCountResult = await Product.aggregate([
@@ -408,6 +443,10 @@ export const ProductService = {
   },
 
   async editLabel(name: string, data: Partial<TProduct>) {
-    return Product.updateMany({ name }, { $set: data });
+    return Product.updateOne(
+      { name },
+      { $set: data },
+      { upsert: true, new: true },
+    );
   },
 };

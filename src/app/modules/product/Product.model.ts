@@ -27,6 +27,7 @@ const productSchema = new Schema<TProduct>({
   },
   description: {
     type: String,
+    trim: true,
   },
   price: {
     type: Number,
@@ -35,18 +36,23 @@ const productSchema = new Schema<TProduct>({
   offer_price: Number,
   brand: {
     type: String,
+    trim: true,
   },
   model: {
     type: String,
+    trim: true,
   },
   condition: {
     type: String,
+    trim: true,
   },
   controller: {
     type: String,
+    trim: true,
   },
   memory: {
     type: String,
+    trim: true,
   },
   quantity: {
     type: Number,
@@ -61,6 +67,12 @@ const productSchema = new Schema<TProduct>({
   product_ref: {
     type: String,
   },
+  order: {
+    type: Number,
+    required: true,
+    default: Number.MAX_SAFE_INTEGER,
+  },
+
   modelDes: String,
   conditionDes: String,
   controllerDes: String,

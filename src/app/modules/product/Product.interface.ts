@@ -22,6 +22,7 @@ export type TProduct = {
   updatedAt?: Date;
   ratings?: number;
   reviewCount?: number;
+  order: number;
 
   /** For description */
   modelDes?: string;

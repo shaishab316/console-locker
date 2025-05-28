@@ -123,6 +123,9 @@ export const ProductValidation = {
       conditionLabel: z.string().optional(),
       controllerLabel: z.string().optional(),
       memoryLabel: z.string().optional(),
+      name: z.string().optional(),
+      brand: z.string().optional(),
+      order: z.coerce.number().optional(),
     }),
   }),
 };
