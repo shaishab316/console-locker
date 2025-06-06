@@ -443,7 +443,7 @@ export const ProductService = {
   },
 
   async editLabel(name: string, data: Partial<TProduct>) {
-    return Product.updateOne(
+    return Product.updateMany(
       { name },
       { $set: data },
       { upsert: true, new: true },
