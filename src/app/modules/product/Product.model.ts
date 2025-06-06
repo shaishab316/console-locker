@@ -63,6 +63,7 @@ const productSchema = new Schema<TProduct>({
   },
   product_type: {
     type: String,
+    trim: true,
   },
   product_ref: {
     type: String,

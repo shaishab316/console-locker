@@ -230,6 +230,7 @@ export const ProductService = {
     ] = await Promise.all([
       Product.aggregate([
         { $match: filters },
+        { $sort: { order: 1 } },
         { $group: { _id: '$name', product: { $first: '$$ROOT' } } },
         { $skip: skip },
         { $limit: parsedLimit },
@@ -275,7 +276,12 @@ export const ProductService = {
       products.sort(
         (a, b) => (a.offer_price ?? a.price) - (b.offer_price ?? b.price),
       );
-    else products.sort((a, b) => a.order - b.order);
+    else
+      products.sort((a, b) => {
+        const aOrder = a.order ?? Number.MAX_SAFE_INTEGER;
+        const bOrder = b.order ?? Number.MAX_SAFE_INTEGER;
+        return aOrder - bOrder;
+      });
 
     // Calculate total count
     const totalCountResult = await Product.aggregate([
