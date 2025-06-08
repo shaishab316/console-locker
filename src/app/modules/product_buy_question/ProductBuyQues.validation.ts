@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const optionSchema = z.object({
   option: z.string(),
-  price: z.number().max(1, { message: 'Price should be less than 1' }),
+  price: z.number(),
 });
 
 const questionSchema = z.object({
