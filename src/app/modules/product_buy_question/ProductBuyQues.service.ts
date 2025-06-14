@@ -301,7 +301,7 @@ export const ProductBuyQuesService = {
     if (!result.length)
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to calculate price');
 
-    return (Math.floor(result[0].total_price * 100) / 100).toFixed(2);
+    return (result[0].total_price + product.base_price).toFixed(2);
   },
 
   getInformation: async (
