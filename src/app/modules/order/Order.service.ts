@@ -73,28 +73,25 @@ export const OrderService = {
       );
     }
 
-    const existingOrder = await Order.findOne({
-      customer: new Types.ObjectId(customer as string),
-      state: 'pending',
-    });
+    const order = await Order.findOneAndUpdate(
+      {
+        customer: new Types.ObjectId(customer as string),
+        state: 'pending',
+      },
+      {
+        productDetails: validProducts,
+        customer,
+        amount: totalPrice,
+        address,
+        secondary_phone,
+      },
+      {
+        new: true,
+        upsert: true,
+      },
+    );
 
-    if (existingOrder) {
-      return {
-        amount: existingOrder.amount,
-        orderId: existingOrder._id,
-      };
-    }
-
-    // Create a new order if no existing one is found
-    const newOrder = await Order.create({
-      productDetails: validProducts,
-      customer,
-      amount: totalPrice,
-      address,
-      secondary_phone,
-    });
-
-    return { amount: totalPrice, orderId: newOrder._id };
+    return { amount: order.amount, orderId: order._id };
   },
 
   async cancel(orderId: string) {
