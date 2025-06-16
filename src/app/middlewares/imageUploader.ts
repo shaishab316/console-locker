@@ -42,6 +42,9 @@ const imageUploader = () => {
   const upload = multer({
     storage,
     fileFilter,
+    limits: {
+      fileSize: 100 * 1024 * 1024, // 100MB
+    },
   }).fields([{ name: 'images', maxCount: 20 }]); // Allow up to 20 images
 
   return upload;
