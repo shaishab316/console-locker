@@ -10,6 +10,7 @@ import { SettingRoutes } from '../app/modules/setting/Setting.route';
 import { NotificationRoutes } from '../app/modules/notification/Notification.route';
 import { ReviewRoutes } from '../app/modules/review/Review.route';
 import { ConfigAttrRoutes } from '../app/modules/configattr/ConfigAttr.route';
+import { NewsLetterRoutes } from '../app/modules/newsLetter/NewsLetter.route';
 
 const router = Router();
 
@@ -58,6 +59,10 @@ const apiRoutes: { path: string; route: Router }[] = [
   {
     path: '/config-attr',
     route: ConfigAttrRoutes,
+  },
+  {
+    path: '/unsubscribe',
+    route: NewsLetterRoutes,
   },
 ];
 
