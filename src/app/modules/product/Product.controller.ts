@@ -202,4 +202,17 @@ export const ProductController = {
       message: 'Product label has been updated successfully!',
     });
   }),
+
+  listForHome: catchAsync(async (req, res) => {
+    const data = await ProductService.listForHome(
+      req.query.product_type as string,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Products retrieved successfully',
+      data,
+    });
+  }),
 };

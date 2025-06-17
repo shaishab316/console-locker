@@ -455,4 +455,23 @@ export const ProductService = {
       { upsert: true, new: true },
     );
   },
+
+  async listForHome(product_type: string) {
+    return Product.aggregate([
+      { $match: { product_type } },
+      {
+        $group: {
+          _id: '$model',
+          product: { $first: '$$ROOT' },
+          minPrice: { $min: '$price' },
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: { $mergeObjects: ['$product', { minPrice: '$minPrice' }] },
+        },
+      },
+      { $sort: { minPrice: 1 } },
+    ]);
+  },
 };

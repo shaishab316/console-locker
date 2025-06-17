@@ -53,6 +53,7 @@ privateRouter.post(
 /** for customer */
 // retrieved all products
 publicRouter.get('/', ProductController.list);
+publicRouter.get('/forHome', ProductController.listForHome);
 publicRouter.get('/name/:productName', ProductController.listByName);
 
 publicRouter.get('/name/:productName/exists', ProductController.exists);
