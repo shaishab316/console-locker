@@ -7,9 +7,12 @@ export const ReviewValidation = {
       customerName: z.string().trim().min(1, 'Customer name is required'),
       product: z
         .string()
-        .refine(async name => !!(await Product.exists({ name })), {
-          message: 'Product not found',
-        }),
+        .refine(
+          async name => name === 'home' || !!(await Product.exists({ name })),
+          {
+            message: 'Product not found',
+          },
+        ),
       rating: z
         .string()
         .regex(/^[1-5]$/, 'Rating must be a number between 1 and 5'),
