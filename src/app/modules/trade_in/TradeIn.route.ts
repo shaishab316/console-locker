@@ -15,6 +15,7 @@ publicRouter.post('/', TradeInController.createTrade);
  */
 
 privateRouter.get('/', TradeInController.retrieveTrade);
+privateRouter.post('/send-mail', TradeInController.sendMail);
 privateRouter.post('/:id', TradeInController.confirmTrade);
 privateRouter.post('/:id/cancel', TradeInController.cancelTrade);
 

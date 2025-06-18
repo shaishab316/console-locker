@@ -2,6 +2,9 @@ import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { TradeInService } from './TradeIn.service';
+import TradeIn from './TradeIn.model';
+import { TradeInTemplate } from './TradeIn.template';
+import { emailHelper } from '../../../helpers/emailHelper';
 
 export const TradeInController = {
   createTrade: catchAsync(async (req, res) => {
@@ -41,6 +44,33 @@ export const TradeInController = {
       statusCode: StatusCodes.OK,
       message: 'Trades are retrieved successful.',
       data: trades,
+    });
+  }),
+
+  sendMail: catchAsync(async (req, res) => {
+    const trade: any = await TradeIn.findById(req.body.id)
+      .populate('product', 'name')
+      .populate('customer', 'email name')
+      .select('product customer');
+
+    const html = TradeInTemplate.thanks({
+      cName: trade?.customer?.name,
+      note: req.body.note,
+      pName: trade?.product?.name,
+    });
+
+    if (trade?.customer?.email) {
+      await emailHelper.sendEmail({
+        to: trade.customer.email,
+        subject: `Thank You for ${trade?.product?.name} sell Request!`,
+        html,
+      });
+    }
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Email sent successfully.',
     });
   }),
 
