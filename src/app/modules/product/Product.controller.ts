@@ -204,7 +204,7 @@ export const ProductController = {
   }),
 
   listForHome: catchAsync(async (req, res) => {
-    const data = await ProductService.listForHome(
+    const products = await ProductService.listForHome(
       req.query.product_type as string,
     );
 
@@ -212,7 +212,9 @@ export const ProductController = {
       success: true,
       statusCode: StatusCodes.OK,
       message: 'Products retrieved successfully',
-      data,
+      data: {
+        products,
+      },
     });
   }),
 };
