@@ -120,16 +120,6 @@ export const TradeInTemplate = {
                     >
                       Console Locker
                     </h1>
-                    <p
-                      style="
-                        color: #ffffff;
-                        margin: 5px 0 0 0;
-                        font-size: 14px;
-                        opacity: 0.9;
-                      "
-                    >
-                      consolelocker.it
-                    </p>
                   </td>
                 </tr>
         
