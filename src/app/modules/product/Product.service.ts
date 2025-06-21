@@ -108,8 +108,8 @@ export const ProductService = {
     return deletedProduct;
   },
 
-  async createVariant(productId: string, variantData: Partial<TProduct>) {
-    const product = await Product.findById(productId);
+  async createVariant(productName: string, variantData: Partial<TProduct>) {
+    const product = await Product.findOne({ name: productName });
     if (!product || product.isVariant) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found');
     }
@@ -146,6 +146,7 @@ export const ProductService = {
       search,
       min_price: minPrice,
       max_price: maxPrice,
+      product_ref,
     } = query;
 
     // Helper to parse numbers safely with a default fallback
@@ -172,6 +173,12 @@ export const ProductService = {
     if (condition) {
       filters.condition = condition;
       filtersForPrice.condition = condition;
+    }
+
+    if (product_ref) {
+      filters.product_ref = product_ref;
+    } else {
+      filters.isVariant = false;
     }
 
     // Price filter considering offer_price
@@ -458,7 +465,7 @@ export const ProductService = {
 
   async listForHome(product_type: string) {
     return Product.aggregate([
-      { $match: { product_type } },
+      { $match: { product_type, isVariant: false } },
       {
         $group: {
           _id: '$model',
