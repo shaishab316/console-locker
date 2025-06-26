@@ -95,6 +95,11 @@ const productSchema = new Schema<TProduct>({
     type: String,
     default: 'Select Memory',
   },
+  relatedProducts: {
+    type: [String],
+    default: [],
+    trim: true,
+  },
 });
 
 injectProductModelMiddlewares(productSchema);

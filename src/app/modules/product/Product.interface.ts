@@ -35,4 +35,6 @@ export type TProduct = {
   conditionLabel?: string;
   controllerLabel?: string;
   memoryLabel?: string;
+
+  relatedProducts?: Types.ObjectId[];
 };

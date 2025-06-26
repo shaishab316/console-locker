@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import ApiError from '../../../errors/ApiError';
 import { TProduct } from './Product.interface';
 import Product from './Product.model';
-import { PipelineStage } from 'mongoose';
+import { PipelineStage, Types } from 'mongoose';
 import { mergeProducts } from './Product.utils';
 import deleteFile from '../../../shared/deleteFile';
 import Review from '../review/Review.model';
@@ -392,7 +392,7 @@ export const ProductService = {
 
     const meta = await this.retrieveMeta(product);
     const reviews = await this.getReviews(product.name!);
-    const relatedProducts = await this.relatedProducts(product.brand!);
+    const relatedProducts = await this.relatedProducts(product._id!);
 
     Object.assign(product, reviews);
 
@@ -440,11 +440,40 @@ export const ProductService = {
     };
   },
 
-  async relatedProducts(brand: string) {
-    const products = await Product.find({ brand }).limit(4).lean();
-
-    return products;
+  async setRelatedProducts(productName: string, products: string[]) {
+    return Product.updateMany(
+      { name: productName },
+      { $set: { relatedProducts: products } },
+      { upsert: true, new: true },
+    );
   },
+
+  async relatedProducts(productId: Types.ObjectId) {
+    const product = await Product.findById(productId).lean();
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    const related = await Product.aggregate([
+      { $match: { name: { $in: product.relatedProducts }, isVariant: false } },
+      {
+        $group: {
+          _id: '$model',
+          product: { $first: '$$ROOT' },
+          minPrice: { $min: '$price' },
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: { $mergeObjects: ['$product', { minPrice: '$minPrice' }] },
+        },
+      },
+      { $sort: { minPrice: 1 } },
+    ]);
+
+    return related;
+  },
+
   async listByName(name: string) {
     const products = await Product.find({ name }).lean();
 

@@ -217,4 +217,17 @@ export const ProductController = {
       },
     });
   }),
+
+  setRelatedProducts: catchAsync(async (req, res) => {
+    await ProductService.setRelatedProducts(
+      req.params.productName,
+      req.body.relatedProducts,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: 'Product has been updated successfully!',
+    });
+  }),
 };
