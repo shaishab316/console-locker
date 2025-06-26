@@ -455,7 +455,12 @@ export const ProductService = {
     }
 
     const related = await Product.aggregate([
-      { $match: { name: { $in: product.relatedProducts }, isVariant: false } },
+      {
+        $match: {
+          name: { $in: product.relatedProducts || [] },
+          isVariant: false,
+        },
+      },
       {
         $group: {
           _id: '$model',
