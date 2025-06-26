@@ -37,4 +37,5 @@ export type TProduct = {
   memoryLabel?: string;
 
   relatedProducts?: Types.ObjectId[];
+  specifications: string;
 };
