@@ -474,7 +474,7 @@ export const ProductService = {
           newRoot: { $mergeObjects: ['$product', { minPrice: '$minPrice' }] },
         },
       },
-      { $sort: { minPrice: 1 } },
+      { $sort: { order: 1, minPrice: 1 } },
     ]);
 
     return related;
@@ -513,7 +513,7 @@ export const ProductService = {
           newRoot: { $mergeObjects: ['$product', { minPrice: '$minPrice' }] },
         },
       },
-      { $sort: { minPrice: 1 } },
+      { $sort: { order: 1, minPrice: 1 } },
     ]);
   },
 };
