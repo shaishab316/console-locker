@@ -101,6 +101,7 @@ const productSchema = new Schema<TProduct>({
     trim: true,
   },
   specifications: String,
+  caption: String,
 });
 
 injectProductModelMiddlewares(productSchema);

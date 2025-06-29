@@ -114,6 +114,8 @@ export const ProductValidation = {
       conditionDes: z.string().optional(),
       controllerDes: z.string().optional(),
       memoryDes: z.string().optional(),
+
+      caption: z.string().optional(),
     }),
   }),
 

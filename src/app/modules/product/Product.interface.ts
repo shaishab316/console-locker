@@ -38,4 +38,5 @@ export type TProduct = {
 
   relatedProducts?: Types.ObjectId[];
   specifications: string;
+  caption: string;
 };
