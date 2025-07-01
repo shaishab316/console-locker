@@ -10,6 +10,25 @@ export const TradeInController = {
   createTrade: catchAsync(async (req, res) => {
     const newTrade = await TradeInService.createTrade(req.body);
 
+    const trade: any = await TradeIn.findById(newTrade._id)
+      .populate('product', 'name')
+      .populate('customer', 'email name')
+      .select('product customer');
+
+    const html = TradeInTemplate.welcome({
+      cName: trade?.customer?.name,
+      pName: trade?.product?.name,
+    });
+
+    if (trade?.customer?.email) {
+      //! don't do await for fast response
+      emailHelper.sendEmail({
+        to: trade.customer.email,
+        subject: `We found your ${trade?.product?.name} sell Request!`,
+        html,
+      });
+    }
+
     sendResponse(res, {
       success: true,
       statusCode: StatusCodes.OK,
