@@ -503,7 +503,7 @@ export const ProductService = {
       { $match: { product_type, isVariant: false } },
       {
         $group: {
-          _id: '$model',
+          _id: { name: '$name', model: '$model' },
           product: { $first: '$$ROOT' },
           minPrice: { $min: '$price' },
         },
